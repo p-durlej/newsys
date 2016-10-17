@@ -1,0 +1,8 @@
+mod_onunload
+mod_onload
+irq_ena
+irq_dis
+irq_set
+dma_setup
+dma_ena
+dma_dis

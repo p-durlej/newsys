@@ -1,0 +1,6 @@
+
+rtrap
+
+rm -rf /var/run/*
+
+. /etc/rc.local

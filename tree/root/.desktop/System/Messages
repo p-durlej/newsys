@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/sbin/wdmesg
+icon=diag.pnm

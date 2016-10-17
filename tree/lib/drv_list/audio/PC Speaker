@@ -1,0 +1,8 @@
+desc=PC Speaker
+type=audio
+name=pcspk%i
+driver=/lib/drv/pcspk.drv
+io0_base=0x42
+io0_size=2
+io1_base=0x61
+io1_size=1

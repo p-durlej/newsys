@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/bin/pref.filemgr
+icon=filemgr.pnm

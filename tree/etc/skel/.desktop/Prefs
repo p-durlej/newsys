@@ -1,0 +1,4 @@
+# SHLINK
+
+icon=dir.pnm
+exec=/lib/prefs

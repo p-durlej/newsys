@@ -1,0 +1,3 @@
+desc=Form
+icon=form.pnm
+exec=/bin/formview

@@ -1,0 +1,3 @@
+desc=C Source
+icon=code.pnm
+exec=/bin/code

@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/sbin/usermgr
+icon=users.pnm

@@ -1,0 +1,3 @@
+desc=Directory
+icon=dir.pnm
+exec=/bin/filemgr

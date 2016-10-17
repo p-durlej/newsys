@@ -1,0 +1,3 @@
+desc=Plain Text
+icon=text.pnm
+exec=/bin/edit

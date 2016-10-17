@@ -1,0 +1,88 @@
+diff -ru gcc-4.2.0.orig/gcc/system.h gcc-4.2.0/gcc/system.h
+--- gcc-4.2.0.orig/gcc/system.h	2006-03-22 20:36:22.000000000 +0100
++++ gcc-4.2.0/gcc/system.h	2007-08-02 20:06:39.000000000 +0200
+@@ -648,12 +648,12 @@
+ #ifdef IN_GCC
+ #undef calloc
+ #undef strdup
+- #pragma GCC poison calloc strdup
++/* #pragma GCC poison calloc strdup */
+ 
+ #if !defined(FLEX_SCANNER) && !defined(YYBISON)
+ #undef malloc
+ #undef realloc
+- #pragma GCC poison malloc realloc
++/* #pragma GCC poison malloc realloc */
+ #endif
+ 
+ /* Old target macros that have moved to the target hooks structure.  */
+Only in gcc-4.2.0/gcc: system.h~
+diff -ru gcc-4.2.0.orig/gcc/tlink.c gcc-4.2.0/gcc/tlink.c
+--- gcc-4.2.0.orig/gcc/tlink.c	2007-02-24 08:25:25.000000000 +0100
++++ gcc-4.2.0/gcc/tlink.c	2007-08-02 19:14:03.000000000 +0200
+@@ -39,7 +39,8 @@
+ 
+ static int tlink_verbose;
+ 
+-static char initial_cwd[MAXPATHLEN + 1];
++/* static char initial_cwd[MAXPATHLEN + 1]; */
++static char initial_cwd[PATH_MAX + 1];
+ 
+ /* Hash table boilerplate for working with htab_t.  We have hash tables
+    for symbol names, file names, and demangled symbols.  */
+@@ -383,8 +384,15 @@
+   if (tlink_verbose >= 2)
+     fprintf (stderr, _("collect: reading %s\n"), f->key);
+ 
+-  while (fscanf (stream, "%c ", &c) == 1)
++  /* while (fscanf (stream, "%c ", &c) == 1) */
++  while (c = fgetc(stream), c != EOF)
+     {
++      char c1;
++      
++      while (c1 = fgetc(stream), c1 != EOF && isspace(c1));
++      if (c1 != EOF)
++      	ungetc(c1,stream);
++      
+       switch (c)
+ 	{
+ 	case 'A':
+diff -ru gcc-4.2.0.orig/libcpp/macro.c gcc-4.2.0/libcpp/macro.c
+--- gcc-4.2.0.orig/libcpp/macro.c	2006-10-12 11:25:59.000000000 +0200
++++ gcc-4.2.0/libcpp/macro.c	2007-08-02 19:14:03.000000000 +0200
+@@ -23,6 +23,8 @@
+  You are forbidden to forbid anyone else to use, share and improve
+  what you give them.   Help stamp out software-hoarding!  */
+ 
++#include <time.h>
++
+ #include "config.h"
+ #include "system.h"
+ #include "cpplib.h"
+diff -ru gcc-4.2.0.orig/libcpp/system.h gcc-4.2.0/libcpp/system.h
+--- gcc-4.2.0.orig/libcpp/system.h	2005-06-29 04:34:39.000000000 +0200
++++ gcc-4.2.0/libcpp/system.h	2007-08-02 19:14:03.000000000 +0200
+@@ -398,8 +398,8 @@
+ #undef strdup
+ #undef malloc
+ #undef realloc
+- #pragma GCC poison calloc strdup
+- #pragma GCC poison malloc realloc
++/*  #pragma GCC poison calloc strdup
++ #pragma GCC poison malloc realloc */
+ 
+ /* Libiberty macros that are no longer used in GCC.  */
+ #undef ANSI_PROTOTYPES
+diff -ru gcc-4.2.0.orig/libiberty/cplus-dem.c gcc-4.2.0/libiberty/cplus-dem.c
+--- gcc-4.2.0.orig/libiberty/cplus-dem.c	2006-05-12 21:44:29.000000000 +0200
++++ gcc-4.2.0/libiberty/cplus-dem.c	2007-08-02 19:14:03.000000000 +0200
+@@ -3834,7 +3834,8 @@
+ 	  buf[2] = '\0';
+ 	  *mangled += min (strlen (*mangled), 2);
+ 	}
+-      sscanf (buf, "%x", &dec);
++      /* sscanf (buf, "%x", &dec); */
++      dec = strtol(buf,NULL,16);
+       sprintf (buf, "int%u_t", dec);
+       APPEND_BLANK (result);
+       string_append (result, buf);

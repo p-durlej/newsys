@@ -1,0 +1,103 @@
+diff -ru binutils-2.17.orig/binutils/arparse.c binutils-2.17/binutils/arparse.c
+--- binutils-2.17.orig/binutils/arparse.c	2006-04-16 20:36:40.000000000 +0200
++++ binutils-2.17/binutils/arparse.c	2007-04-27 21:36:39.000000000 +0200
+@@ -177,18 +177,32 @@
+ /* Line 219 of yacc.c.  */
+ #line 179 "arparse.c"
+ 
++#ifndef __STDC__
++#warning __STDC__ is not defined
++#endif
++
+ #if ! defined (YYSIZE_T) && defined (__SIZE_TYPE__)
+ # define YYSIZE_T __SIZE_TYPE__
++# warning condition 0
+ #endif
+ #if ! defined (YYSIZE_T) && defined (size_t)
+ # define YYSIZE_T size_t
++# warning condition 1
+ #endif
+ #if ! defined (YYSIZE_T) && (defined (__STDC__) || defined (__cplusplus))
+ # include <stddef.h> /* INFRINGES ON USER NAME SPACE */
+ # define YYSIZE_T size_t
++# warning condition 2
+ #endif
+ #if ! defined (YYSIZE_T)
+ # define YYSIZE_T unsigned int
++# warning condition 3
++#endif
++
++#ifndef YYSIZE_T
++#warning YYSIZE_T is not defined
++#else
++#warning YYSIZE_T is defined
+ #endif
+ 
+ #ifndef YY_
+diff -ru binutils-2.17.orig/include/libiberty.h binutils-2.17/include/libiberty.h
+--- binutils-2.17.orig/include/libiberty.h	2006-04-12 20:41:45.000000000 +0200
++++ binutils-2.17/include/libiberty.h	2007-04-27 13:51:16.000000000 +0200
+@@ -579,7 +579,7 @@
+ extern int snprintf (char *, size_t, const char *, ...) ATTRIBUTE_PRINTF_3;
+ #endif
+ 
+-#if defined(HAVE_DECL_VSNPRINTF) && !HAVE_DECL_VSNPRINTF
++#if 0 && defined(HAVE_DECL_VSNPRINTF) && !HAVE_DECL_VSNPRINTF
+ /* Like vsprintf but prints at most N characters.  */
+ extern int vsnprintf (char *, size_t, const char *, va_list) ATTRIBUTE_PRINTF(3,0);
+ #endif
+diff -ru binutils-2.17.orig/include/md5.h binutils-2.17/include/md5.h
+--- binutils-2.17.orig/include/md5.h	2006-01-18 22:05:51.000000000 +0100
++++ binutils-2.17/include/md5.h	2007-04-27 13:56:57.000000000 +0200
+@@ -63,7 +63,7 @@
+ #   else
+      /* The following line is intended to evoke an error.
+         Using #error is not portable enough.  */
+-     "Cannot determine unsigned 32-bit data type."
++#error     "Cannot determine unsigned 32-bit data type."
+ #   endif
+ #  endif
+ # endif
+diff -ru binutils-2.17.orig/ld/ld.h binutils-2.17/ld/ld.h
+--- binutils-2.17.orig/ld/ld.h	2005-09-30 13:42:04.000000000 +0200
++++ binutils-2.17/ld/ld.h	2007-04-27 22:13:50.000000000 +0200
+@@ -291,7 +291,7 @@
+ #define __PRETTY_FUNCTION__  NULL
+ #endif
+ 
+-#undef abort
+-#define abort() ld_abort (__FILE__, __LINE__, __PRETTY_FUNCTION__)
++/* #undef abort
++#define abort() ld_abort (__FILE__, __LINE__, __PRETTY_FUNCTION__) */
+ 
+ #endif
+diff -ru binutils-2.17.orig/libiberty/bcmp.c binutils-2.17/libiberty/bcmp.c
+--- binutils-2.17.orig/libiberty/bcmp.c	2005-04-03 06:41:10.000000000 +0200
++++ binutils-2.17/libiberty/bcmp.c	2007-04-27 17:37:34.000000000 +0200
+@@ -17,10 +17,10 @@
+ 
+ #include <stddef.h>
+ 
+-extern int memcmp(const void *, const void *, size_t);
++extern int memcmp(const void *, const void *, unsigned size_t);
+ 
+ int
+-bcmp (const void *s1, const void *s2, size_t count)
++bcmp (const void *s1, const void *s2, unsigned count)
+ {
+   return memcmp (s1, s2, count);
+ }
+diff -ru binutils-2.17.orig/libiberty/cplus-dem.c binutils-2.17/libiberty/cplus-dem.c
+--- binutils-2.17.orig/libiberty/cplus-dem.c	2005-05-24 23:01:31.000000000 +0200
++++ binutils-2.17/libiberty/cplus-dem.c	2007-04-27 18:50:43.000000000 +0200
+@@ -3834,7 +3834,8 @@
+ 	  buf[2] = '\0';
+ 	  *mangled += min (strlen (*mangled), 2);
+ 	}
+-      sscanf (buf, "%x", &dec);
++      /* sscanf (buf, "%x", &dec); */
++      dec = strtol(buf,NULL,16);
+       sprintf (buf, "int%u_t", dec);
+       APPEND_BLANK (result);
+       string_append (result, buf);
+Only in binutils-2.17: objdir

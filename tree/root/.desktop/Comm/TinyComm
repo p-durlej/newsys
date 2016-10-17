@@ -1,0 +1,5 @@
+# SHLINK
+
+exec=/bin/tinycomm
+icon=cdev.pnm
+wd=$/.doc

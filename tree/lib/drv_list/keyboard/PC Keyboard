@@ -1,0 +1,9 @@
+desc=PC Keyboard
+name=keyboard
+type=keyboard
+io0_base=0x60
+io0_size=0x10
+irq0=1
+irq1=12
+driver=/lib/drv/pckbd.drv
+desktop

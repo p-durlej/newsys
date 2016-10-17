@@ -1,0 +1,9 @@
+desc=IDE Channel
+type=disk
+name=dk%i
+driver=/lib/drv/hd.drv
+io0_base=0x1f0
+io0_size=8
+io1_base=0x3f6
+io1_size=1
+irq0=14

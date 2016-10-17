@@ -1,0 +1,13 @@
+mod_onunload
+mod_onload
+irq_ena
+irq_dis
+irq_set
+dma_setup
+dma_ena
+dma_dis
+get_bios_buf_size
+get_bios_buf
+get_bios_regs
+bios_call
+v86_call

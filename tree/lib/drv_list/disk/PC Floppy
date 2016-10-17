@@ -1,0 +1,10 @@
+desc=PC Floppy
+type=disk
+name=fd%i
+driver=/lib/drv/fd.drv
+io0_base=0x3f0
+io0_size=6
+io0_base=0x3f7
+io0_size=1
+irq0=6
+dma0=2

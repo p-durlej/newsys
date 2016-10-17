@@ -1,0 +1,3 @@
+desc=C Header
+icon=code.pnm
+exec=/bin/code

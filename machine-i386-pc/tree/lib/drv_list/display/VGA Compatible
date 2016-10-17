@@ -1,0 +1,9 @@
+desc=VGA Compatible
+name=display
+type=display
+driver=/lib/drv/vga.drv
+mem0_base=0xa0000
+mem0_size=0x20000
+io0_base=0x3c0
+io0_size=0x20
+desktop

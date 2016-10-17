@@ -1,0 +1,3 @@
+desc=Simple Bitmap
+icon=picture.pnm
+exec=/bin/pictview

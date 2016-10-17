@@ -1,0 +1,8 @@
+desc=Serial Mouse
+name=mouse
+type=mouse
+io0_base=0x3f8
+io0_size=8
+irq0=4
+driver=/lib/drv/mouse.drv
+desktop

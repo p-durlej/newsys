@@ -1,0 +1,13 @@
+outl
+outw
+outb
+inl
+inw
+inb
+outsl
+outsw
+outsb
+insl
+insw
+insb
+_iopl

@@ -1,0 +1,379 @@
+755 /bin/aclock
+755 /bin/avail
+755 /bin/calc
+755 /bin/charmap
+755 /bin/clear
+755 /bin/clock
+755 /bin/edit
+755 /bin/filemgr
+755 /bin/filemgr.slave
+755 /bin/pictview
+755 /bin/pref.color
+755 /bin/pref.display
+755 /bin/pref.filemgr
+755 /bin/pref.mouse
+755 /bin/pref.desktop
+755 /bin/pref.osk
+755 /bin/pref.theme
+755 /bin/vtty
+755 /bin/cli
+755 /bin/df
+755 /bin/ps
+6755 /bin/passwd
+755 /bin/tinycomm
+755 /bin/taskbar
+755 /bin/pmd
+755 /bin/pref.time
+755 /bin/ckexe
+755 /bin/formview
+755 /bin/osk
+755 /bin/uptime
+755 /bin/tty
+755 /bin/wfind
+755 /bin/box
+755 /bin/tar
+
+700 /sbin/diskperf
+755 /sbin/mode
+755 /sbin/hwclock
+755 /sbin/init
+755 /sbin/init.desktop
+755 /sbin/init.profile
+755 /sbin/login
+755 /sbin/mkfs
+755 /sbin/mount
+755 /sbin/wmount
+755 /sbin/sync
+755 /sbin/taskman
+755 /sbin/umount
+755 /sbin/wumount
+755 /sbin/diskfree
+755 /sbin/shutdown
+755 /sbin/usermgr
+755 /sbin/sysinstall
+755 /sbin/fsck
+755 /sbin/wsync
+755 /sbin/init.devs
+755 /sbin/list_devs
+755 /sbin/find_devs
+755 /sbin/edit_devs
+755 /sbin/check_devs
+755 /sbin/fdisk
+700 /sbin/secure
+700 /sbin/wdmesg
+700 /sbin/showload
+755 /sbin/pref.filesys
+700 /sbin/vtty-con
+700 /sbin/wlogin
+755 /sbin/daemon
+700 /sbin/dmesg
+700 /sbin/fxstat
+700 /sbin/rdconfig
+700 /sbin/tunefs
+700 /sbin/fdfmt
+700 /sbin/fdctl
+700 /sbin/pcidevs
+700 /sbin/filemgr.mkfsi
+
+600 /etc/environ
+600 /etc/shells
+600 /etc/boot
+600 /etc/rc.local.example
+
+600 /etc/desktops/desktop0/environ
+644 /etc/filetype/ext-drv
+644 /etc/filetype/ext-sys
+644 /etc/filetype/ext-frm
+644 /etc/filetype/ext-sbmp
+644 /etc/filetype/ext-pnm
+644 /etc/filetype/ext-pgm
+644 /etc/filetype/ext-pbm
+644 /etc/filetype/ext-txt
+644 /etc/filetype/bdev
+644 /etc/filetype/cdev
+644 /etc/filetype/default
+644 /etc/filetype/dir
+644 /etc/filetype/exec
+644 /etc/filetype/fifo
+644 /etc/filetype/shlink
+644 /etc/filetype/sock
+
+644 /etc/w_color/Black and white
+644 /etc/w_color/Blue
+644 /etc/w_color/Dark Blue
+644 /etc/w_color/Default
+644 /etc/w_color/Gray
+644 /etc/w_color/Green
+644 /etc/w_color/Meltdown
+644 /etc/w_color/Productivity
+644 /etc/w_color/Low Color Default
+644 /etc/w_color/Psyche
+
+600 /lib/fonts/mono
+600 /lib/fonts/system
+600 /lib/fonts/mono-large
+600 /lib/fonts/system-large
+
+600 /lib/sys/sysload
+600 /lib/sys/kern.bin
+600 /lib/sys/user.bin
+644 /lib/acek.pnm
+644 /lib/bg/paper.pnm
+644 /lib/icons/nles.pnm
+644 /lib/icons/wink.pnm
+644 /lib/osk_layout
+
+644 /lib/pointers/arrow
+644 /lib/pointers/busy
+644 /lib/pointers/nw_se
+644 /lib/pointers/text
+644 /lib/pointers/drag
+
+644 /lib/pointers/large/arrow
+644 /lib/pointers/large/busy
+644 /lib/pointers/large/nw_se
+644 /lib/pointers/large/text
+644 /lib/pointers/large/drag
+
+644 /lib/icons/applist.pnm
+644 /lib/icons/drives.pnm
+644 /lib/icons/error.pnm
+644 /lib/icons/floppy.pnm
+644 /lib/icons/hardisk.pnm
+644 /lib/icons/info.pnm
+644 /lib/icons/dir.pnm
+644 /lib/icons/text.pnm
+644 /lib/icons/warning.pnm
+644 /lib/icons/calc.pnm
+644 /lib/icons/chip.pnm
+644 /lib/icons/clock.pnm
+644 /lib/icons/filemgr.pnm
+644 /lib/icons/picture.pnm
+644 /lib/icons/exec.pnm
+644 /lib/icons/file.pnm
+644 /lib/icons/charmap.pnm
+644 /lib/icons/color.pnm
+644 /lib/icons/display.pnm
+644 /lib/icons/hware.pnm
+644 /lib/icons/desktop.pnm
+644 /lib/icons/time.pnm
+644 /lib/icons/home.pnm
+644 /lib/icons/cdev.pnm
+644 /lib/icons/mouse.pnm
+644 /lib/icons/keyboard_small.pnm
+644 /lib/icons/keyboard.pnm
+644 /lib/icons/users.pnm
+644 /lib/icons/diag.pnm
+644 /lib/icons/sock.pnm
+644 /lib/icons/lg.pnm
+644 /lib/icons/theme.pnm
+644 /lib/icons/winlist.pnm
+644 /lib/icons/form.pnm
+
+644 /lib/icons64/error.pnm
+644 /lib/icons64/drives.pnm
+644 /lib/icons64/floppy.pnm
+644 /lib/icons64/hardisk.pnm
+644 /lib/icons64/info.pnm
+644 /lib/icons64/dir.pnm
+644 /lib/icons64/text.pnm
+644 /lib/icons64/warning.pnm
+644 /lib/icons64/calc.pnm
+644 /lib/icons64/chip.pnm
+644 /lib/icons64/clock.pnm
+644 /lib/icons64/filemgr.pnm
+644 /lib/icons64/picture.pnm
+644 /lib/icons64/exec.pnm
+644 /lib/icons64/file.pnm
+644 /lib/icons64/charmap.pnm
+644 /lib/icons64/color.pnm
+644 /lib/icons64/display.pnm
+644 /lib/icons64/hware.pnm
+644 /lib/icons64/desktop.pnm
+644 /lib/icons64/time.pnm
+644 /lib/icons64/home.pnm
+644 /lib/icons64/cdev.pnm
+644 /lib/icons64/mouse.pnm
+644 /lib/icons64/keyboard_small.pnm
+644 /lib/icons64/keyboard.pnm
+644 /lib/icons64/users.pnm
+644 /lib/icons64/diag.pnm
+644 /lib/icons64/sock.pnm
+644 /lib/icons64/lg.pnm
+644 /lib/icons64/theme.pnm
+
+644 /lib/bg/artp.pnm
+# 644 /lib/bg/bg640x480.pnm
+# 644 /lib/bg/bg800x600.pnm
+# 644 /lib/bg/bg1024x768.pnm
+
+644 /lib/w_themes/Psyche/icons64/dir.pnm
+644 /lib/w_themes/Psyche/icons/dir.pnm
+644 /lib/w_themes/Psyche/info
+
+644 /lib/prefs/.dirinfo
+644 /lib/prefs/Display
+644 /lib/prefs/Hardware
+644 /lib/prefs/Desktop
+644 /lib/prefs/File Systems
+644 /lib/prefs/File Manager
+644 /lib/prefs/Colors
+644 /lib/prefs/Time & Date
+644 /lib/prefs/Mouse
+644 /lib/prefs/Users & Groups
+644 /lib/prefs/OSK
+644 /lib/prefs/UI Theme
+
+600 /root/.startup
+600 /root/.desktop/.dirinfo
+600 /root/.desktop/Home
+600 /root/.desktop/Prefs
+600 /root/.desktop/Apps/.dirinfo
+600 /root/.desktop/Apps/Calculator
+600 /root/.desktop/Apps/Clock
+600 /root/.desktop/Apps/Text Editor
+600 /root/.desktop/Comm/.dirinfo
+600 /root/.desktop/Comm/TinyComm
+600 /root/.desktop/Documents
+600 /root/.desktop/Drives
+600 /root/.desktop/System/.dirinfo
+600 /root/.desktop/System/Avail
+600 /root/.desktop/System/CharMap
+600 /root/.desktop/System/CLI
+600 /root/.desktop/System/Root
+600 /root/.desktop/System/Task Manager
+600 /root/.desktop/System/Messages
+600 /root/.desktop/System/Find Files
+600 /root/.doc/.dirinfo
+
+600 /etc/skel/.startup
+600 /etc/skel/.desktop/.dirinfo
+600 /etc/skel/.desktop/Home
+600 /etc/skel/.desktop/Prefs
+600 /etc/skel/.desktop/Apps/.dirinfo
+600 /etc/skel/.desktop/Apps/Calculator
+600 /etc/skel/.desktop/Apps/Clock
+600 /etc/skel/.desktop/Apps/Text Editor
+600 /etc/skel/.desktop/Comm/.dirinfo
+600 /etc/skel/.desktop/Comm/TinyComm
+600 /etc/skel/.desktop/Documents
+600 /etc/skel/.desktop/Drives
+600 /etc/skel/.desktop/System/.dirinfo
+600 /etc/skel/.desktop/System/Avail
+600 /etc/skel/.desktop/System/CharMap
+600 /etc/skel/.desktop/System/CLI
+600 /etc/skel/.desktop/System/Root
+600 /etc/skel/.desktop/System/Task Manager
+600 /etc/skel/.desktop/System/Find Files
+600 /etc/skel/.doc/.dirinfo
+
+644 /lib/forms/about.frm
+600 /lib/forms/autologin.frm
+644 /lib/forms/file_info.frm
+644 /lib/forms/perm_info.frm
+644 /lib/forms/avail.frm
+600 /lib/forms/shutdown.frm
+644 /lib/forms/calc.frm
+600 /lib/forms/login.frm
+644 /lib/forms/select.frm
+644 /lib/forms/comm.frm
+644 /lib/forms/tc_keyb.frm
+644 /lib/forms/tc_logs.frm
+644 /lib/forms/taskman.frm
+644 /lib/forms/display.frm
+644 /lib/forms/color.frm
+644 /lib/forms/theme.frm
+644 /lib/forms/desktop.frm
+644 /lib/forms/pref.filemgr.frm
+644 /lib/forms/mouse.frm
+600 /lib/forms/devices.frm
+600 /lib/forms/device.frm
+600 /lib/forms/device_pci.frm
+644 /lib/forms/input.frm
+600 /lib/forms/newdevtype.frm
+600 /lib/forms/newdev.frm
+644 /lib/forms/machine.frm
+600 /lib/forms/secure.frm
+600 /lib/forms/unlock.frm
+644 /lib/forms/pref.osk.frm
+644 /lib/forms/list.frm
+600 /lib/forms/pref.filesys.frm
+600 /lib/forms/mount.frm
+644 /lib/forms/vtty_color.frm
+644 /lib/forms/rgbcolor.frm
+644 /lib/forms/file.frm
+600 /lib/forms/showload.frm
+644 /lib/forms/wfind.frm
+644 /lib/forms/wfindp.frm
+600 /lib/forms/devinit.frm
+600 /lib/forms/chpass.frm
+600 /lib/forms/user.frm
+644 /lib/forms/pref.time.frm
+
+644 /media/icons/.dirinfo
+
+# acex
+
+755 /bin/basename
+755 /bin/uname
+755 /bin/rmdir
+755 /bin/ln
+755 /bin/more
+755 /bin/cp
+755 /bin/rm
+755 /bin/dd
+755 /bin/mkdir
+755 /bin/dirname
+755 /bin/kill
+755 /bin/pwd
+755 /bin/false
+755 /bin/du
+755 /bin/mv
+755 /bin/cat
+755 /bin/date
+755 /bin/echo
+755 /bin/test
+755 /bin/expr
+755 /bin/ls
+755 /bin/whoami
+755 /bin/true
+755 /bin/sleep
+755 /bin/chmod
+755 /bin/sh
+755 /bin/glob
+755 /bin/if
+755 /bin/printenv
+755 /bin/env
+755 /bin/which
+4755 /bin/chsh
+755 /bin/grep
+755 /bin/mknod
+755 /bin/nice
+755 /bin/cmp
+
+755 /sbin/nologin
+700 /sbin/chown
+
+# drivers
+
+600 /lib/drv/framebuf.sys
+600 /lib/drv/rd.drv
+600 /lib/drv/pcidevs
+
+# additional themes
+
+644 /etc/w_color/Magic Garden
+644 /lib/bg/mg.pnm
+644 /lib/w_themes/Magic Garden/icons/dir.pnm
+644 /lib/w_themes/Magic Garden/icons/drives.pnm
+644 /lib/w_themes/Magic Garden/icons/floppy.pnm
+644 /lib/w_themes/Magic Garden/icons64/dir.pnm
+644 /lib/w_themes/Magic Garden/icons64/drives.pnm
+644 /lib/w_themes/Magic Garden/icons64/floppy.pnm
+644 /lib/w_themes/Magic Garden/info
+
+644 /etc/w_color/Metal
+644 /lib/bg/metal.pgm
+644 /lib/w_themes/Metal/icons/dir.pnm
+644 /lib/w_themes/Metal/icons64/dir.pnm
+644 /lib/w_themes/Metal/info

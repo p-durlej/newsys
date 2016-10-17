@@ -1,0 +1,1 @@
+../../lib/string/strncpy.c

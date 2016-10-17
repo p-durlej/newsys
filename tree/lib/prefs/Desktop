@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/bin/pref.desktop
+icon=desktop.pnm

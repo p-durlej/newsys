@@ -1,0 +1,61 @@
+diff -ru gcc-4.3.2/gcc/toplev.c gcc-4.3.2.new/gcc/toplev.c
+--- gcc-4.3.2/gcc/toplev.c	2008-04-24 19:59:01.000000000 +0200
++++ gcc-4.3.2.new/gcc/toplev.c	2016-03-11 19:40:43.115732061 +0100
+@@ -532,12 +532,6 @@
+   return atoi (p);
+ }
+ 
+-/* When compiling with a recent enough GCC, we use the GNU C "extern inline"
+-   for floor_log2 and exact_log2; see toplev.h.  That construct, however,
+-   conflicts with the ISO C++ One Definition Rule.   */
+-
+-#if GCC_VERSION < 3004 || !defined (__cplusplus)
+-
+ /* Given X, an unsigned number, return the largest int Y such that 2**Y <= X.
+    If X is 0, return -1.  */
+ 
+@@ -588,8 +582,6 @@
+ #endif
+ }
+ 
+-#endif /*  GCC_VERSION < 3004 || !defined (__cplusplus)  */
+-
+ /* Handler for fatal signals, such as SIGSEGV.  These are transformed
+    into ICE messages, which is much more user friendly.  In case the
+    error printer crashes, reset the signal to prevent infinite recursion.  */
+diff -ru gcc-4.3.2/gcc/toplev.h gcc-4.3.2.new/gcc/toplev.h
+--- gcc-4.3.2/gcc/toplev.h	2007-09-23 21:18:27.000000000 +0200
++++ gcc-4.3.2.new/gcc/toplev.h	2016-03-11 19:46:03.648510036 +0100
+@@ -160,32 +160,6 @@
+ /* Return floor of log2, with -1 for zero.  */
+ extern int floor_log2                  (unsigned HOST_WIDE_INT);
+ 
+-/* Inline versions of the above for speed.  */
+-#if GCC_VERSION >= 3004
+-# if HOST_BITS_PER_WIDE_INT == HOST_BITS_PER_LONG
+-#  define CLZ_HWI __builtin_clzl
+-#  define CTZ_HWI __builtin_ctzl
+-# elif HOST_BITS_PER_WIDE_INT == HOST_BITS_PER_LONGLONG
+-#  define CLZ_HWI __builtin_clzll
+-#  define CTZ_HWI __builtin_ctzll
+-# else
+-#  define CLZ_HWI __builtin_clz
+-#  define CTZ_HWI __builtin_ctz
+-# endif
+-
+-extern inline int
+-floor_log2 (unsigned HOST_WIDE_INT x)
+-{
+-  return x ? HOST_BITS_PER_WIDE_INT - 1 - (int) CLZ_HWI (x) : -1;
+-}
+-
+-extern inline int
+-exact_log2 (unsigned HOST_WIDE_INT x)
+-{
+-  return x == (x & -x) && x ? (int) CTZ_HWI (x) : -1;
+-}
+-#endif /* GCC_VERSION >= 3004 */
+-
+ /* Functions used to get and set GCC's notion of in what directory
+    compilation was started.  */
+ 

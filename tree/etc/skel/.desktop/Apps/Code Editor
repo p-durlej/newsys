@@ -1,0 +1,5 @@
+# SHLINK
+
+exec=/bin/code
+icon=code.pnm
+wd=$/.doc

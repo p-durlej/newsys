@@ -1,0 +1,27 @@
+
+# machine dependent part
+
+600 /lib/drv/amd64-pc.drv
+600 /lib/drv/bootfb.drv
+600 /lib/drv/mouse.drv
+600 /lib/drv/pckbd.drv
+600 /lib/drv/serial.drv
+600 /lib/drv/pci.drv
+600 /lib/drv/pcspk.drv
+600 /lib/drv/hd.drv
+600 /lib/drv/fd.drv
+600 /lib/drv/pciide.drv
+
+600 /lib/sys/fdboot.bin
+600 /lib/sys/hdboot.bin
+600 /lib/sys/hdipl.bin
+
+600 /lib/drv_list/mouse/Serial Mouse
+600 /lib/drv_list/keyboard/PC Keyboard
+600 /lib/drv_list/serial/Serial Port
+600 /lib/drv_list/disk/IDE Channel
+600 /lib/drv_list/disk/PC Floppy
+600 /lib/drv_list/machine/PC System (64-bit)
+600 /lib/drv_list/audio/PC Speaker
+
+600 /lib/splash/splash_mnt.pnm

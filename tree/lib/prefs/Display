@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/bin/pref.display
+icon=display.pnm

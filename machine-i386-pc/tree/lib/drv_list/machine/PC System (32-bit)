@@ -1,0 +1,13 @@
+driver=/lib/drv/i386-pc.drv
+desc=PC System (32-bit)
+type=machine
+name=i386-pc
+io0_base=0x20
+io0_size=2
+io1_base=0xa0
+io1_size=2
+io2_base=0x0
+io2_size=16
+io3_base=0xc0
+io3_size=32
+

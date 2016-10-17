@@ -1,0 +1,4 @@
+# SHLINK
+
+icon=warning.pnm
+exec=/sbin/taskman

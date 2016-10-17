@@ -1,0 +1,5 @@
+# SHLINK
+
+exec=/bin/edit
+icon=text.pnm
+wd=$/.doc

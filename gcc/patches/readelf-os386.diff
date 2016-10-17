@@ -1,0 +1,33 @@
+--- binutils-2.19/binutils/readelf.c.orig	Wed Sep 17 11:00:44 2008
++++ binutils-2.19/binutils/readelf.c	Mon Feb  2 03:03:48 2009
+@@ -3619,14 +3620,26 @@ process_program_headers (FILE *file)
+ 	    error (_("Unable to find program interpreter name\n"));
+ 	  else
+ 	    {
+-	      char fmt [32];
++	      /* char fmt [32];
+ 	      int ret = snprintf (fmt, sizeof (fmt), "%%%ds", PATH_MAX);
+ 
+ 	      if (ret >= (int) sizeof (fmt) || ret < 0)
+-		error (_("Internal error: failed to create format string to display program interpreter\n"));
++		error (_("Internal error: failed to create format string to display program interpreter\n")); */
+ 
+-	      program_interpreter[0] = 0;
+-	      if (fscanf (file, fmt, program_interpreter) <= 0)
++	      int c;
++	      int i;
++	      
++	      for (i = 0;i < 63;i++)
++	      {
++	      	c = fgetc(file);
++		if (c == EOF || ISSPACE(c))
++		    break;
++		program_interpreter[i] = c;
++	      }
++	      program_interpreter[i] = 0;
++	      /* program_interpreter[0] = 0;
++	      fscanf (file, "%63s", program_interpreter); */
++	      if (ferror(file))
+ 		error (_("Unable to read program interpreter name\n"));
+ 
+ 	      if (do_segments)

@@ -1,0 +1,9 @@
+
+host NAME
+{
+	hardware ethernet XX:XX:XX:XX:XX:XX;
+	fixed-address ADDR;
+	
+	next-server SERVER;
+	filename "m/sysload";
+}

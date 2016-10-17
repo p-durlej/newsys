@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/sbin/pref.filesys
+icon=hardisk.pnm

@@ -1,0 +1,12 @@
+/bin/clear		/bin/clr
+/bin/ls			/bin/ll
+/bin/ps			/bin/top
+/sbin/shutdown		/sbin/reboot
+/sbin/shutdown		/sbin/pwoff
+/sbin/shutdown		/sbin/halt
+/bin/grep		/bin/fgrep
+/sbin/fxstat		/sbin/bmap
+/sbin/fxstat		/sbin/siostat
+/sbin/fdfmt		/sbin/fdformat
+/sbin/daemon		/bin/bg
+/lib/bg/artp.pnm	/lib/splash/splash.pnm

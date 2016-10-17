@@ -1,0 +1,3 @@
+desc=PBM Picture
+icon=picture.pnm
+exec=/bin/pictview

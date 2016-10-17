@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/bin/pref.color
+icon=color.pnm

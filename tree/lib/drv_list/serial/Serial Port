@@ -1,0 +1,7 @@
+desc=Serial Port
+name=com%i
+type=serial
+driver=/lib/drv/serial.drv
+io0_base=0x3f8
+io0_size=8
+irq0=4

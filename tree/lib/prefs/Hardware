@@ -1,0 +1,4 @@
+# SHLINK
+
+exec=/sbin/edit_devs
+icon=hware.pnm
