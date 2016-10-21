@@ -31,6 +31,7 @@
 #include <kern/block.h>
 #include <kern/hw.h>
 #include <bioctl.h>
+#include <dev/cmos.h>
 #include <dev/fd.h>
 #include <devices.h>
 
@@ -98,19 +99,44 @@ static struct floppy floppy[UNITS] =
 	{ 1, 80, 2, 18 },
 };
 
-static int fd_init(void)
+static int fd_instunit(int u)
 {
 	int err;
+	
+	err = blk_install(&bdev[u]);
+	if (err)
+		perror("fd.c: fd_init: blk_install", err);
+	
+	return err;
+}
+
+static int fd_init(void)
+{
+	uint8_t conf;
+	int err;
 	int i;
+	
+	err = cmos_read(0x10, &conf);
+	if (err)
+		return err;
+	
+#if KVERBOSE
+	printk("fd_init: conf = %x\n", conf);
+#endif
+	
+	if (!conf)
+		return ENODEV;
 	
 	irq_set(IRQ, fd_irqv);
 	irq_ena(IRQ);
 	
 	fd_reset();
 	
-	for (i = 0; i < UNITS; i++)
-		if ((err = blk_install(&bdev[i])))
-			perror("fd.c: fd_init: blk_install", err);
+	if ((conf & 0xf0) == 0x40)
+		fd_instunit(0);
+	
+	if ((conf & 0x0f) == 0x04)
+		fd_instunit(1);
 	
 	for (i = 0; i < PHYS_UNITS; i++)
 		curr_cyl[i] = -1;
