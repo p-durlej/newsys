@@ -3,6 +3,7 @@
 
 600 /lib/drv/amd64-pc.drv
 600 /lib/drv/bootfb.drv
+600 /lib/drv/cmos.drv
 600 /lib/drv/mouse.drv
 600 /lib/drv/pckbd.drv
 600 /lib/drv/serial.drv
@@ -22,6 +23,7 @@
 600 /lib/drv_list/disk/IDE Channel
 600 /lib/drv_list/disk/PC Floppy
 600 /lib/drv_list/machine/PC System (64-bit)
+600 /lib/drv_list/machine/PC CMOS RAM
 600 /lib/drv_list/audio/PC Speaker
 
 600 /lib/splash/splash_mnt.pnm

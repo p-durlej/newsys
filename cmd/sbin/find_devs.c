@@ -513,6 +513,33 @@ static void find_system(void)
 	add_dev(&dev);
 }
 
+static void find_cmos(void)
+{
+	struct device dev;
+	int i;
+	
+	if (!is_port_free(0x70, 2))
+		return;
+	
+	memset(&dev, 0, sizeof dev);
+	strcpy(dev.driver, "/lib/drv/cmos.drv");
+	strcpy(dev.desc,   "PC CMOS RAM");
+	strcpy(dev.name,   "cmos");
+	strcpy(dev.type,   "nvram");
+	
+	dev.io_base[0]	= 0x70;
+	dev.io_size[0]	= 0x02;
+	
+	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
+	
+	for (i = 0; i < DEV_DMA_COUNT; i++)
+		dev.dma_nr[i] = -1U;
+	for (i = 0; i < DEV_IRQ_COUNT; i++)
+		dev.irq_nr[i] = -1U;
+	
+	add_dev(&dev);
+}
+
 static void find_pci(void)
 {
 	struct device dev;
@@ -873,6 +900,7 @@ static void find_disk(void)
 static void find_devs(void)
 {
 	find_system();
+	find_cmos();
 	find_pci();
 	find_pci_devs();
 	find_vga();

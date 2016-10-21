@@ -64,6 +64,7 @@ etc/w_color/Psyche
 lib/bg/paper.pnm
 lib/drv/amd64-pc.drv
 lib/drv/bootfb.drv
+lib/drv/cmos.drv
 lib/drv/fd.drv
 lib/drv/framebuf.sys
 lib/drv/hd.drv
@@ -72,6 +73,7 @@ lib/drv_list/disk/IDE Channel
 lib/drv_list/disk/PC Floppy
 lib/drv_list/keyboard/PC Keyboard
 lib/drv_list/machine/PC System (64-bit)
+lib/drv_list/machine/PC CMOS RAM
 lib/drv_list/mouse/Serial Mouse
 lib/drv_list/serial/Serial Port
 lib/drv/mouse.drv

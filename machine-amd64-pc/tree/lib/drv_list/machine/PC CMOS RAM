@@ -1,0 +1,6 @@
+driver=/lib/drv/cmos.drv
+desc=PC CMOS RAM
+type=nvram
+name=cmos
+io0_base=0x70
+io0_size=2
