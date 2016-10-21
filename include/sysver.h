@@ -25,6 +25,6 @@
  */
 
 #define SYSVER_MAJOR	1
-#define SYSVER_MINOR	1
+#define SYSVER_MINOR	2
 #define SYSVER_PATCH	0
-#define SYSVER_DEVEL	0
+#define SYSVER_DEVEL	1
