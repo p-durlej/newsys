@@ -37,8 +37,8 @@ while read file url; do
 	
 	wget -O "$DISTDIR/$file" "$url"
 done << EOF
-binutils-$BINVER.tar.bz2	http://fricco.durlej.net/gnu/binutils-2.19.1a.tar.bz2
-gcc-core-$GCCVER.tar.bz2	http://fricco.durlej.net/gnu/gcc-core-4.3.2.tar.bz2
+binutils-$BINVER.tar.bz2	ftp://fricco.durlej.net/gnu/binutils-2.19.1a.tar.bz2
+gcc-core-$GCCVER.tar.bz2	ftp://fricco.durlej.net/gnu/gcc-core-4.3.2.tar.bz2
 binutils-$BINVER.tar.bz2	http://ftp.gnu.org/gnu/binutils/binutils-2.19.1a.tar.bz2
 gcc-core-$GCCVER.tar.bz2	http://ftp.gnu.org/gnu/gcc/gcc-4.3.2/gcc-core-4.3.2.tar.bz2
 EOF
