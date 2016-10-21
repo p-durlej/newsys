@@ -31,7 +31,7 @@
 mkdir -p "$DISTDIR"
 
 while read file url; do
-	if [ -e "$DISTDIR/$file" ]; then
+	if [ -s "$DISTDIR/$file" ]; then
 		continue
 	fi
 	
