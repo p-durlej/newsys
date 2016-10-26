@@ -73,9 +73,9 @@ inact_frame_hi2=0xff9b9b9b
 inact_frame_sh1=0xff606060
 inact_frame_sh2=0xff7b7b7b
 
+button_bg=0xff004080
+button_fg=0xffffffff
 button_hi1=0xff0050a0
 button_hi2=0xff004080
 button_sh1=0xff003060
 button_sh2=0xff003870
-button_bg=0xff004080
-button_fg=0xffffffff

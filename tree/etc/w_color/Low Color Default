@@ -1,8 +1,5 @@
 # Low Color Default
 
-#desktop_fg=0xffffffff
-#desktop=0xff008080
-
 desktop_fg=0xffffffff
 desktop=0xff008080
 

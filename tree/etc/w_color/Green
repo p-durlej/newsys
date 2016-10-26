@@ -1,7 +1,7 @@
 # Green
 
-desktop=0xff000060
 desktop_fg=0xffffffff
+desktop=0xff000060
 
 win_bg=0xffb0d0b0
 win_fg=0xff000000

@@ -1,9 +1,8 @@
-# Default
+# Meltdown
 
 desktop_fg=0xffffffff
 desktop=0xff000060
 
-# win_bg=0xffd0c8c0
 win_bg=0xffcbc8c0
 win_fg=0xff000000
 
@@ -32,11 +31,6 @@ title_hi2=0xffff9000
 cursor=0xff0000ff
 sbar=0xffe0d8d0
 
-# sbox=0xffd0c8c0
-# sbox_sh=0xff808080
-# sbox_hi=0xffffffff
-
-# nfsel_bg=0xffd0c8c0
 nfsel_bg=0xffcbc8c0
 nfsel_fg=0xff000000
 
