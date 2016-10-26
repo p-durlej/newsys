@@ -41,7 +41,6 @@ dd status=none if=sysload/sysload.cdrom	of=disks/cdrom.iso	seek=4		conv=notrunc
 dd status=none if=/dev/null		of=disks/cdrom.iso	seek=16384
 cross/mkbfs disks/cdrom.iso 0 128 tree.tmp
 
-dd status=none if=/dev/null		of=disks/pxe.img	seek=16384
 cross/mkbfs disks/pxe.img 0 128 tree.tmp
 
 dd status=none if=/dev/null		of=disks/disk2.img	seek=2880	bs=512
