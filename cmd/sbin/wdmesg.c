@@ -146,9 +146,9 @@ static void update(void *data)
 int main(int argc, char **argv)
 {
 	struct timeval utv = { .tv_sec = 0, .tv_usec = 250000 };
-	int sbw = wm_get(WM_SCROLLBAR);
 	struct form_state fst;
 	struct timer *tmr;
+	int sbw;
 	int c;
 	
 	while (c = getopt(argc, argv, "z"), c > 0)
@@ -161,6 +161,8 @@ int main(int argc, char **argv)
 	
 	if (win_attach())
 		err(255, NULL);
+	
+	sbw = wm_get(WM_SCROLLBAR);
 	
 	menu_edit = menu_creat();
 	menu_newitem(menu_edit, "Copy", m_copy);
