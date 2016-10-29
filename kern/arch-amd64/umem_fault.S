@@ -79,7 +79,7 @@ fault:
 	xorl	%eax, %eax
 	ret
 fault_panic:
-	movq	$fault_msg, %rcx
+	movq	$fault_msg, %rdi
 	call	panic
 
 fault_fini:
@@ -88,7 +88,7 @@ fault_fini:
 	movb	$0, fault_jmp_set
 	ret
 fault_fini_panic:
-	movq	$fault_fini_msg, %rcx
+	movq	$fault_fini_msg, %rdi
 	call	panic
 
 fault_abort:
@@ -119,7 +119,7 @@ fault_abort:
 	movl	$1, %eax
 	ret
 fault_abort_panic:
-	movq	$fault_abort_msg, %rcx
+	movq	$fault_abort_msg, %rdi
 	call	panic
 
 fault_msg:		.asciz	"fault.S: fault: fault longjmp already set"
