@@ -72,8 +72,8 @@ lib/drv_list/audio/PC Speaker
 lib/drv_list/disk/IDE Channel
 lib/drv_list/disk/PC Floppy
 lib/drv_list/keyboard/PC Keyboard
-lib/drv_list/machine/PC System (64-bit)
 lib/drv_list/machine/PC CMOS RAM
+lib/drv_list/machine/PC System (64-bit)
 lib/drv_list/mouse/Serial Mouse
 lib/drv_list/serial/Serial Port
 lib/drv/mouse.drv
@@ -86,6 +86,8 @@ lib/drv/rd.drv
 lib/drv/serial.drv
 lib/fonts/mono
 lib/fonts/mono-large
+lib/fonts/mono-large-narrow
+lib/fonts/mono-narrow
 lib/fonts/system
 lib/fonts/system-large
 lib/forms/about.frm

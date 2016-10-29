@@ -180,6 +180,8 @@
 /fonts/mono-large
 /fonts/system
 /fonts/system-large
+/fonts/mono-large-narrow
+/fonts/mono-narrow
 /include/arch
 /include/kern/arch
 /include/kern/machine
@@ -197,4 +199,3 @@
 /release/
 /release-amd64.tar.gz
 /release-i386.tar.gz
-

@@ -1241,6 +1241,8 @@ void init_desktop(void)
 	init_font("system",		_PATH_FONT_SYSTEM);
 	init_font("mono-large",		_PATH_FONT_MONO_L);
 	init_font("system-large",	_PATH_FONT_SYSTEM_L);
+	init_font("mono-narrow",	_PATH_FONT_MONO_N);
+	init_font("mono-large-narrow",	_PATH_FONT_MONO_LN);
 	
 	if (win_newdesktop("sysinstall"))
 	{

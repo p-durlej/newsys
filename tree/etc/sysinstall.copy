@@ -113,6 +113,8 @@
 600 /lib/fonts/system
 600 /lib/fonts/mono-large
 600 /lib/fonts/system-large
+600 /lib/fonts/mono-narrow
+600 /lib/fonts/mono-large-narrow
 
 600 /lib/sys/sysload
 600 /lib/sys/kern.bin

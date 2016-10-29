@@ -28,7 +28,7 @@
 
 set -e
 
-fonts="mono system mono-large system-large"
+fonts="mono system mono-large system-large mono-narrow mono-large-narrow"
 
 regen_tree()
 {

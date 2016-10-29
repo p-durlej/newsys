@@ -97,12 +97,16 @@ static void ok_click()
 		fls = "/lib/fonts/mono-large\n"
 		      "/lib/fonts/system-large\n"
 		      "/lib/fonts/mono-large\n"
-		      "/lib/fonts/system-large\n";
+		      "/lib/fonts/system-large\n"
+		      "/lib/fonts/mono-large-narrow\n"
+		      "/lib/fonts/mono-large-narrow\n";
 	else
 		fls = "/lib/fonts/mono\n"
 		      "/lib/fonts/system\n"
 		      "/lib/fonts/mono-large\n"
-		      "/lib/fonts/system-large\n";
+		      "/lib/fonts/system-large\n"
+		      "/lib/fonts/mono-narrow\n"
+		      "/lib/fonts/mono-large-narrow\n";
 	
 	if (su && old_config.large_fonts != config.large_fonts)
 	{

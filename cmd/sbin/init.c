@@ -149,6 +149,8 @@ static void init_default_fonts(void)
 	init_font("system",		_PATH_FONT_SYSTEM,	1);
 	init_font("mono-large",		_PATH_FONT_MONO_L,	0);
 	init_font("system-large",	_PATH_FONT_SYSTEM_L,	0);
+	init_font("mono-narrow",	_PATH_FONT_MONO_N,	0);
+	init_font("mono-large-narrow",	_PATH_FONT_MONO_LN,	0);
 }
 
 static void init_fonts(void)

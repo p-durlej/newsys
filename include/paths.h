@@ -109,6 +109,8 @@
 #define _PATH_FONT_SYSTEM	"/lib/fonts/system"
 #define _PATH_FONT_MONO_L	"/lib/fonts/mono-large"
 #define _PATH_FONT_SYSTEM_L	"/lib/fonts/system-large"
+#define _PATH_FONT_MONO_N	"/lib/fonts/mono-narrow"
+#define _PATH_FONT_MONO_LN	"/lib/fonts/mono-large-narrow"
 
 #define _PATH_I386_IPL		"/lib/sys/hdipl.bin"
 #define _PATH_I386_BB		"/lib/sys/hdboot.bin"

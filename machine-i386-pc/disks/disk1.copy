@@ -71,8 +71,8 @@ lib/drv_list/display/VBE 2.0+
 lib/drv_list/display/VGA 256
 lib/drv_list/display/VGA Compatible
 lib/drv_list/keyboard/PC Keyboard
-lib/drv_list/machine/PC System (32-bit)
 lib/drv_list/machine/PC CMOS RAM
+lib/drv_list/machine/PC System (32-bit)
 lib/drv_list/mouse/Serial Mouse
 lib/drv_list/serial/Serial Port
 lib/drv/mouse.drv
@@ -88,6 +88,8 @@ lib/drv/vga256.drv
 lib/drv/vga.drv
 lib/fonts/mono
 lib/fonts/mono-large
+lib/fonts/mono-large-narrow
+lib/fonts/mono-narrow
 lib/fonts/system
 lib/fonts/system-large
 lib/forms/about.frm

@@ -117,6 +117,10 @@
 #define WIN_FONT_DEFAULT	(-1)
 #define WIN_FONT_MONO		0
 #define WIN_FONT_SYSTEM		1
+#define WIN_FONT_MONO_L		2
+#define WIN_FONT_SYSTEM_L	3
+#define WIN_FONT_MONO_N		4
+#define WIN_FONT_MONO_LN	5
 
 #define FONT_NAME_MAX		31
 #define WIN_TITLE_MAX		63
