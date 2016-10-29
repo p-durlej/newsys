@@ -1582,7 +1582,7 @@ void stage0(void)
 	{
 		int desktop = 0;
 		
-		if (!access("/etc/single_disk", 0) && msgbox_ask(NULL, TITLE, "Do you want to start the desktop environment?") == MSGBOX_YES)
+		if (msgbox_ask(NULL, TITLE, "Do you want to start the desktop environment?") == MSGBOX_YES)
 		{
 			struct win_rect wsr;
 			
