@@ -131,6 +131,7 @@ lib/forms/tc_logs.frm
 lib/forms/theme.frm
 lib/forms/unlock.frm
 lib/forms/vtty_color.frm
+lib/forms/vtty_font.frm
 lib/icons/dir.pnm
 lib/icons/error.pnm
 lib/icons/file.pnm

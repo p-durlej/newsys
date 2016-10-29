@@ -53,6 +53,7 @@
 #include <err.h>
 
 #define COLORS_FORM		"/lib/forms/vtty_color.frm"
+#define FONT_FORM		"/lib/forms/vtty_font.frm"
 
 #define DEFAULT_WIDTH		80
 #define DEFAULT_HEIGHT		25
@@ -99,6 +100,7 @@ static struct
 	int auto_close;
 	int nr_col;
 	int nr_lin;
+	int ftd;
 } config;
 
 #if 0
@@ -194,6 +196,7 @@ static void	cur_cb(void *data);
 static void	sig_chld(int nr);
 static char **	parse_args(int argc, char **argv);
 static void	colors_click(struct menu_item *mi);
+static void	font_click(struct menu_item *mi);
 static void	about_click(struct menu_item *mi);
 
 static void update_pty_size(void)
@@ -324,7 +327,7 @@ static void redraw_line(int line_nr, int set_clip)
 	{
 		wd = screen->form->wd;
 		win_clip(wd, screen->rect.x, screen->rect.y, screen->rect.w, screen->rect.h, screen->rect.x, screen->rect.y);
-		win_set_font(wd, WIN_FONT_MONO);
+		win_set_font(wd, config.ftd);
 		win_paint();
 	}
 
@@ -339,7 +342,7 @@ static void redraw(struct gadget *g, int wd)
 {
 	int i;
 	
-	win_set_font(wd, WIN_FONT_MONO);
+	win_set_font(wd, config.ftd);
 	for (i = 0; i < nr_lin; i++)
 		redraw_line(i, 0);
 }
@@ -712,7 +715,7 @@ static char **parse_args(int argc, char **argv)
 			struct win_rect r;
 			int w, h;
 			
-			win_chr_size(WIN_FONT_MONO, &w, &h, 'X');
+			win_chr_size(config.ftd, &w, &h, 'X');
 			win_ws_getrect(&r);
 			config.nr_col = r.w / w;
 			config.nr_lin = r.h / h;
@@ -793,6 +796,40 @@ restart:
 	form_close(f);
 }
 
+static void font_click(struct menu_item *mi)
+{
+	struct gadget *chk_normal, *chk_narrow;
+	struct form *f;
+	
+	f = form_load(FONT_FORM);
+	form_set_dialog(main_form, f);
+	
+	chk_normal = gadget_find(f, "normal");
+	chk_narrow = gadget_find(f, "narrow");
+	
+	chkbox_set_group(chk_normal, 1);
+	chkbox_set_group(chk_narrow, 1);
+	
+	if (config.ftd == WIN_FONT_MONO_N)
+		chkbox_set_state(chk_narrow, 1);
+	else
+		chkbox_set_state(chk_normal, 1);
+	
+	if (form_wait(f) == 1)
+	{
+		if (chkbox_get_state(chk_narrow))
+			config.ftd = WIN_FONT_MONO_N;
+		else
+			config.ftd = WIN_FONT_MONO;
+		
+		win_chr_size(config.ftd, &font_w, &font_h, 'X');
+		form_resize(main_form, font_w * nr_col, font_h * nr_lin);
+	}
+	
+	form_set_dialog(main_form, NULL);
+	form_close(f);
+}
+
 static void about_click(struct menu_item *mi)
 {
 	dlg_about7(main_form, NULL, "Virtual TTY v1.1", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "cdev.pnm");
@@ -834,13 +871,20 @@ int main(int argc, char **argv)
 	{
 		struct win_rect wsr;
 		int cw, ch;
+		int ftd;
 		
-		win_chr_size(WIN_FONT_MONO, &cw, &ch, 'X');
 		win_ws_getrect(&wsr);
+		if (wsr.w > 700)
+			ftd = WIN_FONT_MONO;
+		else
+			ftd = WIN_FONT_MONO_N;
+		
+		win_chr_size(ftd, &cw, &ch, 'X');
 		
 		config.auto_close = 1;
 		config.nr_col	  = 80;
 		config.nr_lin	  = 25;
+		config.ftd	  = ftd;
 		if ((config.nr_col + 2) * cw > wsr.w)
 			config.nr_col = wsr.w / cw - 2;
 		c_loaded = 0;
@@ -853,12 +897,13 @@ int main(int argc, char **argv)
 	for (i = 0; i < OPEN_MAX; i++)
 		close(i);
 	
-	win_chr_size(WIN_FONT_MONO, &font_w, &font_h, 'X');
+	win_chr_size(config.ftd, &font_w, &font_h, 'X');
 	
 	mm = menu_creat();
 	
 	m = menu_creat();
 	menu_newitem(m, "Colors ...", colors_click);
+	menu_newitem(m, "Font ...", font_click);
 	menu_newitem(m, "-", NULL);
 	menu_newitem(m, "About ...", about_click);
 	menu_submenu(mm, "Options", m);

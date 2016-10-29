@@ -302,6 +302,7 @@
 600 /lib/forms/pref.filesys.frm
 600 /lib/forms/mount.frm
 644 /lib/forms/vtty_color.frm
+644 /lib/forms/vtty_font.frm
 644 /lib/forms/rgbcolor.frm
 644 /lib/forms/file.frm
 600 /lib/forms/showload.frm
