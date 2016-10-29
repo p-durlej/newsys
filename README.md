@@ -51,7 +51,7 @@ Therefore the kernel, driver and library source code is the documentation and th
 
 Standard library functions such as printf, act much like their standard counterparts from "big" operating systems. Nonetheless, this is a hobby OS and some parts of the implementation are simplified.
 
-Some standard functions are reduced in functionality, some do not exist at all. There is a race condition in open, iirc. Vfprintf and the other printf functions do not support floating point conversions, and <math.h> is missing from this version.
+Some standard functions are reduced in functionality, some do not exist at all. There is a race condition in open, iirc. Vfprintf and the other printf functions do not support floating point conversions, and \<math.h\> is missing from this version.
 
 Some functions are Nameless OS-specific, these can be figured out by reading the source code.
 
