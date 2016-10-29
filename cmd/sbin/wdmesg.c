@@ -117,7 +117,7 @@ static void m_setfont(struct menu_item *m)
 
 static void m_about(struct menu_item *m)
 {
-	dlg_about7(form, NULL, "Diagnostic Messages v1", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "diag.pnm");
+	dlg_about7(form, NULL, "Diagnostic Messages v1.2", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "diag.pnm");
 }
 
 static void m_copy(struct menu_item *m)
