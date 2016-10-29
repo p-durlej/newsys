@@ -106,29 +106,6 @@ make_disks()
 {
 	[ -d disks ] || mkdir disks
 	
-	for disk in machine/disks/*.mkdir
-	do
-		disk=$(basename $disk .mkdir)
-		rm -rf disks/$disk
-		mkdir  disks/$disk
-		
-		while read i; do
-			mkdir "disks/$disk/$i"
-		done < machine/disks/$disk.mkdir
-	done
-	
-	for disk in machine/disks/*.copy
-	do
-		disk=$(basename $disk .copy)
-		
-		while read i; do
-			cp -pf "tree.tmp/$i" "disks/$disk/$i"
-		done < "machine/disks/$disk.copy"
-		
-		rm -f	    disks/$disk.img
-		cross/mkbfs disks/$disk.img 0 128 disks/$disk
-	done
-	
 	sh machine/disks.sh
 }
 

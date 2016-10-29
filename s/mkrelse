@@ -37,14 +37,12 @@ gmake clean
 gmake
 
 rm -rf	 release
-mkdir -p release/release/floppies
 mkdir -p release/release/pxe/tftpboot/m
 mkdir -p release/release/cdrom
 mkdir -p release/release/usb
 
 cp -p	disks/cdrom.iso		release/release/cdrom/cdrom.iso
 cp -p	disks/hdflat.img	release/release/usb/usb.img
-cp -p	disks/disk?.img		release/release/floppies
 cp -p	sysload/sysload.pxe	release/release/pxe/tftpboot/m/sysload
 cp -p	disks/pxe.img		release/release/pxe/tftpboot/m/image
 cp -p	doc/pxe.example		release/release/pxe/dhcpd.conf.example

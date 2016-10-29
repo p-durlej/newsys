@@ -178,73 +178,18 @@ void fail(void)
 	shutdown();
 }
 
-void dswitch(char *pathname, int disknr)
-{
-	char *msg;
-	
-	if (!inst_dev)
-	{
-		if (asprintf(&msg, "Cannot open \"%s\":\n\n%m", pathname) < 0)
-			fail();
-		msgbox(NULL, TITLE, msg);
-		fail();
-	}
-	
-retry:
-	if (_umount(SOURCE) && errno != ENOENT)
-	{
-		if (asprintf(&msg, "Unable to unmount " SOURCE " :\n\n%m") < 0)
-			fail();
-		msgbox(NULL, TITLE, msg);
-		fail();
-	}
-	
-	if (asprintf(&msg, "Insert the install disk number %i.\n\n(file %s)", disknr, pathname) < 0)
-		fail();
-	msgbox(NULL, TITLE, msg);
-	free(msg);
-	win_idle();
-	
-	if (_mount(SOURCE, inst_dev, inst_fstype, MF_READ_ONLY))
-	{
-		if (asprintf(&msg, "Unable to mount " SOURCE ":\n\n%m") < 0)
-			fail();
-		msgbox(NULL, TITLE, msg);
-		goto retry;
-	}
-}
-
 int x_open(char *pathname, int flags, int mode)
 {
-	static int disknr = 2;
-	
 	char buf[256 + PATH_MAX];
-	int switched = 0;
 	int fd;
 	
-retry:
 	fd = open(pathname, flags, mode);
 	if (fd < 0)
 	{
-		if (errno == ENOENT && (mode & O_DIRECTION) == O_RDONLY)
-		{
-			strcpy(buf, SOURCE "/");
-			strcat(buf, pathname);
-			fd = open(buf, flags, mode);
-			if (fd >= 0)
-				goto fini;
-			
-			dswitch(pathname, disknr);
-			switched = 1;
-			goto retry;
-		}
-		sprintf(buf, "Cannot open \"%s\":\n\n%m", pathname);
-		msgbox(NULL, TITLE, buf);
+		sprintf(buf, "Cannot open \"%s\"", pathname);
+		msgbox_perror(NULL, TITLE, buf, errno);
 		fail();
 	}
-fini:
-	if (switched)
-		disknr++;
 	return fd;
 }
 

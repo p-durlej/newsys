@@ -27,10 +27,6 @@
 
 set -e
 
-dd status=none if=boot/fdboot.bin	of=disks/disk1.img				conv=notrunc
-dd status=none if=sysload/sysload	of=disks/disk1.img	seek=2		bs=512	conv=notrunc
-dd status=none if=/dev/null		of=disks/disk1.img	seek=2880	bs=512
-
 dd status=none if=boot/hdflat.bin	of=disks/hdflat.img
 dd status=none if=sysload/sysload	of=disks/hdflat.img	seek=2
 dd status=none if=/dev/null		of=disks/hdflat.img	seek=16384
@@ -42,5 +38,3 @@ dd status=none if=/dev/null		of=disks/cdrom.iso	seek=16384
 cross/mkbfs disks/cdrom.iso 0 128 tree.tmp
 
 cross/mkbfs disks/pxe.img 0 128 tree.tmp
-
-dd status=none if=/dev/null		of=disks/disk2.img	seek=2880	bs=512
