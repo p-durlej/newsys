@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <priv/wingui_form.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
@@ -113,17 +114,7 @@ static void input_redraw(struct gadget *g, int wd)
 		win_rect(wd, crsr, cur_x, y, 2, text_h);
 	
 	if (g->input.flags & INPUT_FRAME)
-	{
-		win_hline(wd, sh1, 0, 0, g->rect.w);
-		win_hline(wd, sh2, 1, 1, g->rect.w - 2);
-		win_vline(wd, sh1, 0, 0, g->rect.h);
-		win_vline(wd, sh2, 1, 1, g->rect.h - 2);
-		
-		win_hline(wd, hi1, 0,		  g->rect.h-1, g->rect.w);
-		win_hline(wd, hi2, 1,		  g->rect.h-2, g->rect.w - 2);
-		win_vline(wd, hi1, g->rect.w - 1, 0,	       g->rect.h);
-		win_vline(wd, hi2, g->rect.w - 2, 1,	       g->rect.h - 2);
-	}
+		form_draw_frame3d(wd, 0, 0, g->rect.w, g->rect.h, sh1, sh2, hi1, hi2);
 }
 
 static void input_remove(struct gadget *g)

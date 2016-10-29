@@ -25,6 +25,7 @@
  */
 
 #include <priv/wingui_theme.h>
+#include <priv/wingui_form.h>
 #include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_menu.h>
@@ -213,18 +214,22 @@ struct menu_item *menu_submenu(struct menu *menu, const char *text, struct menu 
 static void menu_make_rects(struct menu *menu, int x0, int y0)
 {
 	int max_w = 0, max_ow = 0;
-	int y = 2;
 	int w, h;
+	int tl;
+	int y;
 	int i;
+	
+	tl = wm_get(WM_THIN_LINE);
+	y  = 2 * tl;
 	
 	for (i = 0; i < menu->item_count; i++)
 	{
 		struct menu_item *mi = &menu->item[i];
 		
 		win_text_size(WIN_FONT_DEFAULT, &w, &h, mi->text);
-		w += 10;
+		w += 10 * tl;
 		
-		mi->rect.x = 2;
+		mi->rect.x = 2 * tl;
 		mi->rect.y = y;
 		mi->rect.h = h;
 		
@@ -238,7 +243,7 @@ static void menu_make_rects(struct menu *menu, int x0, int y0)
 			
 			menu_chstr(buf, mi->ch, mi->shift);
 			win_text_size(WIN_FONT_DEFAULT, &w, &h, buf);
-			w += 10;
+			w += 10 * tl;
 			
 			if (max_ow < w)
 				max_ow = w;
@@ -251,8 +256,8 @@ static void menu_make_rects(struct menu *menu, int x0, int y0)
 	
 	menu->rect.x = x0;
 	menu->rect.y = y0;
-	menu->rect.w = max_w + 4;
-	menu->rect.h = y + 2;
+	menu->rect.w = max_w + 4 * tl;
+	menu->rect.h = y + 2 * tl;
 }
 
 static void menu_redraw_item(struct menu *m, int i)
@@ -339,17 +344,7 @@ static void menu_redraw(struct menu *m)
 		menu_redraw_item(m, i);
 	
 	if (th == NULL || th->d_menuframe == NULL)
-	{
-		win_hline(m->wd, hi1, 0,	     0,		    m->rect.w);
-		win_hline(m->wd, sh1, 0,	     m->rect.h - 1, m->rect.w);
-		win_vline(m->wd, hi1, 0,	     0,		    m->rect.h);
-		win_vline(m->wd, sh1, m->rect.w - 1, 0,		    m->rect.h);
-		
-		win_hline(m->wd, hi2, 1,	     1,		    m->rect.w - 2);
-		win_hline(m->wd, sh2, 1,	     m->rect.h - 2, m->rect.w - 2);
-		win_vline(m->wd, hi2, 1,	     1,		    m->rect.h - 2);
-		win_vline(m->wd, sh2, m->rect.w - 2, 1,		    m->rect.h - 2);
-	}
+		form_draw_frame3d(m->wd, 0, 0, m->rect.w, m->rect.h, hi1, hi2, sh1, sh2);
 	
 	win_end_paint();
 }

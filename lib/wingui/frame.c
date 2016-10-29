@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <priv/wingui_form.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <string.h>
@@ -43,15 +44,7 @@ static void frame_redraw(struct gadget *g, int wd)
 		w = h = 0;
 	h &= ~1;
 	
-	win_hline(wd, s1, h / 2, h / 2, g->rect.w - h);
-	win_hline(wd, h1, h / 2, g->rect.h - h / 2 - 1, g->rect.w - h);
-	win_vline(wd, s1, h / 2, h / 2, g->rect.h - h);
-	win_vline(wd, h1, g->rect.w - h / 2 - 1, h / 2, g->rect.h - h);
-	
-	win_hline(wd, h1, h / 2 + 1, h / 2 + 1, g->rect.w - h - 2);
-	win_hline(wd, s1, h / 2 + 1, g->rect.h - h / 2 - 2, g->rect.w - h - 2);
-	win_vline(wd, h1, h / 2 + 1, h / 2 + 1, g->rect.h - h - 2);
-	win_vline(wd, s1, g->rect.w - h / 2 - 2, h / 2 + 1, g->rect.h - h - 2);
+	form_draw_frame3d(wd, h / 2, h / 2, g->rect.w - h, g->rect.h - h, s1, h1, h1, s1);
 	
 	if (g->text)
 		win_btext(wd, bg, fg, h, 0, g->text);

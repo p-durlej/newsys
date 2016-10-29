@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
@@ -47,18 +48,16 @@ static void popup_redraw(struct gadget *g, int wd)
 	win_color bg = wc_get(WC_WIN_BG);
 	win_color fg = wc_get(WC_WIN_FG);
 	int i = g->popup.item_index;
+	int tl;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	win_rect(wd, bg, 0, 0, g->rect.w, g->rect.h);
 	if (g->popup.pressed)
-	{
-		win_vline(wd, sh1, 0,		  0,		 g->rect.h);
-		win_hline(wd, sh1, 0,		  0,		 g->rect.w);
-		win_vline(wd, hi1, g->rect.w - 1, 0,		 g->rect.h);
-		win_hline(wd, hi1, 0,		  g->rect.h - 1, g->rect.w);
-	}
+		form_draw_frame3d(wd, 0, 0, g->rect.w, g->rect.h, sh1, bg, hi1, bg);
 	
 	if (i >= 0 && i < g->popup.item_count)
-		win_text(wd, fg, g->rect.h, 2, g->popup.items[i]);
+		win_text(wd, fg, g->rect.h, 2 * tl, g->popup.items[i]);
 	
 	for (i = 0; i < 4; i++)
 		win_hline(wd, fg, g->rect.h / 2 + i - 4, g->rect.h / 2 + i - 2, (4 - i) * 2);
@@ -119,10 +118,13 @@ struct gadget *popup_creat(struct form *form, int x, int y)
 {
 	struct gadget *g;
 	int w, h;
+	int tl;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	win_text_size(WIN_FONT_DEFAULT, &w, &h, "X");
 	
-	g = gadget_creat(form, x, y, h + 4, h + 4);
+	g = gadget_creat(form, x, y, h + 4 * tl, h + 4 * tl);
 	if (!g)
 		return NULL;
 	
@@ -168,6 +170,7 @@ int popup_get_index(struct gadget *g)
 int popup_set_index(struct gadget *g, int index)
 {
 	int w, h;
+	int tl;
 	
 	if (index < 0 || index >= g->popup.item_count)
 	{
@@ -178,9 +181,11 @@ int popup_set_index(struct gadget *g, int index)
 	if (index == g->popup.item_index)
 		return 0;
 	
+	tl = wm_get(WM_THIN_LINE);
+	
 	win_text_size(WIN_FONT_DEFAULT, &w, &h, g->popup.items[index]);
-	w += h + 6;
-	h += 4;
+	w += h + 6 * tl;
+	h += 4 * tl;
 	
 	g->popup.item_index = index;
 	gadget_resize(g, w, h);

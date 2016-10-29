@@ -137,6 +137,23 @@ static int form_menu_xyitem(struct form *f, int x, int y)
 	return -1;
 }
 
+void form_draw_frame3d(int wd, int x, int y, int w, int h,
+		       win_color hi1, win_color hi2,
+		       win_color sh1, win_color sh2)
+{
+	int tl = wm_get(WM_THIN_LINE);
+	
+	win_rect(wd, hi1, x, y, w, tl);
+	win_rect(wd, hi1, x, y, tl, h);
+	win_rect(wd, sh1, x + tl, y + h - tl, w - tl, tl);
+	win_rect(wd, sh1, x + w - tl, y, tl, h - tl);
+	
+	win_rect(wd, hi2, x + tl, y + tl, w - 2 * tl, tl);
+	win_rect(wd, sh2, x + tl, y + h - 2 * tl, w - 3 * tl, tl);
+	win_rect(wd, hi2, x + tl, y + tl, tl, h - 3 * tl);
+	win_rect(wd, sh2, x + w - 2 * tl, y + tl, tl, h - 2 * tl);
+}
+
 void form_draw_rect3d(int wd, int x, int y, int w, int h,
 		      win_color hi1, win_color hi2,
 		      win_color sh1, win_color sh2,
@@ -144,16 +161,7 @@ void form_draw_rect3d(int wd, int x, int y, int w, int h,
 {
 	int tl = wm_get(WM_THIN_LINE);
 	
-	win_rect(wd, hi1, x, y, w, tl);
-	win_rect(wd, hi1, x, y, tl, h);
-	win_rect(wd, sh1, x, y + h - tl, w, tl);
-	win_rect(wd, sh1, x + w - tl, y, tl, h);
-	
-	win_rect(wd, hi2, x + tl, y + tl, w - 2 * tl, tl);
-	win_rect(wd, hi2, x + tl, y + tl, tl, h - 2 * tl);
-	win_rect(wd, sh2, x + tl, y + h - 2 * tl, w - 2 * tl, tl);
-	win_rect(wd, sh2, x + w - 2 * tl, y + tl, tl, h - 2 * tl);
-	
+	form_draw_frame3d(wd, x, y, w, h, hi1, hi2, sh1, sh2);
 	win_rect(wd, bg, x + 2 * tl, y + 2 * tl, w - 4 * tl, h - 4 * tl);
 }
 
@@ -423,9 +431,12 @@ static void form_draw_frame(struct form *f)
 	int fw = f->frame_width + f->shadow_width;
 	int w = f->win_rect.w;
 	int h = f->win_rect.h;
+	int tl;
 	
 	if (!(f->flags & FORM_FRAME))
 		return;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	th = form_th_get();
 	if (th != NULL && th->d_formframe)
@@ -448,25 +459,12 @@ static void form_draw_frame(struct form *f)
 	win_rect(f->wd, bg, 0,	    h - fw, w,  fw);
 	win_rect(f->wd, bg, w - fw, 0,	    fw, h);
 	
-	win_hline(f->wd, hi1, 0,     0,	    w);
-	win_hline(f->wd, sh1, 0,     h - 1, w);
-	win_vline(f->wd, hi1, 0,     0,	    h);
-	win_vline(f->wd, sh1, w - 1, 0,	    h);
-	
-	win_hline(f->wd, sh1, fw - 1, fw - 1, w - 2 * fw + 2);
-	win_hline(f->wd, hi1, fw - 1, h - fw, w - 2 * fw + 2);
-	win_vline(f->wd, sh1, fw - 1, fw - 1, h - 2 * fw + 2);
-	win_vline(f->wd, hi1, w - fw, fw - 1, h - 2 * fw + 2);
-	
-	win_hline(f->wd, hi2, 1,     1,	    w - 2);
-	win_hline(f->wd, sh2, 1,     h - 2, w - 2);
-	win_vline(f->wd, hi2, 1,     1,	    h - 2);
-	win_vline(f->wd, sh2, w - 2, 1,	    h - 2);
-	
-	win_hline(f->wd, sh2, fw - 2,     fw - 2,     w - 2 * fw + 4);
-	win_hline(f->wd, hi2, fw - 2,     h - fw + 1, w - 2 * fw + 4);
-	win_vline(f->wd, sh2, fw - 2,     fw - 2,     h - 2 * fw + 4);
-	win_vline(f->wd, hi2, w - fw + 1, fw - 2,     h - 2 * fw + 4);
+	form_draw_frame3d(f->wd, 0, 0, w, h, hi1, hi2, sh1, sh2);
+	form_draw_frame3d(f->wd, fw - 2 * tl,
+				 fw - 2 * tl,
+				 w  - 2 * fw + 4 * tl,
+				 h  - 2 * fw + 4 * tl,
+				 sh2, sh1, hi2, hi1);
 }
 
 static void form_draw_title(struct form *f)

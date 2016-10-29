@@ -29,6 +29,10 @@
 
 #include <wingui.h>
 
+void form_draw_frame3d(int wd, int x, int y, int w, int h,
+		       win_color hi1, win_color hi2,
+		       win_color sh1, win_color sh2);
+
 void form_draw_rect3d(int wd, int x, int y, int w, int h,
 		      win_color hi1, win_color hi2,
 		      win_color sh1, win_color sh2,

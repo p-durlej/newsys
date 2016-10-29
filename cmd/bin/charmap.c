@@ -25,6 +25,7 @@
  */
 
 #include <priv/copyright.h>
+#include <wingui_metrics.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
@@ -72,14 +73,17 @@ int main(int argc, char **argv)
 	int btn_h;
 	int x, y;
 	int fh;
+	int tl;
 	int i;
 	
 	if (win_attach())
 		err(255, NULL);
 	
+	tl = wm_get(WM_THIN_LINE);
+	
 	win_text_size(WIN_FONT_DEFAULT, &btn_w, &btn_h, "X");
-	btn_w += 12;
-	btn_h += 9;
+	btn_w += 12 * tl;
+	btn_h += 9  * tl;
 	
 	mm = menu_creat();
 	
@@ -96,16 +100,16 @@ int main(int argc, char **argv)
 	}
 	fh += COLUMNS - 1;
 	fh /= COLUMNS;
-	fh *= btn_h + 2;
-	fh += 2;
+	fh *= btn_h + 2 * tl;
+	fh += 2 * tl;
 	
 	f = form_creat(FORM_TITLE | FORM_FRAME | FORM_ALLOW_CLOSE | FORM_ALLOW_MINIMIZE, 1,
-			-1, -1, COLUMNS * (btn_w + 2) + 2, fh, "Character map");
+			-1, -1, COLUMNS * (btn_w + 2 * tl) + 2 * tl, fh, "Character map");
 	form_on_close(f, f_close);
 	form_set_menu(f, mm);
 	
-	x = 2;
-	y = 2;
+	x = 2 * tl;
+	y = 2 * tl;
 	for (i = 0; i < 255; i++)
 	{
 		if (!isprint(i) || isspace(i))
@@ -115,11 +119,11 @@ int main(int argc, char **argv)
 		txt[1] = 0;
 		button_creat(f, x, y, btn_w, btn_h, txt, b_click);
 		
-		x += btn_w + 2;
+		x += btn_w + 2 * tl;
 		if (x >= f->workspace_rect.w)
 		{
-			y += btn_h + 2;
-			x  = 2;
+			y += btn_h + 2 * tl;
+			x  = 2 * tl;
 		}
 	}
 	

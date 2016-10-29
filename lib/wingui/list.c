@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <priv/wingui_form.h>
 #include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
@@ -32,7 +33,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define LIST_FRAME_WIDTH	2
+#define LIST_FRAME_WIDTH	(wm_get(WM_THIN_LINE) * 2)
 
 static void list_xyitem(struct gadget *g, int *index, int x, int y);
 static void list_ptr_down(struct gadget *g, int x, int y, int button);
@@ -247,15 +248,7 @@ static void list_redraw_frame(struct gadget *g, int wd)
 		hi2 = wc_get(WC_HIGHLIGHT2);
 		sh2 = wc_get(WC_SHADOW2);
 		
-		win_hline(wd, sh2, 0,		  0,		 g->rect.w);
-		win_hline(wd, hi2, 0,		  g->rect.h - 1, g->rect.w);
-		win_vline(wd, sh2, 0,		  0,		 g->rect.h);
-		win_vline(wd, hi2, g->rect.w - 1, 0,		 g->rect.h);
-		
-		win_hline(wd, sh1, 1,		  1,		 g->rect.w - 2);
-		win_hline(wd, hi1, 1,		  g->rect.h - 2, g->rect.w - 2);
-		win_vline(wd, sh1, 1,		  1,		 g->rect.h - 2);
-		win_vline(wd, hi1, g->rect.w - 2, 1,		 g->rect.h - 2);
+		form_draw_frame3d(wd, 0, 0, g->rect.w, g->rect.h, sh2, sh1, hi2, hi1);
 	}
 }
 
