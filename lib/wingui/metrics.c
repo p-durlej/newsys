@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <config/defaults.h>
 #include <wingui_metrics.h>
 #include <confdb.h>
 #include <string.h>
@@ -34,16 +35,28 @@ typedef int wm_tab_t[WM_COUNT];
 static wm_tab_t	wm_tab;
 static int	wm_loaded;
 
+static const int wm_default_hidpi_tab[] =
+{
+	[WM_DOUBLECLICK] = 6,
+	[WM_FRAME]	 = 10,
+	[WM_SCROLLBAR]	 = 24,
+	[WM_THIN_LINE]	 = 2,
+};
+
 static const int wm_default_tab[] =
 {
 	[WM_DOUBLECLICK] = 3,
 	[WM_FRAME]	 = 5,
 	[WM_SCROLLBAR]	 = 12,
+	[WM_THIN_LINE]	 = 1,
 };
 
 static void wm_default(void)
 {
-	memcpy(&wm_tab, &wm_default_tab, sizeof wm_tab);
+	if (win_get_dpi_class() > 0)
+		memcpy(&wm_tab, &wm_default_hidpi_tab, sizeof wm_tab);
+	else
+		memcpy(&wm_tab, &wm_default_tab, sizeof wm_tab);
 }
 
 int wm_get(int sel)

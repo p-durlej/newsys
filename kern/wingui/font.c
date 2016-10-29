@@ -81,11 +81,18 @@ static int init_font(struct win_font *f, int size)
 
 int win_chk_ftd(int ftd)
 {
+	struct win_desktop *d = curr->win_task.desktop;
+	
+	if (!d)
+		return ENODESKTOP;
+	
 	if (ftd == -1)
 		ftd = DEFAULT_FTD;
 	
 	if (ftd < 0 || ftd >= FONT_MAX)
 		return EINVAL;
+	
+	ftd = d->font_map[ftd];
 	
 	if (win_font[ftd].data)
 		return 0;
@@ -162,30 +169,42 @@ int win_load_font(int *ftd, const char *name, const char *pathname)
 
 int win_find_font(int *ftd, const char *name)
 {
-	int i;
+	struct win_desktop *d = curr->win_task.desktop;
+	int i, n;
+	
+	if (!d)
+		return ENODESKTOP;
 	
 	for (i = 0; i < FONT_MAX; i++)
-		if (win_font[i].data && !strcmp(win_font[i].name, name))
+	{
+		n = d->font_map[i];
+		
+		if (win_font[n].data && !strcmp(win_font[n].name, name))
 		{
 			*ftd = i;
 			return 0;
 		}
+	}
 	
 	return ENOENT;
 }
 
 int win_set_font(int wd, int ftd)
 {
+	struct win_desktop *d = curr->win_task.desktop;
 	int err;
 	
 	err = win_chkwd(wd);
 	if (err)
 		return err;
 	
+	if (ftd == WIN_FONT_DEFAULT)
+		ftd = DEFAULT_FTD;
+	
 	err = win_chk_ftd(ftd);
 	if (err)
 		return err;
 	
-	curr->win_task.desktop->window[wd].font = ftd;
+	d->window[wd].font = d->font_map[ftd];
 	return 0;
 }

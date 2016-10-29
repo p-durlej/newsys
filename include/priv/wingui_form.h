@@ -27,6 +27,13 @@
 #ifndef _PRIV_WINGUI_FORM_H
 #define _PRIV_WINGUI_FORM_H
 
+#include <wingui.h>
+
+void form_draw_rect3d(int wd, int x, int y, int w, int h,
+		      win_color hi1, win_color hi2,
+		      win_color sh1, win_color sh2,
+		      win_color bg);
+
 void form_reload_config(void);
 void form_do_deferred(void);
 void form_ws_resized(void);

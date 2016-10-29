@@ -49,7 +49,6 @@ static struct gadget *bd_l;
 static struct gadget *chk1;
 static struct gadget *chk2;
 static struct gadget *zoom;
-static struct gadget *larg;
 static struct form *form;
 
 static struct form_cfg old_config, config =
@@ -74,13 +73,8 @@ static int on_close(struct form *f)
 
 static void ok_click()
 {
-	char *fls;
-	FILE *f;
-	
 	config.display_moving = chkbox_get_state(chk1);
 	config.smart_zoom     = chkbox_get_state(zoom);
-	if (su)
-		config.large_fonts = chkbox_get_state(larg);
 	back_conf.tile	      = chkbox_get_state(chk2);
 	
 	wm_tab[WM_DOUBLECLICK] = atoi(dc_d->text);
@@ -93,35 +87,6 @@ static void ok_click()
 	
 	win_update();
 	
-	if (config.large_fonts)
-		fls = "/lib/fonts/mono-large\n"
-		      "/lib/fonts/system-large\n"
-		      "/lib/fonts/mono-large\n"
-		      "/lib/fonts/system-large\n"
-		      "/lib/fonts/mono-large-narrow\n"
-		      "/lib/fonts/mono-large-narrow\n";
-	else
-		fls = "/lib/fonts/mono\n"
-		      "/lib/fonts/system\n"
-		      "/lib/fonts/mono-large\n"
-		      "/lib/fonts/system-large\n"
-		      "/lib/fonts/mono-narrow\n"
-		      "/lib/fonts/mono-large-narrow\n";
-	
-	if (su && old_config.large_fonts != config.large_fonts)
-	{
-		f = fopen("/etc/sysfonts-new", "w");
-		if (!f)
-			goto error;
-		if (fputs(fls, f) == EOF)
-			goto error;
-		if (fclose(f))
-			goto error;
-		if (rename("/etc/sysfonts-new", "/etc/sysfonts"))
-			goto error;
-		msgbox(form, "Desktop Prefs", "Reboot the system for the font size\n"
-					      "change to take effect.");
-	}
 	exit(0);
 	
 error:
@@ -187,7 +152,6 @@ int main(int argc, char **argv)
 	bd_l = gadget_find(form, "bd_path");
 	dc_d = gadget_find(form, "dc_dist");
 	zoom = gadget_find(form, "zoom");
-	larg = gadget_find(form, "large");
 	fr_w = gadget_find(form, "frame_width");
 	sb_w = gadget_find(form, "sb_width");
 	
@@ -195,10 +159,6 @@ int main(int argc, char **argv)
 	
 	chkbox_set_state(chk1, config.display_moving);
 	chkbox_set_state(zoom, config.smart_zoom);
-	if (su)
-		chkbox_set_state(larg, config.large_fonts);
-	else
-		gadget_remove(larg);
 	
 	chkbox_set_state(chk2, back_conf.tile);
 	ubdlabel();

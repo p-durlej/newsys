@@ -186,7 +186,7 @@ int win_creat(int *wd, int visible, int x, int y, int w, int h, void *proc, void
 			wp->layer = WIN_LAYER_SECURE;
 		else
 			wp->layer = WIN_LAYER_APP;
-		wp->font = WIN_FONT_DEFAULT;
+		wp->font = d->font_map[DEFAULT_FTD];
 		
 		s = intr_dis();
 		list_app(&d->stack, wp);

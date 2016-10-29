@@ -25,6 +25,8 @@
  */
 
 #include <priv/wingui_theme.h>
+#include <priv/wingui_form.h>
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
@@ -52,6 +54,9 @@ static void button_redraw(struct gadget *g, int wd)
 	win_color fg;
 	int x, y;
 	int w, h;
+	int tl;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	th = form_th_get();
 	if (th != NULL && th->d_button != NULL)
@@ -90,26 +95,12 @@ static void button_redraw(struct gadget *g, int wd)
 	x = (g->rect.w - w) / 2;
 	y = (g->rect.h - h) / 2;
 	
-	win_rect(wd, bg, 0, 0, g->rect.w, g->rect.h);
+	form_draw_rect3d(wd, 0, 0, g->rect.w, g->rect.h, hl1, hl2, sh1, sh2, bg);
+	
 	win_text(wd, fg, x, y, g->text);
 	
-	win_hline(wd, hl1, 0, 0, g->rect.w);
-	win_hline(wd, sh1, 0, g->rect.h - 1, g->rect.w);
-	win_vline(wd, hl1, 0, 0, g->rect.h);
-	win_vline(wd, sh1, g->rect.w - 1, 0, g->rect.h);
-	
-	win_hline(wd, hl2, 1, 1, g->rect.w - 2);
-	win_hline(wd, sh2, 1, g->rect.h - 2, g->rect.w - 2);
-	win_vline(wd, hl2, 1, 1, g->rect.h - 2);
-	win_vline(wd, sh2, g->rect.w - 2, 1, g->rect.h - 2);
-	
 	if (g == g->form->focus)
-	{
-		win_hline(wd, fg, 3, 3, g->rect.w - 6);
-		win_hline(wd, fg, 3, g->rect.h - 4, g->rect.w - 6);
-		win_vline(wd, fg, 3, 3, g->rect.h - 6);
-		win_vline(wd, fg, g->rect.w - 4, 3, g->rect.h - 6);
-	}
+		win_frame7(wd, fg, 3 * tl, 3 * tl, g->rect.w - 6 * tl, g->rect.h - 6 * tl, tl);
 }
 
 static void button_ptr_move(struct gadget *g, int x, int y)

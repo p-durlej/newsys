@@ -25,6 +25,7 @@
  */
 
 #include <priv/wingui_theme.h>
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_menu.h>
 #include <wingui.h>
@@ -261,6 +262,7 @@ static void menu_redraw_item(struct menu *m, int i)
 	win_color hi;
 	win_color fg;
 	win_color bg;
+	int tl;
 	
 	if (i < 0)
 		return;
@@ -268,6 +270,8 @@ static void menu_redraw_item(struct menu *m, int i)
 	
 	sh = wc_get(WC_SHADOW1);
 	hi = wc_get(WC_HIGHLIGHT1);
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	if (m->selection != i || (mi->text[0] == '-' && !mi->text[1]))
 	{
@@ -285,8 +289,8 @@ static void menu_redraw_item(struct menu *m, int i)
 		win_rect(m->wd, bg, mi->rect.x, mi->rect.y,
 				    mi->rect.w, mi->rect.h);
 		
-		win_hline(m->wd, sh, mi->rect.x, mi->rect.y + mi->rect.h / 2,	  mi->rect.w);
-		win_hline(m->wd, hi, mi->rect.x, mi->rect.y + mi->rect.h / 2 + 1, mi->rect.w);
+		win_rect(m->wd, sh, mi->rect.x, mi->rect.y + mi->rect.h / 2,	  mi->rect.w, tl);
+		win_rect(m->wd, hi, mi->rect.x, mi->rect.y + mi->rect.h / 2 + tl, mi->rect.w, tl);
 	}
 	else
 	{

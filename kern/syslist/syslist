@@ -140,15 +140,18 @@
 131	user	win_blink
 132	user	win_dragdrop
 133	user	win_gdrop
+134	root	win_set_dpi_class
+135	user	win_get_dpi_class
+136	root	win_set_font_map
 
-134	user	_systat
-135	user	_taskinfo
-136	user	_taskmax
-137	root	_boot_flags
+137	user	_systat
+138	user	_taskinfo
+139	user	_taskmax
+140	root	_boot_flags
 
-138	user	evt_count
-139	user	_evt_wait
-140	user	evt_signal
+141	user	evt_count
+142	user	_evt_wait
+143	user	evt_signal
 
-141	root	_bdev_stat
-142	root	_bdev_max
+144	root	_bdev_stat
+145	root	_bdev_max

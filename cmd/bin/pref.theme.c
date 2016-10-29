@@ -95,6 +95,7 @@ static void setfwidth(int w)
 	
 	for (i = 0; i < WM_COUNT; i++)
 		wm_tab[i] = wm_get(i);
+	w *= wm_tab[WM_THIN_LINE];
 	
 	if (wm_tab[WM_FRAME] == w)
 		return;

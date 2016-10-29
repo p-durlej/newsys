@@ -31,12 +31,13 @@ flag(FORM_TITLE);
 
 frame(NULL,0,0,200,85,		"Resolution");
 label("res_note",15,15,		"Move the slider to adjust\nthe resolution.");
-label("res_label",15,62,	"");
+label("res_label",15,62,	"640 * 480");
+chkbox("hidpi_chkbox",101,62,	"High DPI mode");
 hsbar("res_sbar",15,45,170,12);
 
 frame(NULL,0,85,200,85,		"Color depth");
 label("depth_note",15,100,	"Move the slider to adjust\nthe number of colors.");
-label("depth_label",15,147,	"");
+label("depth_label",15,147,	"256");
 hsbar("depth_sbar",15,130,170,12);
 
 button("ok",200,5,60,20,	"OK",0);

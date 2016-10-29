@@ -1323,3 +1323,62 @@ err:
 	uerr(err);
 	return -1;
 }
+
+int sys_win_set_dpi_class(int dpi)
+{
+	struct win_desktop *d = curr->win_task.desktop;
+	
+	if (!d)
+	{
+		uerr(ENODESKTOP);
+		return -1;
+	}
+	
+	d->dpi_class = dpi;
+	return 0;
+}
+
+int sys_win_get_dpi_class(void)
+{
+	struct win_desktop *d = curr->win_task.desktop;
+	
+	if (!d)
+	{
+		uerr(ENODESKTOP);
+		return -1;
+	}
+	
+	return d->dpi_class;
+}
+
+#include <kern/printk.h>
+
+int sys_win_set_font_map(const int *map, size_t len)
+{
+	struct win_desktop *d = curr->win_task.desktop;
+	int nmap[FONT_MAX];
+	int i;
+	
+	if (!d)
+	{
+		uerr(ENODESKTOP);
+		return -1;
+	}
+	
+	if (len > sizeof nmap)
+		goto inval;
+	
+	memcpy(nmap, map, len);
+	for (i = len / sizeof *nmap; i < FONT_MAX; i++)
+		nmap[i] = i;
+	
+	for (i = 0; i < FONT_MAX; i++)
+		if (i < 0 || i >= FONT_MAX)
+			goto inval;
+	
+	memcpy(d->font_map, nmap, sizeof d->font_map);
+	return 0;
+inval:
+	uerr(EINVAL);
+	return -1;
+}

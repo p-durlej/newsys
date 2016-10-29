@@ -28,6 +28,7 @@
 #include <priv/wingui.h>
 #include <wingui_msgbox.h>
 #include <wingui_color.h>
+#include <prefs/dmode.h>
 #include <sys/signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -217,36 +218,60 @@ void sig_chld(int nr)
 	evt_signal(SIGCHLD, sig_chld);
 }
 
-void init_mode(void)
+static void init_font_map(int hidpi)
+{
+	static const int map[] =
+	{
+		WIN_FONT_MONO_L,
+		WIN_FONT_SYSTEM_L,
+		WIN_FONT_MONO_L,
+		WIN_FONT_SYSTEM_L,
+		WIN_FONT_MONO_LN,
+		WIN_FONT_MONO_LN,
+	};
+	
+	if (hidpi)
+		win_set_font_map(map, sizeof map);
+	else
+		win_set_font_map(map, 0);
+}
+
+static void init_dpi(void)
+{
+	struct dmode *dm = dm_get();
+	
+	if (!dm)
+		return;
+	
+	win_set_dpi_class(dm->hidpi);
+	init_font_map(dm->hidpi);
+}
+
+static void init_mode(void)
 {
 	struct win_modeinfo mi;
-	int xres = -1;
-	int yres = -1;
-	int nclr = -1;
-	int mnr = -1;
-	int fd;
+	struct dmode *dm;
 	
-	fd = open("mode", O_RDONLY);
-	if (fd < 0)
+	dm = dm_get();
+	if (!dm || dm->nr < 0)
 		return;
-	read(fd, &xres, sizeof(int));
-	read(fd, &yres, sizeof(int));
-	read(fd, &nclr, sizeof(int));
-	read(fd, &mnr, sizeof(int));
-	close(fd);
 	
-	if (win_modeinfo(mnr, &mi) || xres != mi.width || yres != mi.height || nclr != mi.ncolors)
+	if (win_modeinfo(dm->nr, &mi) || dm->xres != mi.width || dm->yres != mi.height || dm->nclr != mi.ncolors)
 	{
 		char msg[256];
+		
+		init_dpi();
 		
 		sprintf(msg, "Configured display mode\n\n"
 			     "  #%i: %i * %i, %i colors\n\n"
 			     " is not valid with this driver",
-			     mnr, xres, yres, nclr);
+			     dm->nr, dm->xres, dm->yres, dm->nclr);
 		msgbox(NULL, "Mode incorrect", msg);
 		return;
 	}
-	win_setmode(mnr, 0);
+	
+	win_setmode(dm->nr, 0);
+	init_dpi();
 }
 
 static void init_env(void)
@@ -357,6 +382,8 @@ int main(int argc, char **argv)
 	
 	if (win_newdesktop(p + 1))
 		err(errno, "cannot create a new desktop");
+	
+	init_dpi();
 	
 	_newtaskl(INIT_DEVS, INIT_DEVS, p + 1, NULL);
 	wait(&status);

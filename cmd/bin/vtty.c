@@ -25,6 +25,7 @@
  */
 
 #include <priv/copyright.h>
+#include <wingui_metrics.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
@@ -283,6 +284,7 @@ static void redraw_chr(int x, int y, int set_clip)
 	win_color cfg;
 	win_color bg;
 	win_color fg;
+	int tl;
 	int wd;
 	
 	if (x < 0 || x >= nr_col)
@@ -303,16 +305,18 @@ static void redraw_chr(int x, int y, int set_clip)
 			   color_table[cl->bg].g,
 			   color_table[cl->bg].b);
 	
+	tl = wm_get(WM_THIN_LINE);
+	
 	if (set_clip)
 	{
 		win_clip(wd, screen->rect.x, screen->rect.y, screen->rect.w, screen->rect.h, screen->rect.x, screen->rect.y);
-		win_set_font(wd, WIN_FONT_MONO);
+		win_set_font(wd, config.ftd);
 		win_paint();
 	}
 	
 	win_bchr(wd, bg, fg, font_w * x, font_h * y, cl->ch);
 	if (cur_state && cur_x == x && cur_y == y)
-		win_rect(wd, cfg, font_w * cur_x, font_h * cur_y + font_h - 2, font_w, 2);
+		win_rect(wd, cfg, font_w * cur_x, font_h * cur_y + font_h - 2 * tl, font_w, 2 * tl);
 	
 	if (set_clip)
 		win_end_paint();

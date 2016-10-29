@@ -27,6 +27,7 @@
 #include <machine/sysinstall.h>
 #include <machine/machdef.h>
 #include <config/sysinstall.h>
+#include <config/defaults.h>
 #include <priv/copyright.h>
 #include <priv/wingui.h>
 #include <priv/natfs.h>
@@ -1235,6 +1236,24 @@ static void init_font(const char *name, const char *pathname)
 	}
 }
 
+static void init_font_map(void)
+{
+#if DEFAULT_LARGE_UI
+	static const int map[] =
+	{
+		WIN_FONT_MONO_L,
+		WIN_FONT_SYSTEM_L,
+		WIN_FONT_MONO_L,
+		WIN_FONT_SYSTEM_L,
+		WIN_FONT_MONO_LN,
+		WIN_FONT_MONO_LN,
+	};
+	
+	win_set_font_map(map, sizeof map);
+	win_set_dpi_class(WIN_DPI_HIGH);
+#endif
+}
+
 void init_desktop(void)
 {
 	init_font("mono",		_PATH_FONT_MONO);
@@ -1258,6 +1277,8 @@ void init_desktop(void)
 			pause();
 	}
 	putenv("DESKTOP_DIR=/tmp/desktop");
+	
+	init_font_map();
 }
 
 void init_rd(void)

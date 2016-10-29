@@ -49,7 +49,7 @@ WINGUI_O = wingui/wait.o wingui/form.o wingui/button.o wingui/label.o	      \
            wingui/hsbar.o wingui/form_load.o wingui/bell.o		      \
            wingui/buf.o wingui/break.o wingui/util.o wingui/metrics.o	      \
            wingui/colorsel.o wingui/pointer.o wingui/bargraph.o		      \
-           wingui/theme.o wingui/theme-flat.o
+           wingui/theme.o wingui/theme-flat.o wingui/draw.o
 
 PASSWD_O = passwd/passwd.o passwd/group.o
 
@@ -59,6 +59,8 @@ LOCALE_O = locale/setlocale.o locale/localeconv.o
 
 DEV_O	 = dev/speaker.o
 
+PREFS_O = prefs/dmode.o
+
 LIB_O = crt0c.o perror.o dirent.o time.o confdb.o cprintf.o		\
         uname.o event.o assert.o list.o module.o newtask.o		\
         mkcanon.o timer.o err.o strsignal.o regexp.o findexec.o		\
@@ -66,7 +68,7 @@ LIB_O = crt0c.o perror.o dirent.o time.o confdb.o cprintf.o		\
         tar.o								\
         $(STRING_O) $(UNISTD_O) $(SIGNAL_O) $(STDIO_O) $(STDLIB_O)	\
         $(ENVIRON_O) $(PASSWD_O) $(CTYPE_O) $(SYSCALL_O) $(WINGUI_O)	\
-        $(ARCH_O) $(CRYPTO_O) $(MATH_O) $(LOCALE_O) $(DEV_O)
+        $(ARCH_O) $(CRYPTO_O) $(MATH_O) $(LOCALE_O) $(DEV_O) $(PREFS_O)
 
 CRT0D_O = crt0d/getopt.o
 

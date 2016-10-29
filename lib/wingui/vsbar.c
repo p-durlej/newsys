@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <priv/wingui_form.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
@@ -98,17 +99,7 @@ static void vsbar_uparrow(struct gadget *g, int wd)
 		bg = wc_get(WC_WIN_BG);
 	}
 	
-	win_rect(wd, bg, 0, 0, w, h);
-	
-	win_hline(wd, hi1, 0,	  0,	 g->rect.w);
-	win_hline(wd, sh1, 0,	  h - 1, g->rect.w);
-	win_vline(wd, hi1, 0,     0,	 h);
-	win_vline(wd, sh1, w - 1, 0,	 h);
-	
-	win_hline(wd, hi2, 1,	  1,	 g->rect.w - 2);
-	win_hline(wd, sh2, 1,	  h - 2, g->rect.w - 2);
-	win_vline(wd, hi2, 1,	  1,	 h - 2);
-	win_vline(wd, sh2, w - 2, 1,	 h - 2);
+	form_draw_rect3d(wd, 0, 0, w, h, hi1, hi2, sh1, sh2, bg);
 	
 	x0 = g->rect.w / 2;
 	ah = h / 4;
@@ -148,17 +139,7 @@ static void vsbar_dnarrow(struct gadget *g, int wd)
 		bg = wc_get(WC_WIN_BG);
 	}
 	
-	win_rect(wd, bg, 0, y, w, h);
-	
-	win_hline(wd, hi1, 0,	  y,	     g->rect.w);
-	win_hline(wd, sh1, 0,	  y + h - 1, g->rect.w);
-	win_vline(wd, hi1, 0,	  y,	     h);
-	win_vline(wd, sh1, w - 1, y,	     h);
-	
-	win_hline(wd, hi2, 1,	  y + 1,     g->rect.w - 2);
-	win_hline(wd, sh2, 1,	  y + h - 2, g->rect.w - 2);
-	win_vline(wd, hi2, 1,	  y + 1,     h - 2);
-	win_vline(wd, sh2, w - 2, y + 1,     h - 2);
+	form_draw_rect3d(wd, 0, y, w, h, hi1, hi2, sh1, sh2, bg);
 	
 	x0 = g->rect.w / 2;
 	ah = h / 4;
@@ -206,36 +187,12 @@ static void vsbar_redraw(struct gadget *g, int wd)
 	y1 = g->rect.h - g->rect.w;
 	win_rect(wd, bg, 0, y0, g->rect.w, y1 - y0);
 	
-	win_rect(wd, sbox, g->sbar.sbox_rect.x,
-			   g->sbar.sbox_rect.y,
-			   g->sbar.sbox_rect.w,
-			   g->sbar.sbox_rect.h);
+	form_draw_rect3d(wd, g->sbar.sbox_rect.x,
+			     g->sbar.sbox_rect.y,
+			     g->sbar.sbox_rect.w,
+			     g->sbar.sbox_rect.h,
+			     hi1, hi2, sh1, sh2, sbox);
 	
-	win_vline(wd, hi1, g->sbar.sbox_rect.x,
-			   g->sbar.sbox_rect.y,
-			   g->sbar.sbox_rect.h);
-	win_vline(wd, sh1, g->sbar.sbox_rect.x + g->sbar.sbox_rect.w - 1,
-			   g->sbar.sbox_rect.y,
-			   g->sbar.sbox_rect.h);
-	win_hline(wd, hi1, g->sbar.sbox_rect.x,
-			   g->sbar.sbox_rect.y,
-			   g->sbar.sbox_rect.w);
-	win_hline(wd, sh1, g->sbar.sbox_rect.x,
-			   g->sbar.sbox_rect.y + g->sbar.sbox_rect.h - 1,
-			   g->sbar.sbox_rect.w);
-	
-	win_vline(wd, hi2, g->sbar.sbox_rect.x + 1,
-			   g->sbar.sbox_rect.y + 1,
-			   g->sbar.sbox_rect.h - 2);
-	win_vline(wd, sh2, g->sbar.sbox_rect.x + g->sbar.sbox_rect.w - 2,
-			   g->sbar.sbox_rect.y + 1,
-			   g->sbar.sbox_rect.h - 2);
-	win_hline(wd, hi2, g->sbar.sbox_rect.x + 1,
-			   g->sbar.sbox_rect.y + 1,
-			   g->sbar.sbox_rect.w - 2);
-	win_hline(wd, sh2, g->sbar.sbox_rect.x + 1,
-			   g->sbar.sbox_rect.y + g->sbar.sbox_rect.h - 2,
-			   g->sbar.sbox_rect.w - 2);
 	return;
 defunct:
 	win_rect(wd, bg, 0, 0, g->rect.w, g->rect.h);

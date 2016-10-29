@@ -50,11 +50,6 @@
 #include <paths.h>
 #include <err.h>
 
-#define MONO_FONT		"/lib/fonts/mono"
-#define SYSTEM_FONT		"/lib/fonts/system"
-#define LARGE_MONO_FONT		"/lib/fonts/mono-large"
-#define LARGE_SYSTEM_FONT	"/lib/fonts/system-large"
-
 #define REALPREFIX(p)		((p)[0] != '/' || (p)[1] ? (p) : "")
 
 #define perror(msg)		_sysmesg_perror(msg)
@@ -155,11 +150,14 @@ static void init_default_fonts(void)
 
 static void init_fonts(void)
 {
+	static const char *names[] = { "mono", "system", "mono-large", "system-large", "mono-narrow", "mono-large-narrow" };
+	
 	char buf[PATH_MAX];
+	const char *n;
 	FILE *f;
 	char *p;
 	int cnt;
-
+	
 	f = fopen(_PATH_E_SYSFONTS, "r");
 	if (!f)
 	{
@@ -176,13 +174,18 @@ static void init_fonts(void)
 		if (p)
 			*p = 0;
 		
-		p = strrchr(buf, '/');
-		if (p)
-			p++;
+		if (cnt < sizeof names / sizeof *names)
+			n = names[cnt];
 		else
-			p = buf;
+		{
+			n = strrchr(buf, '/');
+			if (p)
+				n++;
+			else
+				n = buf;
+		}
 		
-		init_font(p, buf, cnt++ < 2);
+		init_font(n, buf, cnt++ < 2);
 	}
 	fclose(f);
 }

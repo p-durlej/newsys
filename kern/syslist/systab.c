@@ -135,6 +135,9 @@ extern int sys_win_soft_keyup();
 extern int sys_win_blink();
 extern int sys_win_dragdrop();
 extern int sys_win_gdrop();
+extern int sys_win_set_dpi_class();
+extern int sys_win_get_dpi_class();
+extern int sys_win_set_font_map();
 extern int sys__systat();
 extern int sys__taskinfo();
 extern int sys__taskmax();
@@ -149,7 +152,7 @@ struct syscall
 {
 	void *	proc;
 	int	uidz;
-} syscall_tab[143] = 
+} syscall_tab[146] = 
 {
 	[0]	= { sys__sysmesg,		1 },
 	[1]	= { sys__iopl,			1 },
@@ -285,13 +288,16 @@ struct syscall
 	[131]	= { sys_win_blink,		0 },
 	[132]	= { sys_win_dragdrop,		0 },
 	[133]	= { sys_win_gdrop,		0 },
-	[134]	= { sys__systat,		0 },
-	[135]	= { sys__taskinfo,		0 },
-	[136]	= { sys__taskmax,		0 },
-	[137]	= { sys__boot_flags,		1 },
-	[138]	= { sys_evt_count,		0 },
-	[139]	= { sys__evt_wait,		0 },
-	[140]	= { sys_evt_signal,		0 },
-	[141]	= { sys__bdev_stat,		1 },
-	[142]	= { sys__bdev_max,		1 },
+	[134]	= { sys_win_set_dpi_class,	1 },
+	[135]	= { sys_win_get_dpi_class,	0 },
+	[136]	= { sys_win_set_font_map,	1 },
+	[137]	= { sys__systat,		0 },
+	[138]	= { sys__taskinfo,		0 },
+	[139]	= { sys__taskmax,		0 },
+	[140]	= { sys__boot_flags,		1 },
+	[141]	= { sys_evt_count,		0 },
+	[142]	= { sys__evt_wait,		0 },
+	[143]	= { sys_evt_signal,		0 },
+	[144]	= { sys__bdev_stat,		1 },
+	[145]	= { sys__bdev_max,		1 },
 };

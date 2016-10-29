@@ -139,6 +139,9 @@
 #define WIN_DF_SLOWCOPY		1
 #define WIN_DF_BOOTFB		2
 
+#define WIN_DPI_NORMAL		0
+#define WIN_DPI_HIGH		1
+
 typedef unsigned win_color;
 
 struct win_ptrspeed
@@ -261,6 +264,11 @@ int win_blink(int wd, int ena);
 int win_gdrop(void *buf, size_t bufsz, int *serial);
 int win_dragdrop(const void *data, size_t size);
 
+int win_set_dpi_class(int dpi);
+int win_get_dpi_class(void);
+
+int win_set_font_map(const int *map, size_t len);
+
 /* library routines */
 
 typedef void win_setmode_cb(void);
@@ -268,6 +276,8 @@ typedef void win_update_cb(void);
 typedef void win_resize_cb(void);
 typedef void win_unlock_cb(void);
 typedef void win_lock_cb(void);
+
+void win_frame7(int wd, win_color c, int x, int y, int w, int h, int th);
 
 char *win_break(int ftd, const char *str, int width);
 int win_inrect(struct win_rect *r, int x, int y);

@@ -24,13 +24,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PRIV_WINGUI_FORM_CFG_H
-#define _PRIV_WINGUI_FORM_CFG_H
+#include <wingui.h>
 
-struct form_cfg
+void win_frame7(int wd, win_color c, int x, int y, int w, int h, int th)
 {
-	int display_moving;
-	int smart_zoom;
-};
-
-#endif
+	int i;
+	
+	for (i = 0; i < th; i++)
+	{
+		win_hline(wd, c, x + i, y + i,		w - 2 * i);
+		win_vline(wd, c, x + i, y + i,		h - 2 * i);
+		win_hline(wd, c, x + i, y + h - i -1,	w - 2 * i);
+		win_vline(wd, c, x + w - i -1, y + i,	h - 2 * i);
+	}
+}

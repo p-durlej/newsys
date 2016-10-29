@@ -24,11 +24,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define WM_COUNT	3
+#define WM_COUNT	4
 
 #define WM_DOUBLECLICK	0
 #define WM_FRAME	1
 #define WM_SCROLLBAR	2
+#define WM_THIN_LINE	3
 
 int wm_get(int sel);
 int wm_load(void);

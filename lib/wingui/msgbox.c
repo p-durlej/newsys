@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <config/defaults.h>
+#include <wingui_metrics.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui_bell.h>
@@ -35,6 +37,7 @@
 int msgbox(struct form *form, const char *title, const char *text)
 {
 	int flags = FORM_FRAME | FORM_TITLE | FORM_CENTER;
+	int tl = wm_get(WM_THIN_LINE);
 	struct gadget *button;
 	struct gadget *label;
 	struct form *f = NULL;
@@ -58,21 +61,19 @@ int msgbox(struct form *form, const char *title, const char *text)
 	
 	win_text_size(WIN_FONT_DEFAULT, &text_w, &text_h, brtext);
 	win_text_size(WIN_FONT_DEFAULT, &btn_w, &btn_h, "XX");
-	btn_w += 20;
-	btn_h += 6;
-	win_w = text_w + 8;
-	win_h = text_h + btn_h + 22;
+	btn_w += 20 * tl;
+	btn_h += 6  * tl;
+	win_w = text_w + 8 * tl;
+	win_h = text_h + btn_h + 22 * tl;
 	
 	f = form_creat(flags, 0, -1, -1, win_w, win_h, title);
 	if (f == NULL)
 		goto fail;
 	
-	label = label_creat(f, 4, 8, brtext);
+	label = label_creat(f, 4 * tl, 8 * tl, brtext);
 	if (label == NULL)
 		goto fail;
-	button = button_creat(f,
-			(win_w - btn_w) / 2, text_h + 16, btn_w, btn_h,
-			"OK", NULL);
+	button = button_creat(f, (win_w - btn_w) / 2, text_h + 16 * tl, btn_w, btn_h, "OK", NULL);
 	if (button == NULL)
 		goto fail;
 	button_set_result(button, MSGBOX_OK);
@@ -104,6 +105,7 @@ fail:
 int msgbox_ask4(struct form *form, const char *title, const char *text, int dflt)
 {
 	int flags = FORM_FRAME | FORM_TITLE | FORM_CENTER;
+	int tl = wm_get(WM_THIN_LINE);
 	struct gadget *button_yes;
 	struct gadget *button_no;
 	struct gadget *label;
@@ -128,28 +130,24 @@ int msgbox_ask4(struct form *form, const char *title, const char *text, int dflt
 	
 	win_text_size(WIN_FONT_DEFAULT, &text_w, &text_h, brtext);
 	win_text_size(WIN_FONT_DEFAULT, &btn_w, &btn_h, "XXX");
-	btn_w += 20;
-	btn_h += 6;
-	win_w = text_w + 8;
-	win_h = text_h + btn_h + 22;
+	btn_w += 20 * tl;
+	btn_h += 6  * tl;
+	win_w = text_w + 8 * tl;
+	win_h = text_h + btn_h + 22 * tl;
 	
 	f = form_creat(flags, 0, -1, -1, win_w, win_h, title);
 	if (f == NULL)
 		goto fail;
 	
-	label = label_creat(f, 4, 8, brtext);
+	label = label_creat(f, 4 * tl, 8 * tl, brtext);
 	if (label == NULL)
 		goto fail;
 	
-	button_yes = button_creat(f,
-			win_w / 2 - btn_w - 1, text_h + 16,
-			btn_w, btn_h, "Yes", NULL);
+	button_yes = button_creat(f, win_w / 2 - btn_w - 1, text_h + 16 * tl, btn_w, btn_h, "Yes", NULL);
 	if (button_yes == NULL)
 		goto fail;
 	
-	button_no = button_creat(f,
-			win_w / 2 + 1, text_h + 16,
-			btn_w, btn_h, "No", NULL);
+	button_no = button_creat(f, win_w / 2 + 1, text_h + 16 * tl, btn_w, btn_h, "No", NULL);
 	if (button_no == NULL)
 		goto fail;
 	

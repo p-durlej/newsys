@@ -24,13 +24,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PRIV_WINGUI_FORM_CFG_H
-#define _PRIV_WINGUI_FORM_CFG_H
+#ifndef _PREFS_DMODE_H
+#define _PREFS_DMODE_H
 
-struct form_cfg
+struct dmode
 {
-	int display_moving;
-	int smart_zoom;
+	int xres;
+	int yres;
+	int nclr;
+	int nr;
+	int hidpi;
 };
+
+struct dmode *dm_get(void);
+int dm_save(void);
 
 #endif

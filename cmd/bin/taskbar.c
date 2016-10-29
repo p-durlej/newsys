@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_metrics.h>
 #include <wingui_bitmap.h>
 #include <wingui_msgbox.h>
 #include <wingui_color.h>
@@ -108,12 +109,13 @@ static int tbb_width(void)
 
 static void make_rects(void)
 {
-	int x = desk_w - 6;
+	int tl = wm_get(WM_THIN_LINE);
+	int x = desk_w - 6 * tl;
 	
 	win_text_size(WIN_FONT_DEFAULT, &clk_rect.w, &clk_rect.h, "00:00:00");
 	clk_rect.x = x - clk_rect.w;
-	clk_rect.y = 2 + (tb_height - clk_rect.h - 2) / 2;
-	x = clk_rect.x - 2;
+	clk_rect.y = 2 * tl + (tb_height - clk_rect.h - 2 * tl) / 2;
+	x = clk_rect.x - 2 * tl;
 	
 	if (show_memory)
 	{
@@ -121,7 +123,7 @@ static void make_rects(void)
 		rsrc_rect.y = clk_rect.y;
 		rsrc_rect.w = clk_rect.h;
 		rsrc_rect.h = clk_rect.h;
-		x = rsrc_rect.x - 2;
+		x = rsrc_rect.x - 2 * tl;
 	}
 	
 	if (show_rfsact)
@@ -130,7 +132,7 @@ static void make_rects(void)
 		rfsa_rect.y = clk_rect.y;
 		rfsa_rect.w = clk_rect.h;
 		rfsa_rect.h = clk_rect.h;
-		x = rfsa_rect.x - 2;
+		x = rfsa_rect.x - 2 * tl;
 	}
 	
 	if (osk_icon || osk_icon_l)
@@ -141,7 +143,7 @@ static void make_rects(void)
 		osk_rect.y = clk_rect.y;
 		osk_rect.w = clk_rect.h;
 		osk_rect.h = clk_rect.h;
-		x = osk_rect.x - 2;
+		x = osk_rect.x - 2 * tl;
 		
 		icon = osk_icon;
 		if (!icon)
@@ -158,11 +160,11 @@ static void make_rects(void)
 		}
 	}
 	
-	frame_rect.x = x - 2;
-	frame_rect.y = 3;
-	frame_rect.w = clk_rect.x + clk_rect.w - frame_rect.x + 3;
-	frame_rect.h = tb_height - 5;
-	x -= 2;
+	frame_rect.x = x - 2 * tl;
+	frame_rect.y = 3 * tl;
+	frame_rect.w = clk_rect.x + clk_rect.w - frame_rect.x + 3 * tl;
+	frame_rect.h = tb_height - 5 * tl;
+	x -= 2 * tl;
 	
 	task_rect.x = 0;
 	task_rect.y = 0;
@@ -177,6 +179,7 @@ static void redraw_memory(void)
 	win_color bg = wc_get(WC_WIN_BG);
 	win_color fg = wc_get(WC_WIN_FG);
 	win_color f;
+	int tl = wm_get(WM_THIN_LINE);
 	int rh;
 	struct systat st;
 	
@@ -189,14 +192,14 @@ static void redraw_memory(void)
 	}
 	win_rgb2color(&f, 0, 255, 0);
 	
-	rh = (rsrc_rect.h - 2) * CCUR / CMAX;
+	rh = (rsrc_rect.h - tl * 2) * CCUR / CMAX;
 	
 	win_rect(tb_wd, bg, rsrc_rect.x, rsrc_rect.y, rsrc_rect.w, rsrc_rect.h);
-	win_rect(tb_wd, bg, rsrc_rect.x + 1, rsrc_rect.y, rsrc_rect.w - 2, rsrc_rect.h - rh - 1);
-	win_rect(tb_wd, f, rsrc_rect.x + 1, rsrc_rect.y + rsrc_rect.h - 1 - rh, rsrc_rect.w - 2, rh);
-	win_hline(tb_wd, fg, rsrc_rect.x, rsrc_rect.y + rsrc_rect.h - 1, rsrc_rect.w);
-	win_vline(tb_wd, fg, rsrc_rect.x, rsrc_rect.y, rsrc_rect.h);
-	win_vline(tb_wd, fg, rsrc_rect.x + rsrc_rect.w - 1, rsrc_rect.y, rsrc_rect.h);
+	win_rect(tb_wd, bg, rsrc_rect.x + tl, rsrc_rect.y, rsrc_rect.w - tl * 2, rsrc_rect.h - rh - tl);
+	win_rect(tb_wd, f,  rsrc_rect.x + tl, rsrc_rect.y + rsrc_rect.h - tl - rh, rsrc_rect.w - tl * 2, rh);
+	win_rect(tb_wd, fg, rsrc_rect.x, rsrc_rect.y + rsrc_rect.h - tl, rsrc_rect.w, tl);
+	win_rect(tb_wd, fg, rsrc_rect.x, rsrc_rect.y, tl, rsrc_rect.h);
+	win_rect(tb_wd, fg, rsrc_rect.x + rsrc_rect.w - tl, rsrc_rect.y, tl, rsrc_rect.h);
 #undef CCUR
 #undef CMAX
 }
@@ -205,12 +208,13 @@ static void redraw_rfsact(void)
 {
 	win_color bg = wc_get(WC_WIN_FG);
 	win_color fg = wc_get(WC_WIN_BG);
+	int tl = wm_get(WM_THIN_LINE);
 	
 	if (_rfsactive())
 		win_rgb2color(&fg, 255, 0, 0);
 	
 	win_rect(tb_wd, bg, rfsa_rect.x, rfsa_rect.y, rfsa_rect.w, rfsa_rect.h);
-	win_rect(tb_wd, fg, rfsa_rect.x + 1, rfsa_rect.y + 1, rfsa_rect.w - 2, rfsa_rect.h - 2);
+	win_rect(tb_wd, fg, rfsa_rect.x + tl, rfsa_rect.y + tl, rfsa_rect.w - 2 * tl, rfsa_rect.h - 2 * tl);
 }
 
 static void redraw_clock(void)
@@ -227,6 +231,7 @@ static void redraw_clock(void)
 	int tw, th;
 	int tx, ty;
 	int clk_w;
+	int tl;
 	
 	time(&t);
 	tm = localtime(&t);
@@ -245,11 +250,13 @@ static void redraw_clock(void)
 		tx += clk_h;
 	}
 	
+	tl = wm_get(WM_THIN_LINE);
+	
 	win_rect(tb_wd, bg, frame_rect.x, frame_rect.y, frame_rect.w, frame_rect.h);
-	win_hline(tb_wd, sh1, frame_rect.x, frame_rect.y, frame_rect.w);
-	win_vline(tb_wd, sh1, frame_rect.x, frame_rect.y, frame_rect.h);
-	win_hline(tb_wd, hi1, frame_rect.x, frame_rect.y + frame_rect.h - 1, frame_rect.w);
-	win_vline(tb_wd, hi1, frame_rect.x + frame_rect.w - 1, frame_rect.y, frame_rect.h);
+	win_rect(tb_wd, sh1, frame_rect.x, frame_rect.y, frame_rect.w, tl);
+	win_rect(tb_wd, sh1, frame_rect.x, frame_rect.y, tl, frame_rect.h);
+	win_rect(tb_wd, hi1, frame_rect.x, frame_rect.y + frame_rect.h - tl, frame_rect.w, tl);
+	win_rect(tb_wd, hi1, frame_rect.x + frame_rect.w - tl, frame_rect.y, tl, frame_rect.h);
 	
 	win_text(tb_wd, fg, clk_rect.x, clk_rect.y, str);
 	
@@ -277,6 +284,9 @@ static void redraw_button(struct win_data *wd, int x, int y, int w, int h, int s
 	char title[WIN_TITLE_MAX + 1];
 	int tw, th;
 	int ty;
+	int tl;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	win_text_size(WIN_FONT_DEFAULT, &tw, &th, wd->title);
 	ty = (h - th) / 2;
@@ -298,26 +308,26 @@ static void redraw_button(struct win_data *wd, int x, int y, int w, int h, int s
 	
 	if (wd - win_data == focus)
 	{
-		win_hline(tb_wd, sh1, x, y, w);
-		win_vline(tb_wd, sh1, x, y, h);
-		win_hline(tb_wd, hi1, x, y + h - 1, w);
-		win_vline(tb_wd, hi1, x + w - 1, y, h);
-		win_hline(tb_wd, sh2, x + 1, y + 1, w - 2);
-		win_vline(tb_wd, sh2, x + 1, y + 1, h - 2);
-		win_hline(tb_wd, hi2, x + 1, y + h - 2, w - 2);
-		win_vline(tb_wd, hi2, x + w - 2, y + 1, h - 2);
+		win_rect(tb_wd, sh1, x, y, w, tl);
+		win_rect(tb_wd, sh1, x, y, tl, h);
+		win_rect(tb_wd, hi1, x, y + h - tl, w, tl);
+		win_rect(tb_wd, hi1, x + w - tl, y, tl, h);
+		win_rect(tb_wd, sh2, x + tl, y + tl, w - 2 * tl, tl);
+		win_rect(tb_wd, sh2, x + tl, y + tl, tl, h - 2 * tl);
+		win_rect(tb_wd, hi2, x + tl, y + h - 2 * tl, w - 2 * tl, tl);
+		win_rect(tb_wd, hi2, x + w - 2 * tl, y + tl, tl, h - 2 * tl);
 		ty++;
 	}
 	else
 	{
-		win_hline(tb_wd, hi1, x, y, w);
-		win_vline(tb_wd, hi1, x, y, h);
-		win_hline(tb_wd, sh1, x, y + h - 1, w);
-		win_vline(tb_wd, sh1, x + w - 1, y, h);
-		win_hline(tb_wd, hi2, x + 1, y + 1, w - 2);
-		win_vline(tb_wd, hi2, x + 1, y + 1, h - 2);
-		win_hline(tb_wd, sh2, x + 1, y + h - 2, w - 2);
-		win_vline(tb_wd, sh2, x + w - 2, y + 1, h - 2);
+		win_rect(tb_wd, hi1, x, y, w, tl);
+		win_rect(tb_wd, hi1, x, y, tl, h);
+		win_rect(tb_wd, sh1, x, y + h - tl, w, tl);
+		win_rect(tb_wd, sh1, x + w - tl, y, tl, h);
+		win_rect(tb_wd, hi2, x + tl, y + tl, w - 2 * tl, tl);
+		win_rect(tb_wd, hi2, x + tl, y + tl, tl, h - 2 * tl);
+		win_rect(tb_wd, sh2, x + tl, y + h - 2 * tl, w - 2 * tl, tl);
+		win_rect(tb_wd, sh2, x + w - 2 * tl, y + tl, tl, h - 2 * tl);
 	}
 	
 	if (sel && focus == tb_wd)
@@ -333,14 +343,17 @@ static void redraw(int set_clip)
 	win_color bg = wc_get(WC_WIN_BG);
 	int x = 0;
 	int vi;
+	int tl;
 	int i;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	if (set_clip)
 		win_clip(tb_wd, 0, 0, desk_w, tb_height, 0, 0);
 	win_paint();
-	win_hline(tb_wd, hi1, 0, 0, desk_w);
-	win_hline(tb_wd, hi2, 0, 1, desk_w);
-	win_rect(tb_wd, bg, 0, 2, desk_w, tb_height - 2);
+	win_rect(tb_wd, hi1, 0,  0, desk_w, tl);
+	win_rect(tb_wd, hi2, 0, tl, desk_w, tl);
+	win_rect(tb_wd, bg, 0, 2 * tl, desk_w, tb_height - 2 * tl);
 	redraw_clock();
 	for (vi = 0, i = 0; i < win_count; i++)
 	{
@@ -348,7 +361,7 @@ static void redraw(int set_clip)
 			abort();
 		if (win_list[i]->visible)
 		{
-			redraw_button(win_list[i], x + 2, 3, tbb_width() - 4, tb_height - 5, vi == sel);
+			redraw_button(win_list[i], x + tl, 3 * tl, tbb_width() - 4 * tl, tb_height - 5 * tl, vi == sel);
 			x += tbb_width();
 			vi++;
 		}
@@ -738,6 +751,7 @@ int main()
 	struct timeval tv;
 	struct systat st;
 	int w, h;
+	int tl;
 	int i;
 	
 	if (getuid() != geteuid())
@@ -760,8 +774,10 @@ int main()
 	win_raise(tb_wd);
 	scan();
 	
+	tl = wm_get(WM_THIN_LINE);
+	
 	tbb_max_width = w * 23;
-	tb_height = h + 13;
+	tb_height = h + 13 * tl;
 	
 	if (win_taskbar(tb_proc))
 	{

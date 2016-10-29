@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <config/defaults.h>
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui_dlg.h>
@@ -47,6 +49,7 @@ static void colorsel_redraw(struct gadget *g, int wd)
 	win_color bg;
 	win_color c;
 	int w, h;
+	int tl;
 	
 	hi1 = wc_get(WC_HIGHLIGHT1);
 	hi2 = wc_get(WC_HIGHLIGHT2);
@@ -54,22 +57,26 @@ static void colorsel_redraw(struct gadget *g, int wd)
 	sh2 = wc_get(WC_SHADOW2);
 	bg  = wc_get(WC_BG);
 	
+	tl = wm_get(WM_THIN_LINE);
+	
 	w = g->rect.w;
 	h = g->rect.h;
 	
 	win_rgb2color(&c, g->colorsel.color.r,
 			  g->colorsel.color.g,
 			  g->colorsel.color.b);
+	
+	
 	win_rect(wd, bg, 0, 0, w, h);
-	win_hline(wd, sh1, 0, 0, w);
-	win_hline(wd, sh2, 1, 1, w - 2);
-	win_vline(wd, sh1, 0, 0, h);
-	win_vline(wd, sh2, 1, 1, h - 2);
-	win_hline(wd, hi1, 0, h - 1, w);
-	win_hline(wd, hi2, 1, h - 2, w - 2);
-	win_vline(wd, hi1, w - 1, 0, h);
-	win_vline(wd, hi2, w - 2, 1, h - 2);
-	win_rect(wd, c, 4, 4, g->rect.w - 8, g->rect.h - 8);
+	win_rect(wd, sh1, 0, 0, w, tl);
+	win_rect(wd, sh2, tl, tl, w - tl * 2, tl);
+	win_rect(wd, sh1, 0, 0, tl, h);
+	win_rect(wd, sh2, tl, tl, tl, h - tl * 2);
+	win_rect(wd, hi1, 0, h - tl, w, tl);
+	win_rect(wd, hi2, tl, h - 2 * tl, w - tl * 2, tl);
+	win_rect(wd, hi1, w - tl, 0, tl, h);
+	win_rect(wd, hi2, w - tl * 2, tl, tl, h - tl * 2);
+	win_rect(wd, c, tl * 4, tl * 4, g->rect.w - tl * 8, g->rect.h - tl * 8);
 }
 
 static void colorsel_key_down(struct gadget *g, unsigned ch, unsigned shift)

@@ -137,22 +137,24 @@ static int form_menu_xyitem(struct form *f, int x, int y)
 	return -1;
 }
 
-static void form_draw_rect3d(int wd, int x, int y, int w, int h,
-			     win_color hi1, win_color hi2,
-			     win_color sh1, win_color sh2,
-			     win_color bg)
+void form_draw_rect3d(int wd, int x, int y, int w, int h,
+		      win_color hi1, win_color hi2,
+		      win_color sh1, win_color sh2,
+		      win_color bg)
 {
-	win_hline(wd, hi1, x, y, w);
-	win_vline(wd, hi1, x, y, h);
-	win_hline(wd, sh1, x, y + h - 1, w);
-	win_vline(wd, sh1, x + w - 1, y, h);
+	int tl = wm_get(WM_THIN_LINE);
 	
-	win_hline(wd, hi2, x + 1, y + 1, w - 2);
-	win_vline(wd, hi2, x + 1, y + 1, h - 2);
-	win_hline(wd, sh2, x + 1, y + h - 2, w - 2);
-	win_vline(wd, sh2, x + w - 2, y + 1, h - 2);
+	win_rect(wd, hi1, x, y, w, tl);
+	win_rect(wd, hi1, x, y, tl, h);
+	win_rect(wd, sh1, x, y + h - tl, w, tl);
+	win_rect(wd, sh1, x + w - tl, y, tl, h);
 	
-	win_rect(wd, bg, x + 2, y + 2, w - 4, h - 4);
+	win_rect(wd, hi2, x + tl, y + tl, w - 2 * tl, tl);
+	win_rect(wd, hi2, x + tl, y + tl, tl, h - 2 * tl);
+	win_rect(wd, sh2, x + tl, y + h - 2 * tl, w - 2 * tl, tl);
+	win_rect(wd, sh2, x + w - 2 * tl, y + tl, tl, h - 2 * tl);
+	
+	win_rect(wd, bg, x + 2 * tl, y + 2 * tl, w - 4 * tl, h - 4 * tl);
 }
 
 static void form_draw_btn_bg(struct form *f, int x, int y, int w, int h, int st)
@@ -197,6 +199,8 @@ static void form_draw_closebtn(struct form *f)
 	int w = f->closebtn_rect.w;
 	int h = f->closebtn_rect.h;
 	const struct form_theme *th;
+	int tl = wm_get(WM_THIN_LINE);
+	int xt = tl * 2;
 	win_color fg;
 	int size;
 	int st;
@@ -240,20 +244,11 @@ static void form_draw_closebtn(struct form *f)
 	else
 		size = h;
 	
-	for (i = 4; i < size - 5; i++)
+	for (i = 4 * tl; i <= size - 4 * tl - xt; i++)
 	{
-		win_pixel(f->wd, fg, x + i,		y + i);
-		win_pixel(f->wd, fg, x + size - i - 1,	y + i);
-		
-		win_pixel(f->wd, fg, x + i,		y + i + 1);
-		win_pixel(f->wd, fg, x + size - i - 1,	y + i + 1);
-		
-		win_pixel(f->wd, fg, x + i + 1,		y + i);
-		win_pixel(f->wd, fg, x + size - i - 2,	y + i);
+		win_rect(f->wd, fg, x + size - i - xt, y + i, xt, xt);
+		win_rect(f->wd, fg, x + i,	       y + i, xt, xt);
 	}
-	
-	win_pixel(f->wd, fg, x + i,		y + i);
-	win_pixel(f->wd, fg, x + size - i - 1,	y + i);
 }
 
 static void form_draw_zoombtn(struct form *f)
@@ -263,6 +258,7 @@ static void form_draw_zoombtn(struct form *f)
 	int w = f->zoombtn_rect.w;
 	int h = f->zoombtn_rect.h;
 	const struct form_theme *th;
+	int tl = wm_get(WM_THIN_LINE);
 	win_color fg;
 	int st;
 	
@@ -302,15 +298,7 @@ static void form_draw_zoombtn(struct form *f)
 	
 	form_draw_btn_bg(f, x, y, w, h, st);
 	
-	win_hline(f->wd, fg, x + 4,	y + 4,	   w - 8);
-	win_vline(f->wd, fg, x + 4,	y + 4,	   h - 8);
-	win_hline(f->wd, fg, x + 4,	y + h - 5, w - 8);
-	win_vline(f->wd, fg, x + w - 5,	y + 4,	   h - 8);
-	
-	win_hline(f->wd, fg, x + 5,	y + 5,	   w - 10);
-	win_vline(f->wd, fg, x + 5,	y + 5,	   h - 10);
-	win_hline(f->wd, fg, x + 5,	y + h - 6, w - 10);
-	win_vline(f->wd, fg, x + w - 6,	y + 5,	   h - 10);
+	win_frame7(f->wd, fg, x + 4 * tl, y + 4 * tl, w - 8 * tl, h - 8 * tl, tl * 2);
 }
 
 static void form_draw_minibtn(struct form *f)
@@ -320,6 +308,9 @@ static void form_draw_minibtn(struct form *f)
 	int w = f->minibtn_rect.w;
 	int h = f->minibtn_rect.h;
 	const struct form_theme *th;
+	int tl = wm_get(WM_THIN_LINE);
+	int size;
+	int spc;
 	win_color fg;
 	int st;
 	
@@ -328,6 +319,14 @@ static void form_draw_minibtn(struct form *f)
 	
 	if (!w || !h)
 		return;
+	
+	if (w < h)
+		size = w;
+	else
+		size = h;
+	
+	spc  = size - 5 * tl;
+	spc /= 2;
 	
 	th = form_th_get();
 	if (th != NULL && th->d_closebtn != NULL)
@@ -359,15 +358,7 @@ static void form_draw_minibtn(struct form *f)
 	
 	form_draw_btn_bg(f, x, y, w, h, st);
 	
-	win_hline(f->wd, fg, x + 6,	y + 6,	   w - 12);
-	win_vline(f->wd, fg, x + 6,	y + 6,	   h - 12);
-	win_hline(f->wd, fg, x + 6,	y + h - 7, w - 12);
-	win_vline(f->wd, fg, x + w - 7,	y + 6,	   h - 12);
-	
-	win_hline(f->wd, fg, x + 7,	y + 7,	   w - 14);
-	win_vline(f->wd, fg, x + 7,	y + 7,	   h - 14);
-	win_hline(f->wd, fg, x + 7,	y + h - 8, w - 14);
-	win_vline(f->wd, fg, x + w - 8,	y + 7,	   h - 14);
+	win_frame7(f->wd, fg, x + spc, y + spc, w - 2 * spc, h - 2 * spc, tl * 2);
 }
 
 static void form_draw_menubtn(struct form *f)
@@ -376,6 +367,7 @@ static void form_draw_menubtn(struct form *f)
 	int y = f->menubtn_rect.y;
 	int w = f->menubtn_rect.w;
 	int h = f->menubtn_rect.h;
+	int tl = wm_get(WM_THIN_LINE);
 	const struct form_theme *th;
 	win_color fg;
 	int st;
@@ -415,9 +407,9 @@ static void form_draw_menubtn(struct form *f)
 	
 	form_draw_btn_bg(f, x, y, w, h, st);
 	
-	win_hline(f->wd, fg, x + 4, y + h / 2 - 2, w - 8);
-	win_hline(f->wd, fg, x + 4, y + h / 2 + 2, w - 8);
-	win_hline(f->wd, fg, x + 4, y + h / 2,	   w - 8);
+	win_rect(f->wd, fg, x + 4 * tl, y + h / 2 - 2 * tl, w - 8 * tl, tl);
+	win_rect(f->wd, fg, x + 4 * tl, y + h / 2 + 2 * tl, w - 8 * tl, tl);
+	win_rect(f->wd, fg, x + 4 * tl, y + h / 2,	    w - 8 * tl, tl);
 }
 
 static void form_draw_frame(struct form *f)
@@ -564,6 +556,7 @@ static void form_draw_menu(struct form *f, int set_clip)
 {
 	struct menu *m = f->menu;
 	struct menu_item *im;
+	int tl;
 	int wd = f->wd;
 	win_color s_bg;
 	win_color s_fg;
@@ -591,9 +584,11 @@ static void form_draw_menu(struct form *f, int set_clip)
 	sh   = wc_get(WC_SHADOW1);
 	ul   = wc_get(WC_MENU_UNDERLINE);
 	
+	tl = wm_get(WM_THIN_LINE);
+	
 	win_paint();
 	win_rect(wd, bg, x, y, f->menu_rect.w, f->menu_rect.h - 1);
-	win_hline(wd, ul, x, y + f->menu_rect.h - 1, f->menu_rect.w);
+	win_rect(wd, ul, x, y + f->menu_rect.h - tl, f->menu_rect.w, tl);
 	
 	for (i = 0; i < m->item_count; i++)
 	{
@@ -603,17 +598,17 @@ static void form_draw_menu(struct form *f, int set_clip)
 		{
 			if (i == m->selection /* && f->menu_active */)
 			{
-				win_rect(wd, s_bg, x + im->rect.x, y + im->rect.y, im->rect.w, im->rect.h);
-				win_text(wd, s_fg, x + im->rect.x + 4, y + im->rect.y + 1, im->text);
+				win_rect(wd, s_bg, x + im->rect.x,     y + im->rect.y,	   im->rect.w, im->rect.h);
+				win_text(wd, s_fg, x + im->rect.x + 4 * tl, y + im->rect.y + tl, im->text);
 			}
 			else
-				win_text(wd, fg, x + im->rect.x + 4, y + im->rect.y + 1, im->text);
+				win_text(wd, fg, x + im->rect.x + 4 * tl, y + im->rect.y + tl, im->text);
 		}
 		else
 		{
 			win_rect(wd, bg, x + im->rect.x, y + im->rect.y, im->rect.w, im->rect.h);
-			win_vline(wd, sh, x + im->rect.x + 1, y + im->rect.y, im->rect.h);
-			win_vline(wd, hi, x + im->rect.x + 2, y + im->rect.y, im->rect.h);
+			win_rect(wd, sh, x + im->rect.x +     tl, y + im->rect.y, tl, im->rect.h);
+			win_rect(wd, hi, x + im->rect.x + 2 * tl, y + im->rect.y, tl, im->rect.h);
 		}
 	}
 	win_end_paint();
@@ -690,7 +685,9 @@ static void form_setup_rects(struct form *f, int w, int h)
 	
 	if (f->flags & FORM_TITLE)
 	{
-		f->title_rect.h = font_h + 6;
+		int tl = wm_get(WM_THIN_LINE);
+		
+		f->title_rect.h = font_h + 6 * tl;
 		
 		f->workspace_rect.y += f->title_rect.h;
 		f->win_rect.h += f->title_rect.h;
@@ -739,10 +736,12 @@ static void form_setup_rects(struct form *f, int w, int h)
 	
 	if (f->menu)
 	{
+		int tl = wm_get(WM_THIN_LINE);
+		
 		f->menu_rect.x = f->workspace_rect.x;
 		f->menu_rect.y = f->workspace_rect.y;
 		f->menu_rect.w = f->workspace_rect.w;
-		f->menu_rect.h = font_h + 3;
+		f->menu_rect.h = font_h + 3 * tl;
 		
 		f->workspace_rect.y += f->menu_rect.h;
 		f->win_rect.h += f->menu_rect.h;
@@ -2258,7 +2257,10 @@ int form_set_menu(struct form *form, void *menu)
 	int old_x;
 	int old_y;
 	int x = 0;
+	int tl;
 	int i;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	form->menu = menu;
 	if (menu)
@@ -2274,11 +2276,11 @@ int form_set_menu(struct form *form, void *menu)
 			
 			win_text_size(WIN_FONT_DEFAULT, &im->rect.w, &im->rect.h, im->text);
 			
-			im->rect.h += 2;
-			im->rect.w += 8;
+			im->rect.h += 2 * tl;
+			im->rect.w += 8 * tl;
 			
 			if (!strcmp(im->text, "-"))
-				im->rect.w = 4;
+				im->rect.w = 4 * tl;
 			
 			x += im->rect.w;
 		}

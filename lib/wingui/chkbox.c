@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
@@ -48,6 +49,7 @@ static void chkbox_redraw(struct gadget *g, int wd)
 	win_color bg;
 	int font_w;
 	int font_h;
+	int tl;
 	
 	win_text_size(WIN_FONT_DEFAULT, &font_w, &font_h, "X");
 	
@@ -58,6 +60,8 @@ static void chkbox_redraw(struct gadget *g, int wd)
 	hi2	= wc_get(WC_HIGHLIGHT2);
 	sh1	= wc_get(WC_SHADOW1);
 	sh2	= wc_get(WC_SHADOW2);
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	if (g->form->focus == g)
 	{
@@ -71,22 +75,22 @@ static void chkbox_redraw(struct gadget *g, int wd)
 	}
 	
 	win_rect(wd, text_bg, 0, 0, g->rect.w, g->rect.h);
-	win_text(wd, text_fg, font_h + 2, 0, g->text);
-	win_vline(wd, win_bg, font_h, 0, font_h);
+	win_text(wd, text_fg, font_h + 2 * tl, 0, g->text);
+	win_rect(wd, win_bg, font_h, 0, tl, font_h);
 	
-	win_rect(wd, bg, 1, 1, font_h - 2, font_h - 2);
-	win_hline(wd, sh2, 0, 0, font_h);
-	win_hline(wd, hi2, 0, font_h-1, font_h);
-	win_vline(wd, sh2, 0, 0, font_h);
-	win_vline(wd, hi2, font_h - 1, 0, font_h);
+	win_rect(wd, bg, tl, tl, font_h - 2 * tl, font_h - 2 * tl);
+	win_rect(wd, sh2, 0, 0, font_h, tl);
+	win_rect(wd, hi2, 0, font_h - tl, font_h, tl);
+	win_rect(wd, sh2, 0, 0, tl, font_h);
+	win_rect(wd, hi2, font_h - tl, 0, tl, font_h);
 	
-	win_hline(wd, sh1, 1, 1, font_h - 2);
-	win_hline(wd, hi1, 1, font_h - 2, font_h - 2);
-	win_vline(wd, sh1, 1, 1, font_h - 2);
-	win_vline(wd, hi1, font_h - 2, 1, font_h - 2);
+	win_rect(wd, sh1, tl, tl, font_h - 2 * tl, tl);
+	win_rect(wd, hi1, tl, font_h - 2 * tl, font_h - 2 * tl, tl);
+	win_rect(wd, sh1, tl, tl, tl, font_h - 2 * tl);
+	win_rect(wd, hi1, font_h - 2 * tl, tl, tl, font_h - 2 * tl);
 	
 	if (g->chkbox.state)
-		win_rect(wd, sel, 3, 3, font_h - 6, font_h - 6);
+		win_rect(wd, sel, 3 * tl, 3 * tl, font_h - 6 * tl, font_h - 6 * tl);
 }
 
 static void chkbox_ptr_down(struct gadget *g, int x, int y, int button)

@@ -789,9 +789,9 @@ int win_text_size(int ftd, int *w, int *h, const char *text)
 		return err;
 	
 	if (ftd == WIN_FONT_DEFAULT)
-		ft = &win_font[DEFAULT_FTD];
-	else
-		ft = &win_font[ftd];
+		ftd = DEFAULT_FTD;
+	ftd = curr->win_task.desktop->font_map[ftd];
+	ft = &win_font[ftd];
 	
 	*w = 0;
 	*h = ft->glyph[0]->height;
@@ -859,9 +859,10 @@ int win_chr_size(int ftd, int *w, int *h, unsigned ch)
 		return err;
 	
 	if (ftd == WIN_FONT_DEFAULT)
-		ft = &win_font[DEFAULT_FTD];
-	else
-		ft = &win_font[ftd];
+		ftd = DEFAULT_FTD;
+	
+	ftd = curr->win_task.desktop->font_map[ftd];
+	ft = &win_font[ftd];
 	
 	*w = ft->glyph[ch & 0xff]->width;
 	*h = ft->glyph[ch & 0xff]->height;

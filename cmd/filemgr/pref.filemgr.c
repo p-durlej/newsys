@@ -72,6 +72,7 @@ int main(int argc, char **argv)
 	if (c_load("filemgr", &config, sizeof config))
 	{
 		config.show_dotfiles = 0;
+		config.large_icons = win_get_dpi_class();
 		config.form_w = 312;
 		config.form_h = 150;
 	}

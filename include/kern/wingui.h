@@ -37,8 +37,8 @@
 #define WIN_MAX			64
 #define FONT_MAX		16
 
-#define PTR_WIDTH		32
-#define PTR_HEIGHT		32
+#define PTR_WIDTH		64
+#define PTR_HEIGHT		64
 
 #define DEFAULT_FTD		1
 
@@ -177,6 +177,8 @@ struct win_desktop
 	size_t			dd_len;
 	int			dd_serial;
 	int			dragdrop;
+	int			dpi_class;
+	int			font_map[FONT_MAX];
 };
 
 struct win_task

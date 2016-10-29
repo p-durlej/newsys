@@ -143,13 +143,17 @@ static void update_title(void)
 
 void load_config(void)
 {
+	int tl;
+	
 	if (c_load("filemgr", &config, sizeof config))
 	{
+		tl = wm_get(WM_THIN_LINE);
+		
 		config.show_dotfiles	= 0;
-		config.form_w		= 332;
-		config.form_h		= 150;
+		config.form_w		= 332 * tl;
+		config.form_h		= 150 * tl;
 		config.show_path	= 0;
-		config.large_icons	= 0;
+		config.large_icons	= win_get_dpi_class();
 	}
 }
 

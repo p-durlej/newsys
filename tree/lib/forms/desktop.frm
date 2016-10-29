@@ -25,24 +25,23 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-form(-1,-1,300,188,"Desktop Prefs");
+form(-1,-1,300,172,"Desktop Prefs");
 flag(FORM_FXS_APPFLAGS);
 
 chkbox("moving",4,57,		"Display contents in moving windows");
 chkbox("zoom",4,73,		"Smart placement and zoom");
-chkbox("large",4,89,		"Use large fonts");
 
-label(NULL,6,111,		"Double click distance:");
-input("dc_dist",120,108,20,17,1);
-label(NULL,143,111,		"pixels");
+label(NULL,6,95,		"Double click distance:");
+input("dc_dist",120,92,20,17,1);
+label(NULL,143,95,		"pixels");
 
-label(NULL,6,129,		"Window frame width:");
-input("frame_width",120,126,20,17,1);
-label(NULL,143,129,		"pixels");
+label(NULL,6,113,		"Window frame width:");
+input("frame_width",120,110,20,17,1);
+label(NULL,143,113,		"pixels");
 
-label(NULL,6,147,		"Scroll bar width:");
-input("sb_width",120,144,20,17,1);
-label(NULL,143,147,		"pixels");
+label(NULL,6,131,		"Scroll bar width:");
+input("sb_width",120,128,20,17,1);
+label(NULL,143,131,		"pixels");
 
 frame(NULL,0,0,300,55,		"Backdrop");
 label("bd_path",10,15,		"");
@@ -51,8 +50,8 @@ chkbox("tile",10,32,		"Tile wallpaper");
 button(NULL,204,13,42,16,	"Change",1);
 button(NULL,248,13,42,16,	"Remove",2);
 
-button(NULL,2,170,60,16,	"OK",3);
-button(NULL,64,170,60,16,	"Cancel",-1);
+button(NULL,2,154,60,16,	"OK",3);
+button(NULL,64,154,60,16,	"Cancel",-1);
 
-frame(NULL,2,104,296,2,NULL);
-frame(NULL,2,164,296,2,NULL);
+frame(NULL,2,88,296,2,NULL);
+frame(NULL,2,148,296,2,NULL);

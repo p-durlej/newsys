@@ -24,11 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <config/defaults.h>
 #include <wingui_bitmap.h>
 #include <priv/pointer.h>
 #include <priv/wingui.h>
 #include <stdlib.h>
 #include <confdb.h>
+
+#define DEFAULT_HIDPI_PATH	"/lib/pointers/large"
+#define DEFAULT_PATH		"/lib/pointers"
 
 static void wp_load1(int id, const char *path, const char *name)
 {
@@ -77,11 +81,15 @@ void wp_load(void)
 {
 	char pathname[PATH_MAX];
 	struct ptr_conf pc;
+	const char *defpath = DEFAULT_PATH;
+	
+	if (win_get_dpi_class())
+		defpath = DEFAULT_HIDPI_PATH;
 	
 	if (c_load("/user/ptr_conf", &pc, sizeof pc))
-		strcpy(pc.ptr_path, "/lib/pointers");
+		strcpy(pc.ptr_path, defpath);
 	else if (strlen(pc.ptr_path) >= PATH_MAX - 6)
-		strcpy(pc.ptr_path, "/lib/pointers");
+		strcpy(pc.ptr_path, defpath);
 	
 	wp_load1(WIN_PTR_ARROW,	pc.ptr_path, "arrow");
 	wp_load1(WIN_PTR_BUSY,	pc.ptr_path, "busy");

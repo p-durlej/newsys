@@ -24,13 +24,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _PRIV_WINGUI_FORM_CFG_H
-#define _PRIV_WINGUI_FORM_CFG_H
+#include <config/defaults.h>
+#include <prefs/dmode.h>
+#include <confdb.h>
 
-struct form_cfg
+static struct dmode dm_mode;
+static int dm_mode_loaded;
+
+struct dmode *dm_get(void)
 {
-	int display_moving;
-	int smart_zoom;
-};
+	if (!dm_mode_loaded)
+	{
+		if (c_load("/desk/mode", &dm_mode, sizeof dm_mode))
+		{
+			memset(&dm_mode, 0, sizeof dm_mode);
+			
+			dm_mode.xres  = -1;
+			dm_mode.yres  = -1;
+			dm_mode.nclr  = -1;
+			dm_mode.nr    = -1;
+			dm_mode.hidpi = DEFAULT_LARGE_UI;
+		}
+		dm_mode_loaded = 1;
+	}
+	
+	return &dm_mode;
+}
 
-#endif
+int dm_save(void)
+{
+	if (!dm_get())
+		return -1;
+	
+	return c_save("/desk/mode", &dm_mode, sizeof dm_mode);
+}

@@ -24,12 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_metrics.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui.h>
+#include <prefs/dmode.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <confdb.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -41,6 +44,7 @@ static struct form *main_form;
 
 static struct gadget *res_label;
 static struct gadget *res_sbar;
+static struct gadget *hidpi_chkbox;
 
 static struct gadget *depth_label;
 static struct gadget *depth_sbar;
@@ -56,12 +60,16 @@ static struct res
 static int depth_count;
 static int depth[16];
 
-static void save_mode(int nr, int xres, int yres, int nclr)
+static int odpi;
+
+static void save_mode(int nr, int xres, int yres, int nclr, int hidpi)
 {
+	int wm_tab[WM_COUNT];
+	struct dmode *dm;
 	int dflags;
 	char *ddir;
 	FILE *f;
-	int fd;
+	int i;
 	
 	ddir = getenv("DESKTOP_DIR");
 	if (!ddir)
@@ -69,15 +77,18 @@ static void save_mode(int nr, int xres, int yres, int nclr)
 	if (chdir(ddir))
 		return;
 	
-	fd = open("mode", O_WRONLY | O_CREAT | O_TRUNC, 0600);
-	if (fd >= 0)
-	{
-		write(fd, &xres, sizeof xres);
-		write(fd, &yres, sizeof yres);
-		write(fd, &nclr, sizeof nclr);
-		write(fd, &nr,	 sizeof nr);
-		close(fd);
-	}
+	dm = dm_get();
+	if (!dm)
+		goto fail;
+	
+	dm->xres  = xres;
+	dm->yres  = yres;
+	dm->nclr  = nclr;
+	dm->nr    = nr;
+	dm->hidpi = hidpi;
+	
+	if (dm_save())
+		goto fail;
 	
 	dflags = win_dispflags();
 	if (dflags >= 0 && dflags & WIN_DF_BOOTFB)
@@ -93,11 +104,39 @@ static void save_mode(int nr, int xres, int yres, int nclr)
 			fclose(f);
 		}
 	}
+	
+	if (odpi != hidpi)
+	{
+		for (i = 0; i < WM_COUNT; i++)
+			wm_tab[i] = wm_get(i);
+		
+		if (hidpi)
+		{
+			wm_tab[WM_DOUBLECLICK]	= 6;
+			wm_tab[WM_SCROLLBAR]	= 24;
+			wm_tab[WM_THIN_LINE]	= 2;
+		}
+		else
+		{
+			wm_tab[WM_DOUBLECLICK]	= 3;
+			wm_tab[WM_SCROLLBAR]	= 12;
+			wm_tab[WM_THIN_LINE]	= 1;
+		}
+		
+		if (c_save("/user/metrics", &wm_tab, sizeof wm_tab))
+			goto fail;
+	}
+	
+	return;
+fail:
+	msgbox_perror(main_form, "Display Settings", "Cannot save configuration", errno);
+	return;
 }
 
 static void ok_click()
 {
 	struct win_modeinfo m;
+	int hidpi;
 	int ri = 0;
 	int di = 0;
 	int i = 0;
@@ -110,13 +149,15 @@ static void ok_click()
 	if (ri < 0 || di < 0 || ri >= res_count || di >= depth_count)
 		return;
 	
+	hidpi = chkbox_get_state(hidpi_chkbox);
+	
 	while (!win_modeinfo(i, &m))
 	{
 		if (m.width == res[ri].width && m.height == res[ri].height && m.ncolors == depth[di])
 		{
 			if (!win_setmode(i, 0))
 			{
-				save_mode(i, m.width, m.height, m.ncolors);
+				save_mode(i, m.width, m.height, m.ncolors, hidpi);
 				exit(0);
 			}
 			if (errno == EBUSY)
@@ -127,7 +168,7 @@ static void ok_click()
 					msg = "The display mode cannot be changed in the OS demo mode.\n\n"
 					      "Install the operating system to change the display mode.";
 				
-				save_mode(i, m.width, m.height, m.ncolors);
+				save_mode(i, m.width, m.height, m.ncolors, hidpi);
 				msgbox(main_form, "Display Settings", msg);
 				exit(0);
 			}
@@ -240,10 +281,11 @@ static void create_form(void)
 		msgbox_perror(NULL, "Display Settings", "Unable to load form", errno);
 		exit(errno);
 	}
-	res_label   = gadget_find(main_form, "res_label");
-	res_sbar    = gadget_find(main_form, "res_sbar");
-	depth_label = gadget_find(main_form, "depth_label");
-	depth_sbar  = gadget_find(main_form, "depth_sbar");
+	res_label    = gadget_find(main_form, "res_label");
+	res_sbar     = gadget_find(main_form, "res_sbar");
+	hidpi_chkbox = gadget_find(main_form, "hidpi_chkbox");
+	depth_label  = gadget_find(main_form, "depth_label");
+	depth_sbar   = gadget_find(main_form, "depth_sbar");
 	
 	button_on_click(gadget_find(main_form, "ok"), ok_click);
 	button_on_click(gadget_find(main_form, "cn"), cn_click);
@@ -295,6 +337,10 @@ int main(int argc, char **argv)
 	for (i = 0; i < depth_count; i++)
 		if (m.ncolors == depth[i])
 			hsbar_set_pos(depth_sbar, i);
+	
+	odpi = win_get_dpi_class();
+	
+	chkbox_set_state(hidpi_chkbox, odpi);
 	
 	update_depth_label();
 	update_res_label();

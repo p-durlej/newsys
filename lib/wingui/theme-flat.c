@@ -35,6 +35,7 @@ static int d_button(int wd, int x, int y, int w, int h, const char *label, int f
 {
 	win_color fr, fr1, bg, fg;
 	int tx, ty, tw, th;
+	int tl;
 	
 	if (flags & DB_DEPSD)
 	{
@@ -59,17 +60,12 @@ static int d_button(int wd, int x, int y, int w, int h, const char *label, int f
 		}
 	}
 	
-	win_hline(wd, fr, x,		y,	   w);
-	win_hline(wd, fr, x,		y + h - 1, w);
-	win_vline(wd, fr, x,		y + 1,     h - 2);
-	win_vline(wd, fr, x + w - 1,	y + 1,     h - 2);
+	tl = wm_get(WM_THIN_LINE);
 	
-	win_hline(wd, fr1, x + 1,	y + 1,	   w - 2);
-	win_hline(wd, fr1, x + 1,	y + h - 2, w - 2);
-	win_vline(wd, fr1, x + 1,	y + 2,     h - 4);
-	win_vline(wd, fr1, x + w - 2,	y + 2,     h - 4);
+	win_frame7(wd, fr, x, y, w, h, tl);
+	win_frame7(wd, fr1, x + tl, y + tl, w - 2 * tl, h - 2 * tl, tl);
 	
-	win_rect(wd, bg, x + 2, y + 2, w - 4, h - 4);
+	win_rect(wd, bg, x + 2 * tl, y + 2 * tl, w - 4 * tl, h - 4 * tl);
 	
 	win_text_size(WIN_FONT_DEFAULT, &tw, &th, label);
 	tx = x + (w - tw) / 2;
@@ -99,9 +95,11 @@ static int d_titlebtn(int wd, int x, int y, int w, int h, int flags)
 
 static int d_closebtn(int wd, int x, int y, int w, int h, int flags)
 {
+	int tl = wm_get(WM_THIN_LINE);
+	int th = tl * 2;
 	win_color fg;
 	int size;
-	int i;
+	int i, n;
 	
 	if (w < h)
 		size = w;
@@ -117,26 +115,18 @@ static int d_closebtn(int wd, int x, int y, int w, int h, int flags)
 	
 	d_titlebtn(wd, x, y, w, h, flags);
 	
-	for (i = 4; i < size - 5; i++)
+	for (i = 4 * tl; i <= size - 4 * tl - th; i++)
 	{
-		win_pixel(wd, fg, x + i,		y + i);
-		win_pixel(wd, fg, x + size - i - 1,	y + i);
-		
-		win_pixel(wd, fg, x + i,		y + i + 1);
-		win_pixel(wd, fg, x + size - i - 1,	y + i + 1);
-		
-		win_pixel(wd, fg, x + i + 1,		y + i);
-		win_pixel(wd, fg, x + size - i - 2,	y + i);
+		win_rect(wd, fg, x + size - i - th, y + i, th, th);
+		win_rect(wd, fg, x + i,		    y + i, th, th);
 	}
-	
-	win_pixel(wd, fg, x + i,		y + i);
-	win_pixel(wd, fg, x + size - i - 1,	y + i);
 	
 	return 0;
 }
 
 static int d_zoombtn(int wd, int x, int y, int w, int h, int flags)
 {
+	int tl = wm_get(WM_THIN_LINE);
 	win_color fg;
 	int size;
 	int i;
@@ -155,21 +145,14 @@ static int d_zoombtn(int wd, int x, int y, int w, int h, int flags)
 	
 	d_titlebtn(wd, x, y, w, h, flags);
 	
-	win_hline(wd, fg, x + 4,	y + 4,	   w - 8);
-	win_vline(wd, fg, x + 4,	y + 4,	   h - 8);
-	win_hline(wd, fg, x + 4,	y + h - 5, w - 8);
-	win_vline(wd, fg, x + w - 5,	y + 4,	   h - 8);
-	
-	win_hline(wd, fg, x + 5,	y + 5,	   w - 10);
-	win_vline(wd, fg, x + 5,	y + 5,	   h - 10);
-	win_hline(wd, fg, x + 5,	y + h - 6, w - 10);
-	win_vline(wd, fg, x + w - 6,	y + 5,	   h - 10);
-	
+	win_frame7(wd, fg, x + 4 * tl, y + 4 * tl, w - 8 * tl, h - 8 * tl, tl * 2);
 	return 0;
 }
 
 static int d_minibtn(int wd, int x, int y, int w, int h, int flags)
 {
+	int tl = wm_get(WM_THIN_LINE);
+	int spc;
 	win_color fg;
 	int size;
 	int i;
@@ -178,6 +161,9 @@ static int d_minibtn(int wd, int x, int y, int w, int h, int flags)
 		size = w;
 	else
 		size = h;
+	
+	spc  = size - 5 * tl;
+	spc /= 2;
 	
 	if (flags & DB_DEPSD)
 		fg = wc_get(WC_SEL_FG);
@@ -188,21 +174,13 @@ static int d_minibtn(int wd, int x, int y, int w, int h, int flags)
 	
 	d_titlebtn(wd, x, y, w, h, flags);
 	
-	win_hline(wd, fg, x + 6,	y + 6,	   w - 12);
-	win_vline(wd, fg, x + 6,	y + 6,	   h - 12);
-	win_hline(wd, fg, x + 6,	y + h - 7, w - 12);
-	win_vline(wd, fg, x + w - 7,	y + 6,	   h - 12);
-	
-	win_hline(wd, fg, x + 7,	y + 7,	   w - 14);
-	win_vline(wd, fg, x + 7,	y + 7,	   h - 14);
-	win_hline(wd, fg, x + 7,	y + h - 8, w - 14);
-	win_vline(wd, fg, x + w - 8,	y + 7,	   h - 14);
-	
+	win_frame7(wd, fg, x + spc, y + spc, w - 2 * spc, h - 2 * spc, tl * 2);
 	return 0;
 }
 
 static int d_menubtn(int wd, int x, int y, int w, int h, int flags)
 {
+	int tl = wm_get(WM_THIN_LINE);
 	win_color fg;
 	int size;
 	int i;
@@ -221,9 +199,9 @@ static int d_menubtn(int wd, int x, int y, int w, int h, int flags)
 	
 	d_titlebtn(wd, x, y, w, h, flags);
 	
-	win_hline(wd, fg, x + 4, y + h / 2 - 2, w - 8);
-	win_hline(wd, fg, x + 4, y + h / 2 + 2, w - 8);
-	win_hline(wd, fg, x + 4, y + h / 2,	w - 8);
+	win_rect(wd, fg, x + 4 * tl, y + h / 2 - 2 * tl, w - 8 * tl, tl);
+	win_rect(wd, fg, x + 4 * tl, y + h / 2 + 2 * tl, w - 8 * tl, tl);
+	win_rect(wd, fg, x + 4 * tl, y + h / 2,		 w - 8 * tl, tl);
 	
 	return 0;
 }

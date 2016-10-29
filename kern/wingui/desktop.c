@@ -41,38 +41,70 @@ static void _win_defptr(struct win_display *disp, win_color *pixels, unsigned *m
 static void win_reset_ptrs(struct win_desktop *d);
 
 static char ptr_shape[PTR_WIDTH * PTR_HEIGHT] =
-"*                               "
-"**                              "
-"*X*                             "
-"*XX*                            "
-"*XXX*                           "
-"*XXXX*                          "
-"*XXXXX*                         "
-"*XXXXXX*                        "
-"*XXXXXXX*                       "
-"*XXXX*****                      "
-"*XX*XX*                         "
-"*X**XX*                         "
-"** *XXX*                        "
-"    *XX*                        "
-"    *XX*                        "
-"     **                         "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
-"                                "
+"*                                                               "
+"**                                                              "
+"*X*                                                             "
+"*XX*                                                            "
+"*XXX*                                                           "
+"*XXXX*                                                          "
+"*XXXXX*                                                         "
+"*XXXXXX*                                                        "
+"*XXXXXXX*                                                       "
+"*XXXX*****                                                      "
+"*XX*XX*                                                         "
+"*X**XX*                                                         "
+"** *XXX*                                                        "
+"    *XX*                                                        "
+"    *XX*                                                        "
+"     **                                                         "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
+"                                                                "
 ;
 
 struct list win_desktops;
@@ -138,6 +170,10 @@ int win_newdesktop(const char *name)
 	
 	curr->win_task.inh_desktop = d;
 	curr->win_task.desktop	   = d;
+	
+	for (i = 0; i < FONT_MAX; i++)
+		d->font_map[i] = i;
+	
 	win_reset();
 	
 	return 0;
@@ -398,10 +434,14 @@ int win_getmode(int *mode)
 	return 0;
 }
 
-int win_insert_ptr(int ptr, const win_color *pixels, const unsigned *mask, int w, int h, int x, int y)
+int win_insert_ptr(int ptr, const win_color *pixels, const unsigned *mask, int w, int h, int hx, int hy)
 {
+	static win_color pbuf[PTR_WIDTH * PTR_HEIGHT];
+	static unsigned  mbuf[PTR_WIDTH * PTR_HEIGHT];
+	
 	struct win_desktop *d = curr->win_task.desktop;
 	struct win_pointer *p;
+	int x, y;
 	
 	if (!d)
 		return ENODESKTOP;
@@ -409,20 +449,30 @@ int win_insert_ptr(int ptr, const win_color *pixels, const unsigned *mask, int w
 	if (ptr < 0 || ptr >= WIN_PTR_MAX)
 		return EINVAL;
 	
-	if (w != PTR_WIDTH || h != PTR_HEIGHT) // XXX
+	if ((unsigned)w > PTR_WIDTH || (unsigned)h > PTR_HEIGHT)
 		return EINVAL;
 	
+	memset(pbuf, 0, sizeof pbuf);
+	memset(mbuf, 0, sizeof mbuf);
+	
+	for (y = 0; y < h; y++)
+		for (x = 0; x < w; x++)
+		{
+			pbuf[x + y * PTR_WIDTH] = pixels[x + y * w];
+			mbuf[x + y * PTR_WIDTH] = mask[x + y * w];
+		}
+	
 	p = &d->pointers[ptr];
-	memcpy(p->pixels, pixels, sizeof p->pixels);
-	memcpy(p->mask, mask, sizeof p->mask);
-	p->hx = x;
-	p->hy = y;
+	memcpy(p->pixels, pbuf, sizeof p->pixels);
+	memcpy(p->mask, mbuf, sizeof p->mask);
+	p->hx = hx;
+	p->hy = hy;
 	
 	win_lock();
 	if (d->currptr == p)
 	{
-		d->display->moveptr(d->display->data, d->ptr_x - x, d->ptr_y - y);
-		d->display->setptr(d->display->data, pixels, mask);
+		d->display->moveptr(d->display->data, d->ptr_x - hx, d->ptr_y - hy);
+		d->display->setptr(d->display->data, pbuf, mbuf);
 	}
 	win_unlock();
 	return 0;
@@ -486,6 +536,7 @@ int win_reset(void)
 	
 	for (i = 0; i < sizeof d->buttons / sizeof *d->buttons; i++)
 		d->buttons[i] = i;
+	
 	d->ptr_speed.acc_threshold = 0;
 	d->ptr_speed.acc_mul = 1;
 	d->ptr_speed.acc_div = 1;
