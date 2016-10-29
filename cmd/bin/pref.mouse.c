@@ -86,7 +86,14 @@ int main()
 	
 	for (i = 0; i < sizeof pconf.map / sizeof *pconf.map; i++)
 		pconf.map[i] = i;
-	c_load("ptr_conf", &pconf, sizeof pconf);
+	if (c_load("ptr_conf", &pconf, sizeof pconf))
+	{
+		if (win_get_dpi_class() > 0)
+			strcpy(pconf.ptr_path, "/lib/pointers/large");
+		else
+			strcpy(pconf.ptr_path, "/lib/pointers");
+	}
+	
 	win_get_ptr_speed(&pconf.speed);
 	
 	main_form	= form_load(MAIN_FORM);
