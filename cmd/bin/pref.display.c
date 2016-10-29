@@ -128,6 +128,9 @@ static void save_mode(int nr, int xres, int yres, int nclr, int hidpi)
 				wm_tab[WM_THIN_LINE]	= 1;
 			}
 			
+			wm_tab[WM_FRAME] *= hidpi ? 2 : 1;
+			wm_tab[WM_FRAME] /= odpi  ? 2 : 1;
+			
 			if (c_save("/user/metrics", &wm_tab, sizeof wm_tab))
 				goto fail;
 			
