@@ -27,6 +27,7 @@
 #include <wingui_metrics.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
+#include <wingui_dlg.h>
 #include <wingui.h>
 #include <prefs/dmode.h>
 #include <string.h>
@@ -50,6 +51,8 @@ static struct gadget *depth_label;
 static struct gadget *depth_sbar;
 
 static int res_count;
+
+static int reboot;
 
 static struct res
 {
@@ -107,30 +110,43 @@ static void save_mode(int nr, int xres, int yres, int nclr, int hidpi)
 	
 	if (odpi != hidpi)
 	{
-		for (i = 0; i < WM_COUNT; i++)
-			wm_tab[i] = wm_get(i);
-		
-		if (hidpi)
+		if (!getenv("OSDEMO"))
 		{
-			wm_tab[WM_DOUBLECLICK]	= 6;
-			wm_tab[WM_SCROLLBAR]	= 24;
-			wm_tab[WM_THIN_LINE]	= 2;
-		}
-		else
-		{
-			wm_tab[WM_DOUBLECLICK]	= 3;
-			wm_tab[WM_SCROLLBAR]	= 12;
-			wm_tab[WM_THIN_LINE]	= 1;
+			for (i = 0; i < WM_COUNT; i++)
+				wm_tab[i] = wm_get(i);
+			
+			if (hidpi)
+			{
+				wm_tab[WM_DOUBLECLICK]	= 6;
+				wm_tab[WM_SCROLLBAR]	= 24;
+				wm_tab[WM_THIN_LINE]	= 2;
+			}
+			else
+			{
+				wm_tab[WM_DOUBLECLICK]	= 3;
+				wm_tab[WM_SCROLLBAR]	= 12;
+				wm_tab[WM_THIN_LINE]	= 1;
+			}
+			
+			if (c_save("/user/metrics", &wm_tab, sizeof wm_tab))
+				goto fail;
+			
 		}
 		
-		if (c_save("/user/metrics", &wm_tab, sizeof wm_tab))
-			goto fail;
+		reboot = 1;
 	}
 	
 	return;
 fail:
 	msgbox_perror(main_form, "Display Settings", "Cannot save configuration", errno);
 	return;
+}
+
+static void xit(void)
+{
+	if (reboot)
+		dlg_reboot(main_form, "Display Settings");
+	exit(0);
 }
 
 static void ok_click()
@@ -162,15 +178,9 @@ static void ok_click()
 			}
 			if (errno == EBUSY)
 			{
-				const char *msg = "Reboot to update display settings.";
-				
-				if (getenv("OSDEMO"))
-					msg = "The display mode cannot be changed in the OS demo mode.\n\n"
-					      "Install the operating system to change the display mode.";
-				
 				save_mode(i, m.width, m.height, m.ncolors, hidpi);
-				msgbox(main_form, "Display Settings", msg);
-				exit(0);
+				reboot = 1;
+				xit();
 			}
 			msgbox_perror(main_form, "Display Settings", "Cannot set display mode", errno);
 			return;

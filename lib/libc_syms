@@ -598,3 +598,4 @@ dm_save
 win_set_dpi_class
 win_get_dpi_class
 win_set_font_map
+dlg_reboot

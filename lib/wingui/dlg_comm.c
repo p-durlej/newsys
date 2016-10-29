@@ -38,6 +38,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <paths.h>
 
 #define RGBCOLOR_FORM	"/lib/forms/rgbcolor.frm"
 #define MACHINE_FORM	"/lib/forms/machine.frm"
@@ -471,4 +472,31 @@ retry:
 int dlg_input(struct form *pf, const char *title, char *buf, int maxlen)
 {
 	return dlg_input5(pf, title, buf, maxlen, 0);
+}
+
+void dlg_reboot(struct form *pf, const char *title)
+{
+	int r;
+	
+	if (!title)
+		title = "Reboot";
+	
+	if (getenv("OSDEMO"))
+	{
+		msgbox(pf, title, "This configuration change cannot be applied when\n"
+				  "the system is running in the live CD/USB mode.");
+		return;
+	}
+	
+	if (!geteuid())
+	{
+		r = msgbox_ask(pf, title,
+			"The configuration change requires a reboot.\n\n"
+			"Do you want to reboot the system?");
+		if (r == MSGBOX_YES)
+			_newtaskl(_PATH_B_SHUTDOWN, _PATH_B_SHUTDOWN, "-r", (void *)NULL);
+		return;
+	}
+	
+	msgbox(pf, title, "Reboot to update the configuration.");
 }

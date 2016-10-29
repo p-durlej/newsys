@@ -55,4 +55,6 @@ void dlg_about(struct form *pf, const char *title, const char *desc);
 int dlg_input5(struct form *pf, const char *title, char *buf, int maxlen, int flags);
 int dlg_input(struct form *pf, const char *title, char *buf, int maxlen);
 
+void dlg_reboot(struct form *pf, const char *title);
+
 #endif

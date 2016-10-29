@@ -433,14 +433,9 @@ static void ok_click(void)
 		return;
 	}
 	if (!iflag)
-		msgbox(main_form, "Devices", "Reboot to update changes.");
+		dlg_reboot(main_form, "Devices");
 	exit(0);
 }
-
-/* static void cnc_click(void)
-{
-	exit(0);
-} */
 
 static void rm_click(void)
 {
