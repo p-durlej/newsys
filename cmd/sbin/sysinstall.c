@@ -943,6 +943,7 @@ static int ec_setmode1(int w, int h)
 		if (mi.width == w && mi.height == h && mi.ncolors == 16777216)
 		{
 			win_setmode(m, -1);
+			win_desktop_size(&desk_w, &desk_h);
 			return 0;
 		}
 		m++;
@@ -966,14 +967,18 @@ static int ec_setmode(int hires)
 
 static void eyecandy(void)
 {
+	char pathname[PATH_MAX];
 #if SYSINST_SETMODE
 	ec_setmode(0);
 #endif
 	
-	backdrop = bmp_load("/lib/bg/bg640x480.pgm");
+	sprintf(pathname, "/lib/bg/bg%ix%i.pgm", desk_w, desk_h);
+	
+	backdrop = bmp_load(pathname);
 	if (!backdrop)
-		warn("bmp_load: /lib/bg/bg640x480.pgm");
-	else
+		backdrop = bmp_load("/lib/bg/bg640x480.pgm");
+	
+	if (backdrop)
 		bmp_conv(backdrop);
 }
 
