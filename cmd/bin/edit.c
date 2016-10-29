@@ -525,11 +525,12 @@ static void create_form(void)
 	menu_newitem5(edit, "Delete",		WIN_KEY_DEL, 0,		delete_click);
 	
 	font = menu_creat();
-	menu_newitem4(font, "Mono",			'M', font_click)->l_data = WIN_FONT_MONO;
 	menu_newitem4(font, "System",			'D', font_click)->l_data = WIN_FONT_SYSTEM;
-	menu_newitem4(font, "Large Mono",		0,   font_click)->l_data = WIN_FONT_MONO_L;
-	menu_newitem4(font, "Large System",		'L', font_click)->l_data = WIN_FONT_SYSTEM_L;
+	menu_newitem4(font, "Mono",			'M', font_click)->l_data = WIN_FONT_MONO;
 	menu_newitem4(font, "Narrow Mono",		0,   font_click)->l_data = WIN_FONT_MONO_N;
+	menu_newitem (font, "-", NULL);
+	menu_newitem4(font, "Large System",		'L', font_click)->l_data = WIN_FONT_SYSTEM_L;
+	menu_newitem4(font, "Large Mono",		0,   font_click)->l_data = WIN_FONT_MONO_L;
 	menu_newitem4(font, "Large Narrow Mono",	0,   font_click)->l_data = WIN_FONT_MONO_LN;
 	
 	options = menu_creat();
