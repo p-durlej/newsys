@@ -145,7 +145,10 @@ int ft_getinfo(struct file_type *ft, const char *pathname)
 	strcpy(ft->icon, DEFAULT_ICON);
 	
 	if (stat(pathname, &st))
-		return -1;
+	{
+		type = "default";
+		goto skip;
+	}
 	
 	switch (st.st_mode & S_IFMT)
 	{
@@ -180,6 +183,7 @@ int ft_getinfo(struct file_type *ft, const char *pathname)
 	if (sizeof DB_PATH + strlen(type) + 4 >= sizeof ftdn)
 		type = getft(pathname);
 	
+skip:
 	strcpy(ftdn, DB_PATH);
 	if (*type == '.')
 	{

@@ -348,7 +348,7 @@ void main_icbox_request(struct gadget *g, int index, int button)
 	
 	if (stat(name, &st))
 	{
-		sprintf(msg, "Could not stat \"%s\":\n\n%m", name);
+		sprintf(msg, "Cannot stat \"%s\":\n\n%m", name);
 		msgbox(NULL, "File Manager", msg);
 		return;
 	}
@@ -455,8 +455,6 @@ restart:
 		strcpy(file_info[i].name, buf);
 		if (stat(buf, &file_info[i].st))
 		{
-			sprintf(msg, "Cannot stat %s:\n\n%m", buf);
-			msgbox(main_form, "File Manager", msg);
 			file_info[i].st.st_mode = S_IFREG;
 			file_info[i].st.st_size = -1;
 		}
@@ -661,8 +659,6 @@ restart:
 		strcpy(file_info[i].name, de->d_name);
 		if (stat(de->d_name, &file_info[i].st))
 		{
-			sprintf(msg, "Cannot stat %s:\n\n%m", de->d_name);
-			msgbox(main_form, "File Manager", msg);
 			file_info[i].st.st_mode = S_IFREG;
 			file_info[i].st.st_size = -1;
 		}
