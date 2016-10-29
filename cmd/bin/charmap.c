@@ -62,7 +62,7 @@ static void b_click(struct gadget *g, int x, int y)
 
 static void about_click(struct menu_item *mi)
 {
-	dlg_about7(f, NULL, "Character Map v1", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "charmap.pnm");
+	dlg_about7(f, NULL, "Character Map v1.2", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "charmap.pnm");
 }
 
 int main(int argc, char **argv)

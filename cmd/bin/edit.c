@@ -386,7 +386,7 @@ static void save_as_click(struct menu_item *mi)
 
 static void about(struct menu_item *mi)
 {
-	dlg_about7(main_form, NULL, "Text Editor v1", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "text.pnm");
+	dlg_about7(main_form, NULL, "Text Editor v1.2", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "text.pnm");
 }
 
 static void close_click(struct menu_item *mi)

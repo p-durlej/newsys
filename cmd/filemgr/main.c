@@ -904,7 +904,7 @@ static void df_click(struct menu_item *m)
 
 void about(struct menu_item *m)
 {
-	const char *name = desktop ? "Desktop v1.1" : "File Manager v1.1";
+	const char *name = desktop ? "Desktop v1.2" : "File Manager v1.2";
 	const char *icon = desktop ? "desktop.pnm"  : "filemgr.pnm";
 	
 	dlg_about7(main_form, NULL, name, SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, icon);
