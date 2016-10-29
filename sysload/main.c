@@ -840,6 +840,8 @@ static void load(void)
 	con_putsxy(2, 20, "Loading operating system ...");
 	con_progress(2, 22, 76, 0, 1);
 	con_status("Please wait ...", "");
+	con_gotoxy(78, 24);
+	con_update();
 	
 	mount_fs();
 	load_splash();
@@ -1010,12 +1012,12 @@ static void fbconf(void)
 	con_status("Loading display configuration ...", "");
 	
 	if (fs_lookup(&f, &fs, "/etc/bootfb.conf"))
-		return;
+		goto fini;
 	
 	cf = mem_alloc(f.size + 1, MA_SYSLOAD);
 	cf[f.size] = 0;
 	if (fs_load(&f, cf))
-		return;
+		goto fini;
 	
 	for (p = cf; ; p = p1 + 1)
 	{
@@ -1044,6 +1046,7 @@ static void fbconf(void)
 		}
 	}
 	
+fini:
 	con_status("", "");
 }
 
