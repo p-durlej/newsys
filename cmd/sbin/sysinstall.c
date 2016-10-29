@@ -932,20 +932,15 @@ void backdrop_proc(struct event *e)
 	}
 }
 
-static int ec_setmode(void)
+static int ec_setmode1(int w, int h)
 {
-	struct win_modeinfo mi, mi1;
+	struct win_modeinfo mi;
 	int m;
 	
-	win_getmode(&m);
-	win_modeinfo(m, &mi);
-	
 	m = 0;
-	while (!win_modeinfo(m, &mi1))
+	while (!win_modeinfo(m, &mi))
 	{
-		if (mi1.width	== mi.width  &&
-		    mi1.height	== mi.height &&
-		    mi1.ncolors	== 16777216)
+		if (mi.width == w && mi.height == h && mi.ncolors == 16777216)
 		{
 			win_setmode(m, -1);
 			return 0;
@@ -955,10 +950,24 @@ static int ec_setmode(void)
 	return -1;
 }
 
+static int ec_setmode(int hires)
+{
+	struct win_modeinfo mi;
+	int m;
+	
+	win_getmode(&m);
+	win_modeinfo(m, &mi);
+	
+	if (hires && !ec_setmode1(1024, 768))
+		return 0;
+	
+	return ec_setmode1(mi.width, mi.height);
+}
+
 static void eyecandy(void)
 {
 #if SYSINST_SETMODE
-	ec_setmode();
+	ec_setmode(0);
 #endif
 	
 	backdrop = bmp_load("/lib/bg/bg640x480.pgm");
@@ -1236,9 +1245,8 @@ static void init_font(const char *name, const char *pathname)
 	}
 }
 
-static void init_font_map(void)
+static void init_font_map(int hidpi)
 {
-#if DEFAULT_LARGE_UI
 	static const int map[] =
 	{
 		WIN_FONT_MONO_L,
@@ -1249,9 +1257,16 @@ static void init_font_map(void)
 		WIN_FONT_MONO_LN,
 	};
 	
-	win_set_font_map(map, sizeof map);
-	win_set_dpi_class(WIN_DPI_HIGH);
-#endif
+	if (hidpi)
+	{
+		win_set_font_map(map, sizeof map);
+		win_set_dpi_class(WIN_DPI_HIGH);
+	}
+	else
+	{
+		win_set_font_map(map, 0);
+		win_set_dpi_class(WIN_DPI_NORMAL);
+	}
 }
 
 void init_desktop(void)
@@ -1278,7 +1293,7 @@ void init_desktop(void)
 	}
 	putenv("DESKTOP_DIR=/tmp/desktop");
 	
-	init_font_map();
+	init_font_map(DEFAULT_LARGE_UI);
 }
 
 void init_rd(void)
@@ -1619,8 +1634,21 @@ void stage0(void)
 		
 		if (!access("/etc/single_disk", 0) && msgbox_ask(NULL, TITLE, "Do you want to start the desktop environment?") == MSGBOX_YES)
 		{
-			ec_setmode();
-			desktop = 1;
+			struct win_rect wsr;
+			
+			if (msgbox_ask(NULL, TITLE, "Use the high DPI mode?") == MSGBOX_YES)
+			{
+				ec_setmode(1);
+				win_ws_getrect(&wsr);
+				
+				if (wsr.w < 1024 || wsr.h < 768)
+					msgbox(NULL, TITLE, "The high DPI mode cannot be used with the current display resolution.");
+				else
+					init_font_map(1);
+				desktop = 1;
+			}
+			else
+				ec_setmode(0);
 		}
 		
 		putenv("OSDEMO=1");
