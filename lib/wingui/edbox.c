@@ -26,6 +26,7 @@
 
 #include <priv/wingui_theme.h>
 #include <priv/libc.h>
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
@@ -169,6 +170,7 @@ static void edbox_redraw_line(struct gadget *g, int wd, int line)
 	int y = (line - g->edbox.topmost_line) * g->edbox.line_height;
 	int x = -g->edbox.hpos;
 	int sw = g->edbox.shadow_w;
+	int tl = wm_get(WM_THIN_LINE);
 	win_color crsr;
 	win_color s_bg;
 	win_color s_fg;
@@ -228,7 +230,7 @@ static void edbox_redraw_line(struct gadget *g, int wd, int line)
 		crsr_x = x;
 	
 	if (g->form->focus == g && g->form->focused && g->edbox.c_state && crsr_x >= 0)
-		win_rect(wd, crsr, crsr_x, y, 2, g->edbox.line_height);
+		win_rect(wd, crsr, crsr_x, y, 2 * tl, g->edbox.line_height);
 	
 	win_end_paint();
 }
@@ -236,13 +238,11 @@ static void edbox_redraw_line(struct gadget *g, int wd, int line)
 static void edbox_redraw(struct gadget *g, int wd)
 {
 	const struct form_theme *th = form_th_get();
-	win_color crsr;
 	win_color bg;
 	int vlc;
 	int lc;
 	int i;
 	
-	crsr = wc_get(WC_CURSOR);
 	bg = wc_get(WC_BG);
 	
 	edbox_get_line_count(g, &lc);

@@ -25,6 +25,7 @@
  */
 
 #include <priv/wingui_form.h>
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
@@ -51,7 +52,10 @@ static void input_redraw_cursor(struct gadget *g, int wd)
 	int text_w;
 	int text_h;
 	char ch;
+	int tl;
 	int y;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	if (g->input.flags & INPUT_PASSWORD)
 	{
@@ -73,11 +77,11 @@ static void input_redraw_cursor(struct gadget *g, int wd)
 	win_paint();
 	
 	if (!g->input.c_state)
-		win_rect(wd, bg, y + text_w, y, 2, text_h);
+		win_rect(wd, bg, y + text_w, y, 2 * tl, text_h);
 	if (ch && (g->input.flags & INPUT_PASSWORD) == 0)
 		win_chr(wd, fg, y + text_w, y, ch);
 	if (g->input.c_state)
-		win_rect(wd, crsr, y + text_w, y, 2, text_h);
+		win_rect(wd, crsr, y + text_w, y, 2 * tl, text_h);
 	win_end_paint();
 }
 
@@ -90,6 +94,7 @@ static void input_redraw(struct gadget *g, int wd)
 	win_color sh2 = wc_get(WC_SHADOW2);
 	win_color bg = wc_get(WC_BG);
 	win_color fg = wc_get(WC_FG);
+	int tl = wm_get(WM_THIN_LINE);
 	int text_w;
 	int text_h;
 	int cur_x = 0;
@@ -111,7 +116,7 @@ static void input_redraw(struct gadget *g, int wd)
 	}
 	
 	if (g == g->form->focus && g->form->focused && g->input.c_state)
-		win_rect(wd, crsr, cur_x, y, 2, text_h);
+		win_rect(wd, crsr, cur_x, y, 2 * tl, text_h);
 	
 	if (g->input.flags & INPUT_FRAME)
 		form_draw_frame3d(wd, 0, 0, g->rect.w, g->rect.h, sh1, sh2, hi1, hi2);
