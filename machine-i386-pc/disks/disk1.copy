@@ -132,6 +132,8 @@ lib/forms/theme.frm
 lib/forms/unlock.frm
 lib/forms/vtty_color.frm
 lib/forms/vtty_font.frm
+lib/forms/filemgr.cpmv.frm
+lib/forms/filemgr.rm.frm
 lib/icons/dir.pnm
 lib/icons/error.pnm
 lib/icons/file.pnm

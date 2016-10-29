@@ -312,6 +312,8 @@
 600 /lib/forms/chpass.frm
 600 /lib/forms/user.frm
 644 /lib/forms/pref.time.frm
+644 /lib/forms/filemgr.cpmv.frm
+644 /lib/forms/filemgr.rm.frm
 
 644 /media/icons/.dirinfo
 

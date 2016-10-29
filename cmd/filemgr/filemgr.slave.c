@@ -334,12 +334,11 @@ static void detach_click()
 
 static void cpmv_status(char *src, char *dst, int move)
 {
-	static struct gadget *l1;
-	static struct gadget *l2;
-	static struct gadget *l3;
-	static struct gadget *l4;
-	static char l_src[PATH_MAX];
-	static char l_dst[PATH_MAX];
+	static struct gadget *mode_label;
+	static struct gadget *src_label;
+	static struct gadget *dst_label;
+	static struct gadget *cancel_btn;
+	static struct gadget *detach_btn;
 	
 	if (detach)
 	{
@@ -351,30 +350,40 @@ static void cpmv_status(char *src, char *dst, int move)
 	if (detached)
 		return;
 	
-	strcpy(l_src, src);
-	strcpy(l_dst, dst);
-	
 	if (!cpmv_form)
 	{
-		cpmv_form = form_creat(FORM_TITLE | FORM_FRAME, 1, -1, -1, 320, 68, move ? "Moving" : "Copying");
-		l1 = label_creat(cpmv_form, 2,  2, move ? "Moving:" : "Copying:");
-		l2 = label_creat(cpmv_form, 2, 18, "");
-		l3 = label_creat(cpmv_form, 2, 34, "To:");
-		l4 = label_creat(cpmv_form, 2, 50, "");
-		button_creat(cpmv_form, 196, 46, 60, 20, "Detach", detach_click);
-		button_creat(cpmv_form, 258, 46, 60, 20, "Cancel", cancel_click);
+		cpmv_form = form_load("/lib/forms/filemgr.cpmv.frm");
+		if (!cpmv_form)
+		{
+			msgbox_perror(NULL, "File Manager", "Cannot load the form", errno);
+			exit(1);
+		}
+		
+		mode_label = gadget_find(cpmv_form, "mode");
+		src_label  = gadget_find(cpmv_form, "src");
+		dst_label  = gadget_find(cpmv_form, "dst");
+		
+		detach_btn = gadget_find(cpmv_form, "detach");
+		cancel_btn = gadget_find(cpmv_form, "cancel");
+		
+		label_set_text(mode_label, move ? "Moving:" : "Copying:");
+		
+		button_on_click(detach_btn, detach_click);
+		button_on_click(cancel_btn, cancel_click);
 	}
 	
-	label_set_text(l2, l_src);
-	label_set_text(l4, l_dst);
+	label_set_text(src_label, src);
+	label_set_text(dst_label, dst);
+	
+	form_show(cpmv_form);
 	win_idle();
 }
 
 static void del_status(char *path)
 {
-	static struct gadget *l1;
-	static struct gadget *l2;
-	static char l_path[PATH_MAX];
+	static struct gadget *pathname_label;
+	static struct gadget *cancel_btn;
+	static struct gadget *detach_btn;
 	
 	if (detach)
 	{
@@ -386,18 +395,26 @@ static void del_status(char *path)
 	if (detached)
 		return;
 	
-	strcpy(l_path, path);
-	
 	if (!del_form)
 	{
-		del_form = form_creat(FORM_TITLE | FORM_FRAME, 1, -1, -1, 320, 68, "Removing");
-		l1 = label_creat(del_form, 2,  2, "Removing");
-		l2 = label_creat(del_form, 2, 18, "");
-		button_creat(del_form, 196, 46, 60, 20, "Detach", detach_click);
-		button_creat(del_form, 258, 46, 60, 20, "Cancel", cancel_click);
+		del_form = form_load("/lib/forms/filemgr.rm.frm");
+		if (!del_form)
+		{
+			msgbox_perror(NULL, "File Manager", "Cannot load the form", errno);
+			exit(1);
+		}
+		
+		pathname_label = gadget_find(del_form, "pathname");
+		
+		detach_btn = gadget_find(del_form, "detach");
+		cancel_btn = gadget_find(del_form, "cancel");
+		
+		button_on_click(detach_btn, detach_click);
+		button_on_click(cancel_btn, cancel_click);
 	}
 	
-	label_set_text(l2, l_path);
+	label_set_text(pathname_label, path);
+	form_show(del_form);
 	win_idle();
 }
 
