@@ -394,33 +394,9 @@ static void close_click(struct menu_item *mi)
 	form_close(main_form);
 }
 
-static void monof_click(struct menu_item *mi)
+static void font_click(struct menu_item *mi)
 {
-	config.ftd = WIN_FONT_MONO;
-	edbox_set_font(main_edbox, config.ftd);
-	update_ranges();
-	update_sbars();
-}
-
-static void sysf_click(struct menu_item *mi)
-{
-	config.ftd = WIN_FONT_SYSTEM;
-	edbox_set_font(main_edbox, config.ftd);
-	update_ranges();
-	update_sbars();
-}
-
-static void l_monof_click(struct menu_item *mi)
-{
-	config.ftd = 2;
-	edbox_set_font(main_edbox, config.ftd);
-	update_ranges();
-	update_sbars();
-}
-
-static void l_sysf_click(struct menu_item *mi)
-{
-	config.ftd = 3;
+	config.ftd = mi->l_data;
 	edbox_set_font(main_edbox, config.ftd);
 	update_ranges();
 	update_sbars();
@@ -549,10 +525,12 @@ static void create_form(void)
 	menu_newitem5(edit, "Delete",		WIN_KEY_DEL, 0,		delete_click);
 	
 	font = menu_creat();
-	menu_newitem4(font, "Mono",		'M', monof_click);
-	menu_newitem4(font, "System",		'D', sysf_click);
-	menu_newitem4(font, "Large Mono",	0,   l_monof_click);
-	menu_newitem4(font, "Large System",	'L', l_sysf_click);
+	menu_newitem4(font, "Mono",			'M', font_click)->l_data = WIN_FONT_MONO;
+	menu_newitem4(font, "System",			'D', font_click)->l_data = WIN_FONT_SYSTEM;
+	menu_newitem4(font, "Large Mono",		0,   font_click)->l_data = WIN_FONT_MONO_L;
+	menu_newitem4(font, "Large System",		'L', font_click)->l_data = WIN_FONT_SYSTEM_L;
+	menu_newitem4(font, "Narrow Mono",		0,   font_click)->l_data = WIN_FONT_MONO_N;
+	menu_newitem4(font, "Large Narrow Mono",	0,   font_click)->l_data = WIN_FONT_MONO_LN;
 	
 	options = menu_creat();
 	menu_newitem(options, "About ...", about);
