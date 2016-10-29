@@ -144,6 +144,9 @@ struct kfb *vga_init(void)
 		if (!vesa_find_and_set(bootfb_xres, bootfb_yres, bootfb_bpp))
 			goto fini;
 		
+		if (!vesa_find_and_set(1024, 768, 32))
+			goto fini;
+		
 		if (!vesa_find_and_set(640, 480, 32))
 			goto fini;
 		
