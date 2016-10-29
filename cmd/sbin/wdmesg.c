@@ -168,10 +168,13 @@ int main(int argc, char **argv)
 	menu_newitem(menu_edit, "Copy", m_copy);
 	
 	menu_font = menu_creat();
-	menu_newitem(menu_font, "Mono", m_setfont)->l_data = WIN_FONT_MONO;
-	menu_newitem(menu_font, "System", m_setfont)->l_data = WIN_FONT_SYSTEM;
-	menu_newitem(menu_font, "Large Mono", m_setfont)->l_data = 2;
-	menu_newitem(menu_font, "Large System", m_setfont)->l_data = 3;
+	menu_newitem4(menu_font, "System",		'D', m_setfont)->l_data = WIN_FONT_SYSTEM;
+	menu_newitem4(menu_font, "Mono",		'M', m_setfont)->l_data = WIN_FONT_MONO;
+	menu_newitem4(menu_font, "Narrow Mono",		0,   m_setfont)->l_data = WIN_FONT_MONO_N;
+	menu_newitem (menu_font, "-", NULL);
+	menu_newitem4(menu_font, "Large System",	'L', m_setfont)->l_data = WIN_FONT_SYSTEM_L;
+	menu_newitem4(menu_font, "Large Mono",		0,   m_setfont)->l_data = WIN_FONT_MONO_L;
+	menu_newitem4(menu_font, "Large Narrow Mono",	0,   m_setfont)->l_data = WIN_FONT_MONO_LN;
 	
 	menu_opt = menu_creat();
 	menu_newitem(menu_opt, "About", m_about);
