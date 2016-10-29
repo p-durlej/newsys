@@ -1586,7 +1586,7 @@ void stage0(void)
 		{
 			struct win_rect wsr;
 			
-			if (msgbox_ask(NULL, TITLE, "Use the high DPI mode?") == MSGBOX_YES)
+			if (msgbox_ask4(NULL, TITLE, "Use the high DPI mode?", MSGBOX_NO) == MSGBOX_YES)
 			{
 				ec_setmode(1);
 				win_ws_getrect(&wsr);
