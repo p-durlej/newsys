@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <config/defaults.h>
 #include <wingui_msgbox.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
@@ -145,7 +146,7 @@ int main(int argc, char **argv)
 		if (win_getmode(&i) || win_modeinfo(i, &mi) || mi.ncolors < 256)
 			strcpy(curr, "Low Color Default");
 		else
-			strcpy(curr, "Default");
+			strcpy(curr, DEFAULT_COLORS);
 	}
 	
 	main_form = form_load(MAIN_FORM);
