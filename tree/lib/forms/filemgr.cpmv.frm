@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-form(-1, -1, 320, 68, "File Manager");
+form(-1, -1, 320, 86, "File Manager");
 flag(FORM_TITLE);
 flag(FORM_FRAME);
 
@@ -34,5 +34,5 @@ label("src",  2, 18, "");
 label(NULL,   2, 34, "To:");
 label("dst",  2, 50, "");
 
-button("detach", 196, 46, 60, 20, "Detach", 1);
-button("cancel", 258, 46, 60, 20, "Cancel", 2);
+button("detach", 196, 64, 60, 20, "Detach", 1);
+button("cancel", 258, 64, 60, 20, "Cancel", 2);
