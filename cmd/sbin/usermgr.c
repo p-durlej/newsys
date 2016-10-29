@@ -692,7 +692,7 @@ int main(int argc, char **argv)
 	if (getenv("OSDEMO"))
 	{
 		msgbox(NULL, "User Account Manager",
-			"User Account Manager is not available in the OS live demo mode.\n\n"
+			"User Account Manager is not available in the live CD/USB mode.\n\n"
 			"Install the operating system to manage user accounts.");
 		return 0;
 	}

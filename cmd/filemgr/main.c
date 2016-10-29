@@ -1031,7 +1031,7 @@ void passwd_click(struct menu_item *m)
 	if (osdemo)
 	{
 		msgbox(main_form, "Change Password",
-			"Passwords cannot be changed in the OS live demo mode.\n\n"
+			"Passwords cannot be changed in the live CD/USB mode.\n\n"
 			"Install the operating system to set a password.");
 		return;
 	}

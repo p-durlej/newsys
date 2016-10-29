@@ -858,7 +858,7 @@ int main(int argc, char **argv)
 	{
 		form_show(main_form);
 		msgbox(main_form, "Devices",
-			"Existing device entries cannot be edited or removed in the OS live demo mode.\n\n"
+			"Existing device entries cannot be edited or removed in the live CD/USB mode.\n\n"
 			"Install the operating system to manage devices.");
 	}
 	
