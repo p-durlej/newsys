@@ -174,7 +174,7 @@ static void ok_click()
 			if (!win_setmode(i, 0))
 			{
 				save_mode(i, m.width, m.height, m.ncolors, hidpi);
-				exit(0);
+				xit();
 			}
 			if (errno == EBUSY)
 			{
