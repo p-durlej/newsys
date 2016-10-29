@@ -1586,6 +1586,8 @@ void stage0(void)
 		{
 			struct win_rect wsr;
 			
+			desktop = 1;
+			
 			if (msgbox_ask4(NULL, TITLE, "Use the high DPI mode?", MSGBOX_NO) == MSGBOX_YES)
 			{
 				ec_setmode(1);
@@ -1595,7 +1597,6 @@ void stage0(void)
 					msgbox(NULL, TITLE, "The high DPI mode cannot be used with the current display resolution.");
 				else
 					init_font_map(1);
-				desktop = 1;
 			}
 			else
 				ec_setmode(0);
