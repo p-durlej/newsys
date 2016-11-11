@@ -45,6 +45,7 @@
 	.globl	bioscall
 	.globl	farcall
 	.globl	bounce
+	.globl	btype
 	.globl	bcp
 	.globl	fcp
 	.globl	bbd
@@ -56,7 +57,7 @@
 _start:	jmp	start0
 
 	.org	_start + 16
-type:	.long	BOOT_TYPE_DISK
+btype:	.long	BOOT_TYPE_DISK
 base:	.long	_start
 size:	.long	_end - _start
 	.org	_start + 32
@@ -69,7 +70,7 @@ start0:
 	
 	call	0f
 0:	popw	%bx
-	addw	$type - 0b, %bx
+	addw	$btype - 0b, %bx
 	movb	(%bx), %al
 	
 	cmpb	$BOOT_TYPE_DISK, %al
@@ -97,7 +98,6 @@ pxe_boot:
 	ljmpw	$0, $start
 	
 cdrom_boot:
-	movl	$1, cdrom
 disk_boot:
 	ljmpw	$0, $start
 	
@@ -330,4 +330,3 @@ bcp:		.space	44
 fcp:		.space	24
 bounce:		.space	2048
 bbd:		.long	0
-cdrom:		.long	0

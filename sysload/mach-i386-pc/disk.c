@@ -27,6 +27,7 @@
 #include <sysload/i386-pc.h>
 #include <sysload/console.h>
 #include <sysload/itoa.h>
+#include <sysload/head.h>
 #include <sysload/disk.h>
 #include <sysload/main.h>
 #include <sysload/mem.h>
@@ -380,14 +381,20 @@ void disk_init(void)
 	con_setattr(0, 7, 0);
 	con_gotoxy(0, 0);
 	con_clear();
+	
+	con_puts("disk_init: bbd = ");
+	con_putx8(bbd);
+	con_puts(", btype = ");
+	con_putn(btype);
+	con_putc('\n');
 #endif
 	
 	for (i = 0; i < 4; i++)
 		disk_init_chs(i);
 	for (i = 128; i < 132; i++)
-		if (bbd != i || !cdrom)
+		if (bbd != i || btype != BOOT_TYPE_CDROM)
 			disk_init_chs(i);
-	if (bbd && cdrom)
+	if (bbd && btype == BOOT_TYPE_CDROM)
 		disk_init_cdrom(bbd);
 	pxe_init();
 	

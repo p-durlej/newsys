@@ -65,7 +65,7 @@ extern uint32_t	conv_mem_lbrk;
 extern uint32_t	bangpxe;
 extern uint32_t	pm_esp;
 extern uint8_t	bbd;
-extern uint32_t	cdrom;
+extern uint32_t	btype;
 
 extern char bounce[2048];
 
