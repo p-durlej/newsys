@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sudo growisofs -dvd-compat -Z /dev/cdrom=disks/cdrom.iso
