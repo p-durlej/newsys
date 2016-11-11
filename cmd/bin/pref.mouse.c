@@ -43,7 +43,7 @@ static struct gadget *swap_chk;
 static struct gadget *larg_chk;
 static struct form *main_form;
 
-static void ok_click()
+static void save_settings(void)
 {
 	int i;
 	
@@ -66,20 +66,35 @@ static void ok_click()
 		strcpy(pconf.ptr_path, "/lib/pointers");
 	
 	pconf.speed.acc_threshold = hsbar_get_pos(a_thrshld_hsbar) + 1;
-	pconf.speed.nor_mul = hsbar_get_pos(n_speed_hsbar);
-	pconf.speed.acc_mul = hsbar_get_pos(a_speed_hsbar);
+	pconf.speed.nor_mul = hsbar_get_pos(n_speed_hsbar) + 25;
+	pconf.speed.acc_mul = hsbar_get_pos(a_speed_hsbar) + 25;
 	pconf.speed.nor_div = 100;
 	pconf.speed.acc_div = 100;
 	win_map_buttons(pconf.map, sizeof pconf.map / sizeof *pconf.map);
 	win_set_ptr_speed(&pconf.speed);
 	c_save("ptr_conf", &pconf, sizeof pconf);
 	win_update();
+}
+
+static void reset_click(void)
+{
+	hsbar_set_pos(n_speed_hsbar, 75);
+	hsbar_set_pos(a_speed_hsbar, 75);
+	hsbar_set_pos(a_thrshld_hsbar, 0);
+	
+	save_settings();
+}
+
+static void ok_click(void)
+{
+	save_settings();
 	exit(0);
 }
 
 int main()
 {
 	int i;
+	int r;
 	
 	if (win_attach())
 		err(255, NULL);
@@ -103,13 +118,13 @@ int main()
 	swap_chk	= gadget_find(main_form, "swap");
 	larg_chk	= gadget_find(main_form, "large");
 	
-	hsbar_set_limit(n_speed_hsbar, 1000);
+	hsbar_set_limit(n_speed_hsbar, 975);
 	hsbar_set_step(n_speed_hsbar, 20);
-	hsbar_set_pos(n_speed_hsbar, 100 * pconf.speed.nor_mul / pconf.speed.nor_div);
+	hsbar_set_pos(n_speed_hsbar, 100 * pconf.speed.nor_mul / pconf.speed.nor_div - 25);
 	
-	hsbar_set_limit(a_speed_hsbar, 1000);
+	hsbar_set_limit(a_speed_hsbar, 975);
 	hsbar_set_step(a_speed_hsbar, 20);
-	hsbar_set_pos(a_speed_hsbar, 100 * pconf.speed.acc_mul / pconf.speed.acc_div);
+	hsbar_set_pos(a_speed_hsbar, 100 * pconf.speed.acc_mul / pconf.speed.acc_div - 25);
 	
 	hsbar_set_limit(a_thrshld_hsbar, 10);
 	hsbar_set_pos(a_thrshld_hsbar, pconf.speed.acc_threshold - 1);
@@ -120,7 +135,18 @@ int main()
 	if (pconf.map[0])
 		chkbox_set_state(swap_chk, 1);
 	
-	while (form_wait(main_form) != 2)
-		ok_click();
+	
+	while (r = form_wait(main_form), r != 2)
+		switch (r)
+		{
+		case 1:
+			ok_click();
+			break;
+		case 2:
+			break;
+		case 3:
+			reset_click();
+			break;
+		}
 	return 0;
 }

@@ -43,3 +43,4 @@ chkbox("large",100,131,		"Use large pointers");
 
 button(NULL,8,146,60,20,	"OK",1);
 button(NULL,72,146,60,20,	"Cancel",2);
+button(NULL,252,146,60,20,	"Reset",3);
