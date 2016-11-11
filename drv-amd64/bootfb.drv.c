@@ -388,8 +388,6 @@ static void invert_8(void *dd, win_color *c)
 		*c = 256 + 215 - *c;
 }
 
-/* ---- common functions --------------------------------------------------- */
-
 static int setup_8(struct kfb *kfb)
 {
 	int r, g, b;
@@ -409,6 +407,7 @@ static int setup_8(struct kfb *kfb)
 	if (err)
 		return err;
 	
+	mfb.vwidth = kfb->bytes_per_line;
 	mfb.width  = kfb->xres;
 	mfb.height = kfb->yres;
 	mfb.fbuf   = fbuf;
@@ -467,6 +466,7 @@ static int setup_32(struct kfb *kfb)
 	if (err)
 		return err;
 	
+	mfb.vwidth = kfb->bytes_per_line / 4; // XXX
 	mfb.width  = kfb->xres;
 	mfb.height = kfb->yres;
 	mfb.fbuf   = fbuf;
@@ -502,6 +502,8 @@ static int setup_32(struct kfb *kfb)
 	disp.swap	= swap_32;
 	return 0;
 }
+
+/* ---- common functions --------------------------------------------------- */
 
 static int bootfb_init(int md)
 {

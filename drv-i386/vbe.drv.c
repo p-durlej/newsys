@@ -440,6 +440,9 @@ static int vga_trymode(struct modeinfo *m)
 	if ((bios_buf[0x00] & 0x81) != 0x81)
 		return EINVAL;
 	
+	m->bytes_per_line  =	       bios_buf[0x10];
+	m->bytes_per_line |= (unsigned)bios_buf[0x11] << 8;
+	
 	m->xres  = 	     bios_buf[0x12];
 	m->xres |= (unsigned)bios_buf[0x13] << 8;
 	m->yres  = 	     bios_buf[0x14];
@@ -541,6 +544,7 @@ static int setmode_8(struct modeinfo *m)
 	err = phys_map(&fbuf, m->fbuf, fbuf_size, READ_CACHE);
 	if (err)
 		return err;
+	mfb.vwidth = m->bytes_per_line;
 	mfb.width  = m->xres;
 	mfb.height = m->yres;
 	mfb.fbuf   = fbuf;
@@ -559,10 +563,10 @@ static int setmode_8(struct modeinfo *m)
 				setcte_8(NULL, i, r * 51, g * 51, b * 51);
 	memset(fbuf, 0, m->xres * m->yres);
 	
-	disp.width	    = m->xres;
-	disp.height	    = m->yres;
-	disp.ncolors	    = 256;
-	disp.user_cte	    = 216;
+	disp.width	= m->xres;
+	disp.height	= m->yres;
+	disp.ncolors	= 256;
+	disp.user_cte	= 216;
 #if INVERT_CUSTOM
 	disp.user_cte_count = 20;
 #else
@@ -698,6 +702,7 @@ static int setmode(void *dd, int mode, int refresh)
 	err = phys_map(&fbuf, modetab[mode].fbuf, fbuf_size, READ_CACHE);
 	if (err)
 		return err;
+	mfb.vwidth = m->bytes_per_line / 4; // XXX
 	mfb.width  = m->xres;
 	mfb.height = m->yres;
 	mfb.fbuf   = fbuf;

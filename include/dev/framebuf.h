@@ -32,6 +32,7 @@ struct framebuf
 	struct win_display *	disp;
 	void *			fbuf;
 	int			width, height;
+	int			vwidth;
 	
 	unsigned		ptr_mask[PTR_WIDTH * PTR_HEIGHT];
 	win_color		ptr_shape[PTR_WIDTH * PTR_HEIGHT];
@@ -40,6 +41,7 @@ struct framebuf
 	int			ptr_hide_count;
 };
 
+struct framebuf *fb_creat5(struct win_display *disp, void *buf, int w, int h, int vw);
 struct framebuf *fb_creat(struct win_display *disp, void *buf, int w, int h);
 void fb_reset(struct framebuf *fb);
 void fb_free(struct framebuf *fb);

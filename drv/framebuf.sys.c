@@ -35,7 +35,7 @@ static void fb_getpix_p_32(void *dd, int x, int y, win_color *c);
 static void fb_putpix_p_8(void *dd, int x, int y, win_color c);
 static void fb_getpix_p_8(void *dd, int x, int y, win_color *c);
 
-struct framebuf *fb_creat(struct win_display *disp, void *buf, int w, int h)
+struct framebuf *fb_creat5(struct win_display *disp, void *buf, int w, int h, int vw)
 {
 	struct framebuf *fb;
 	int err;
@@ -44,11 +44,17 @@ struct framebuf *fb_creat(struct win_display *disp, void *buf, int w, int h)
 	if (err)
 		return NULL;
 	memset(fb, 0, sizeof *fb);
+	fb->vwidth = vw;
 	fb->width  = w;
 	fb->height = h;
 	fb->fbuf   = buf;
 	fb->disp   = disp;
 	return fb;
+}
+
+struct framebuf *fb_creat(struct win_display *disp, void *buf, int w, int h)
+{
+	return fb_creat5(disp, buf, w, h, w);
 }
 
 void fb_reset(struct framebuf *fb)
@@ -326,7 +332,7 @@ static void fb_putpix_p_32(void *dd, int x, int y, win_color c)
 	if (y < 0 || y >= fb->height)
 		return;
 	
-	fbuf_32[x + y * fb->width] = c;
+	fbuf_32[x + y * fb->vwidth] = c;
 }
 
 static void fb_getpix_p_32(void *dd, int x, int y, win_color *c)
@@ -339,7 +345,7 @@ static void fb_getpix_p_32(void *dd, int x, int y, win_color *c)
 	if (y < 0 || y >= fb->height)
 		goto badpos;
 	
-	*c = fbuf_32[x + y * fb->width];
+	*c = fbuf_32[x + y * fb->vwidth];
 	return;
 badpos:
 	*c = 0;
@@ -364,7 +370,7 @@ void fb_putpix_32(void *dd, int x, int y, win_color c)
 		}
 	}
 	
-	fbuf_32[x + y * fb->width] = c;
+	fbuf_32[x + y * fb->vwidth] = c;
 }
 
 void fb_getpix_32(void *dd, int x, int y, win_color *c)
@@ -386,7 +392,7 @@ void fb_getpix_32(void *dd, int x, int y, win_color *c)
 		}
 	}
 	
-	*c = fbuf_32[x + y * fb->width];
+	*c = fbuf_32[x + y * fb->vwidth];
 }
 
 void fb_hline_32(void *dd, int x, int y, int len, win_color c)
@@ -399,7 +405,7 @@ void fb_hline_32(void *dd, int x, int y, int len, win_color c)
 		for (i = x; i < x + len; i++)
 			fb_putpix_32(dd, i, y, c);
 	else
-		fill32(&fbuf_32[x + y * fb->width], c, len);
+		fill32(&fbuf_32[x + y * fb->vwidth], c, len);
 }
 
 void fb_vline_32(void *dd, int x, int y, int len, win_color c)
@@ -429,8 +435,8 @@ static void fb_copy_rev_32(void *dd, int x0, int y0, int x1, int y1, int w, int 
 	static int y;
 	
 	for (y = h - 1; y >= 0; y--)
-		cpy32bk(&fbuf_32[x0 + (y + y0) * fb->width],
-			&fbuf_32[x1 + (y + y1) * fb->width],
+		cpy32bk(&fbuf_32[x0 + (y + y0) * fb->vwidth],
+			&fbuf_32[x1 + (y + y1) * fb->vwidth],
 			w);
 }
 
@@ -446,8 +452,8 @@ void fb_copy_32(void *dd, int x0, int y0, int x1, int y1, int w, int h)
 	else
 	{
 		for (y = 0; y < h; y++)
-			cpy32fw(&fbuf_32[x0 + (y + y0) * fb->width],
-				&fbuf_32[x1 + (y + y1) * fb->width],
+			cpy32fw(&fbuf_32[x0 + (y + y0) * fb->vwidth],
+				&fbuf_32[x1 + (y + y1) * fb->vwidth],
 				w);
 	}
 	fb_showptr_32(dd);
@@ -465,7 +471,7 @@ static void fb_putpix_p_8(void *dd, int x, int y, win_color c)
 	if (y < 0 || y >= fb->height)
 		return;
 	
-	fbuf_8[x + y * fb->width] = c;
+	fbuf_8[x + y * fb->vwidth] = c;
 }
 
 static void fb_getpix_p_8(void *dd, int x, int y, win_color *c)
@@ -478,7 +484,7 @@ static void fb_getpix_p_8(void *dd, int x, int y, win_color *c)
 	if (y < 0 || y >= fb->height)
 		goto badpos;
 	
-	*c = fbuf_8[x + y * fb->width];
+	*c = fbuf_8[x + y * fb->vwidth];
 	return;
 badpos:
 	*c = 0;
@@ -502,7 +508,7 @@ void fb_putpix_8(void *dd, int x, int y, win_color c)
 		}
 	}
 	
-	fbuf_8[x + y * fb->width] = c;
+	fbuf_8[x + y * fb->vwidth] = c;
 }
 
 void fb_getpix_8(void *dd, int x, int y, win_color *c)
@@ -523,7 +529,7 @@ void fb_getpix_8(void *dd, int x, int y, win_color *c)
 		}
 	}
 	
-	*c = fbuf_8[x + y * fb->width];
+	*c = fbuf_8[x + y * fb->vwidth];
 }
 
 void fb_hline_8(void *dd, int x, int y, int len, win_color c)
@@ -536,7 +542,7 @@ void fb_hline_8(void *dd, int x, int y, int len, win_color c)
 		for (i = x; i < x + len; i++)
 			fb_putpix_8(dd, i, y, c);
 	else
-		memset((void *)&fbuf_8[x + y * fb->width], c, len);
+		memset((void *)&fbuf_8[x + y * fb->vwidth], c, len);
 }
 
 void fb_vline_8(void *dd, int x, int y, int len, win_color c)
@@ -566,8 +572,8 @@ static void fb_copy_rev_8(void *dd, int x0, int y0, int x1, int y1,
 	int y;
 	
 	for (y = h - 1; y >= 0; y--)
-		memmove((void *)&fbuf_8[x0 + (y + y0) * fb->width],
-			(void *)&fbuf_8[x1 + (y + y1) * fb->width],
+		memmove((void *)&fbuf_8[x0 + (y + y0) * fb->vwidth],
+			(void *)&fbuf_8[x1 + (y + y1) * fb->vwidth],
 			w);
 }
 
@@ -583,8 +589,8 @@ void fb_copy_8(void *dd, int x0, int y0, int x1, int y1, int w, int h)
 	else
 	{
 		for (y = 0; y < h; y++)
-			memmove((void *)&fbuf_8[x0 + (y + y0) * fb->width],
-				(void *)&fbuf_8[x1 + (y + y1) * fb->width],
+			memmove((void *)&fbuf_8[x0 + (y + y0) * fb->vwidth],
+				(void *)&fbuf_8[x1 + (y + y1) * fb->vwidth],
 				w);
 	}
 	fb_showptr_8(dd);
