@@ -72,14 +72,14 @@ int main(int argc, char **argv)
 	win_chr_size(WIN_FONT_DEFAULT, &w, &h, 'X');
 	
 	f = form_creat(FORM_TITLE | FORM_FRAME | FORM_ALLOW_CLOSE | FORM_ALLOW_MINIMIZE, 1,
-		       -1, -1, w * 53, (h + 2) * (cnt + 1) + 4, "Disk Space");
+		       -1, -1, w * 60, (h + 2) * (cnt + 1) + 4, "Disk Space");
 	form_on_close(f, on_close);
 	
 	label_creat(f, w /  3, 2, "PREFIX");
-	label_creat(f, w * 13, 2, "DEVICE");
-	label_creat(f, w * 23, 2, "FS TYPE");
-	label_creat(f, w * 33, 2, "USED");
-	label_creat(f, w * 43, 2, "TOTAL");
+	label_creat(f, w * 18, 2, "DEVICE");
+	label_creat(f, w * 30, 2, "FS TYPE");
+	label_creat(f, w * 40, 2, "USED");
+	label_creat(f, w * 50, 2, "TOTAL");
 	
 	y = h + 4;
 	for (i = 0; i < MOUNT_MAX; i++)
@@ -91,8 +91,8 @@ int main(int argc, char **argv)
 				p = "/";
 			
 			label_creat(f, w /  6, y, p);
-			label_creat(f, w * 13, y, mtab[i].device);
-			label_creat(f, w * 23, y, mtab[i].fstype);
+			label_creat(f, w * 18, y, mtab[i].device);
+			label_creat(f, w * 30, y, mtab[i].fstype);
 			y += h + 2;
 			
 			win_idle();
@@ -107,12 +107,12 @@ int main(int argc, char **argv)
 			
 			if (!_statfs(mtab[i].prefix, &st))
 			{
-				sprintf(used,  "%s", fmthumanoff((st.blk_total - st.blk_free) * 512, 1));
-				sprintf(total, "%s", fmthumanoff(st.blk_total * 512, 1));
+				sprintf(used,  "%s", fmthumanoff((st.blk_total - st.blk_free) * 512LL, 1));
+				sprintf(total, "%s", fmthumanoff(st.blk_total * 512LL, 1));
 			}
 			
-			label_creat(f, w * 33, y, used);
-			label_creat(f, w * 43, y, total);
+			label_creat(f, w * 40, y, used);
+			label_creat(f, w * 50, y, total);
 			y += h + 2;
 			
 			win_idle();
