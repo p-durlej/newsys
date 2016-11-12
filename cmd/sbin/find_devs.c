@@ -278,6 +278,7 @@ static struct pci_driver
 	const char *pathname;
 	const char *desc;
 	const char *name;
+	const char *type;
 	
 	uint32_t class, class_mask;
 	int vendor, product;
@@ -317,6 +318,7 @@ static int load_pci_driver_info(void)
 		}
 		
 		drv->name	= strtok(p,	"\t ");
+		drv->type	= strtok(NULL,	"\t ");
 		vid		= strtok(NULL,	"\t ");
 		pid		= strtok(NULL,	"\t ");
 		class		= strtok(NULL,	"\t ");
@@ -336,6 +338,7 @@ static int load_pci_driver_info(void)
 		}
 		
 		drv->name	= strdup(drv->name);
+		drv->type	= strdup(drv->type);
 		drv->pathname	= strdup(drv->pathname);
 		drv->desc	= strdup(drv->desc);
 		
@@ -453,7 +456,7 @@ static void find_pci_devs(void)
 			memset(&dev, 0, sizeof dev);
 			strcpy(dev.driver, drv->pathname);
 			strcpy(dev.desc, drv->desc);
-			strcpy(dev.type, "machine");
+			strcpy(dev.type, drv->type);
 			
 			n = 0;
 			do
