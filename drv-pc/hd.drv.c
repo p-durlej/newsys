@@ -417,7 +417,7 @@ static int hd_wait_irq(void)
 	if (hd_irq)
 		return 0;
 	
-	printk("pciide: wait_irq: disk not responding\n");
+	printk("hd.drv: wait_irq: disk not responding\n");
 	return EIO;
 }
 
