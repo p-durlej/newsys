@@ -262,7 +262,10 @@ static void do_auto_mounts(void)
 				break;
 			case BIO_TYPE_HD_SECTION:
 				if (bi.os != BIO_OS_SELF)
+				{
+					close(fd);
 					continue;
+				}
 				do_auto_mount(de->d_name, 0);
 				break;
 			default:
@@ -343,7 +346,10 @@ static void do_mounts(void)
 	char *buf;
 	char *p1;
 	char *p;
-	int fd;
+	int fd = -1;
+	
+	if (_boot_flags() & BOOT_SINGLE)
+		goto std;
 	
 	fd = open(_PATH_E_FSTAB, O_RDONLY);
 	if (fd < 0)
@@ -397,6 +403,8 @@ static void do_mounts(void)
 	free(buf);
 	
 std:
+	if (fd >= 0)
+		close(fd);
 	do_std_mounts();
 }
 

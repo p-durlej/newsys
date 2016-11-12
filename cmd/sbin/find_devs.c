@@ -844,12 +844,23 @@ static int try_ide(unsigned port0, unsigned port1, unsigned irq)
 	return 1;
 }
 
-static void find_disk(void)
+static void find_biosdisk(void)
 {
+#ifdef __MACH_I386_PC__
 	struct device d;
 	int i;
 	
-	memset(&d, 0, sizeof d);
+	for (i = 0; i < dev_count; i++)
+	{
+		if (!strcmp(devs[i].driver, "/lib/drv/fd.drv"))
+			continue;
+		if (strcmp(devs[i].type, "disk"))
+			continue;
+		
+		return;
+	}
+	
+	bzero(&d, sizeof d);
 	
 	d.pci_bus = d.pci_dev = d.pci_func = -1;
 	
@@ -857,6 +868,22 @@ static void find_disk(void)
 		d.irq_nr[i] = -1U;
 	for (i = 0; i < DEV_DMA_COUNT; i++)
 		d.dma_nr[i] = -1U;
+	
+	strcpy(d.driver, "/lib/drv/biosdisk.drv");
+	strcpy(d.desc, "Int 13 Disk(s)");
+	strcpy(d.name, "biosdisk0");
+	strcpy(d.type, "disk");
+	
+	add_dev(&d);
+#endif
+}
+
+static void find_disk(void)
+{
+	struct device d;
+	
+	memset(&d, 0, sizeof d);
+	
 	strcpy(d.type, "disk");
 	
 	if (try_ide(0x1f0, 0x3f6, 14))
@@ -898,6 +925,8 @@ static void find_disk(void)
 		strcpy(d.name,	 "fd0");
 		add_dev(&d);
 	}
+	
+	find_biosdisk();
 }
 
 static void find_devs(void)

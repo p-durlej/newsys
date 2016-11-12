@@ -2,6 +2,7 @@
 # machine dependent part
 
 600 /lib/drv/i386-pc.drv
+600 /lib/drv/biosdisk.drv
 600 /lib/drv/cmos.drv
 600 /lib/drv/mouse.drv
 600 /lib/drv/pckbd.drv

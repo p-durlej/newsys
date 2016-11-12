@@ -1,5 +1,5 @@
 
-DRV := vga.drv vga256.drv vbe.drv i386-pc.drv
+DRV := vga.drv vga256.drv vbe.drv i386-pc.drv biosdisk.drv
 
 I386_PC_O := i386-pc/main.o	\
 	     i386-pc/bios.o	\
