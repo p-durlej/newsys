@@ -31,7 +31,7 @@ flag(FORM_FRAME);
 
 frame(NULL,0,0,320,43,		"Pointer Speed");
 hsbar("speed",10,15,300,12);
-	
+
 frame(NULL,0,43,320,43,		"Accelerated Pointer Speed");
 hsbar("a_speed",10,58,300,12);
 
