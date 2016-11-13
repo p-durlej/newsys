@@ -14,6 +14,7 @@
 755 /bin/pref.mouse
 755 /bin/pref.desktop
 755 /bin/pref.osk
+755 /bin/pref.sound
 755 /bin/pref.theme
 755 /bin/vtty
 755 /bin/cli
@@ -171,6 +172,7 @@
 644 /lib/icons/theme.pnm
 644 /lib/icons/winlist.pnm
 644 /lib/icons/form.pnm
+644 /lib/icons/sound.pnm
 
 644 /lib/icons64/error.pnm
 644 /lib/icons64/drives.pnm
@@ -203,6 +205,7 @@
 644 /lib/icons64/sock.pnm
 644 /lib/icons64/lg.pnm
 644 /lib/icons64/theme.pnm
+644 /lib/icons64/sound.pnm
 
 644 /lib/bg/artp.pnm
 # 644 /lib/bg/bg640x480.pnm
@@ -225,6 +228,7 @@
 644 /lib/prefs/Users & Groups
 644 /lib/prefs/OSK
 644 /lib/prefs/UI Theme
+644 /lib/prefs/Sound
 
 600 /root/.startup
 600 /root/.desktop/.dirinfo
@@ -314,6 +318,7 @@
 644 /lib/forms/pref.time.frm
 644 /lib/forms/filemgr.cpmv.frm
 644 /lib/forms/filemgr.rm.frm
+644 /lib/forms/pref.sound.frm
 
 644 /media/icons/.dirinfo
 

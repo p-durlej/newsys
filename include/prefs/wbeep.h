@@ -24,21 +24,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <prefs/wbeep.h>
-#include <wingui_bell.h>
-#include <dev/speaker.h>
+#ifndef _PREFS_WBEEP_H
+#define _PREFS_WBEEP_H
 
-int wb(int type)
+struct pref_wbeep
 {
-	struct pref_wbeep *prefs;
-	
-	prefs = pref_wbeep_get();
-	if (!prefs)
-		return -1;
-	
-	if (!prefs->ena)
-		return 0;
-	
-	spk_tone(-1, prefs->freq, prefs->dur);
-	return 0;
-}
+	int freq;
+	int dur;
+	int ena;
+};
+
+struct pref_wbeep *pref_wbeep_get(void);
+int pref_wbeep_save(void);
+
+#endif

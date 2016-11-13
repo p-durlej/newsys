@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <priv/wingui_wbeep.h>
 #include <priv/wingui_form.h>
 #include <wingui_color.h>
 #include <wingui.h>
@@ -95,6 +96,8 @@ void evt_wait(void)
 			wc_loaded = 0;
 			break;
 		case WIN_E_UPDATE:
+			if (pref_wbeep_loaded)
+				pref_wbeep_reload();
 			if (form_cfg_loaded)
 				form_reload_config();
 			if (on_update)

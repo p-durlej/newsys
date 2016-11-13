@@ -59,7 +59,7 @@ LOCALE_O = locale/setlocale.o locale/localeconv.o
 
 DEV_O	 = dev/speaker.o
 
-PREFS_O = prefs/dmode.o
+PREFS_O = prefs/dmode.o prefs/wbeep.o
 
 LIB_O = crt0c.o perror.o dirent.o time.o confdb.o cprintf.o		\
         uname.o event.o assert.o list.o module.o newtask.o		\

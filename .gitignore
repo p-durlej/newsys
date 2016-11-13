@@ -77,6 +77,7 @@
 /cmd/bin/pref.display
 /cmd/bin/pref.mouse
 /cmd/bin/pref.osk
+/cmd/bin/pref.sound
 /cmd/bin/pref.theme
 /cmd/bin/pref.time
 /cmd/bin/ps

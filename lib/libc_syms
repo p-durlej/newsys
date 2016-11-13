@@ -599,3 +599,5 @@ win_set_dpi_class
 win_get_dpi_class
 win_set_font_map
 dlg_reboot
+pref_wbeep_get
+pref_wbeep_save

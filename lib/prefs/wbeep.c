@@ -24,21 +24,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <config/defaults.h>
 #include <prefs/wbeep.h>
-#include <wingui_bell.h>
-#include <dev/speaker.h>
+#include <confdb.h>
 
-int wb(int type)
+static struct pref_wbeep pref_wbeep;
+
+int pref_wbeep_loaded;
+
+void pref_wbeep_reload(void)
 {
-	struct pref_wbeep *prefs;
+	if (c_load("/user/wbeep", &pref_wbeep, sizeof pref_wbeep))
+	{
+		memset(&pref_wbeep, 0, sizeof pref_wbeep);
+		
+		pref_wbeep.freq	= 440;
+		pref_wbeep.dur	= 250;
+		pref_wbeep.ena	= 1;
+	}
+	pref_wbeep_loaded = 1;
+}
+
+struct pref_wbeep *pref_wbeep_get(void)
+{
+	if (!pref_wbeep_loaded)
+		pref_wbeep_reload();
 	
-	prefs = pref_wbeep_get();
-	if (!prefs)
+	return &pref_wbeep;
+}
+
+int pref_wbeep_save(void)
+{
+	if (!pref_wbeep_get())
 		return -1;
 	
-	if (!prefs->ena)
-		return 0;
-	
-	spk_tone(-1, prefs->freq, prefs->dur);
-	return 0;
+	return c_save("/user/wbeep", &pref_wbeep, sizeof pref_wbeep);
 }
