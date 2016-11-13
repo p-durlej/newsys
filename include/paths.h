@@ -98,6 +98,7 @@
 #define _PATH_L_KERN		"/lib/sys/kern.bin"
 #define _PATH_L_BB		"/lib/sys/hdboot.bin"
 #define _PATH_L_SYSLOAD		"/lib/sys/sysload"
+#define _PATH_L_LIBX		"/lib/sys/libx.bin"
 #define _PATH_L_THEMES		"/lib/w_themes"
 
 #define _PATH_H_DEFAULT		"/etc/syshome"

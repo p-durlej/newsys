@@ -26,11 +26,13 @@
 
 #include <arch/archdef.h>
 #include <kern/machine/machine.h>
+#include <kern/arch/page.h>
 #include <priv/libc_globals.h>
 #include <priv/libc.h>
 #include <priv/exec.h>
 #include <priv/sys.h>
 #include <priv/elf.h>
+#include <sys/utsname.h>
 #include <string.h>
 #include <module.h>
 #include <unistd.h>
@@ -42,6 +44,8 @@
 #include <errno.h>
 #include <os386.h>
 #include <sysver.h>
+#include <paths.h>
+#include <libx.h>
 
 #include "elo/elo.h"
 
@@ -60,6 +64,11 @@ extern const struct
 } exports[];
 
 typedef int main_t(int argc, char **argv, char **environ, void *libc_entry);
+
+void *lgetsym(const char *name);
+
+struct libxhdr *	libxh;
+struct libx		libx = { .lentry = libc_entry, .lgetsym = lgetsym };
 
 main_t *	p_main;
 void *		p_environ;
@@ -254,7 +263,7 @@ void load_exec(void)
 	v_end	  = xhdr.end;
 }
 
-void *get_sym(char *name)
+void *lgetsym(const char *name)
 {
 	char msg[256];
 	int i;
@@ -265,6 +274,14 @@ void *get_sym(char *name)
 	
 	sprintf(msg, "unresolved symbol: %s", name);
 	fail(msg, 0);
+}
+
+void *get_sym(const char *name)
+{
+	if (libx.xgetsym)
+		return libx.xgetsym(name);
+	
+	return lgetsym(name);
 }
 
 #ifdef __ARCH_I386__
@@ -394,6 +411,81 @@ static void noargs(void)
 	__libc_umask = 077;
 }
 
+static void load_libx(void)
+{
+#ifdef __ARCH_I386__
+	const char *isa = "i386";
+#elif defined __ARCH_AMD64__
+	const char *isa = "amd64";
+#else
+#error Unknown arch
+#endif
+	const char *msg = NULL;
+	struct utsname un;
+	struct stat st;
+	int npg;
+	int fd;
+	
+	fd = open(_PATH_L_LIBX, O_RDONLY);
+	if (fd < 0)
+		return;
+	
+	if (fstat(fd, &st))
+	{
+		msg = "Cannot stat";
+		goto clean;
+	}
+	npg = (st.st_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
+	
+	if (_pg_alloc(PAGE_LIBX, PAGE_LIBX + npg))
+	{
+		msg = "Cannot allocate memory";
+		goto clean;
+	}
+	
+	if (read(fd, (void *)(PAGE_LIBX << PAGE_SHIFT), st.st_size) != st.st_size)
+	{
+		msg = "Cannot read";
+		goto clean;
+	}
+	
+	uname(&un);
+	
+	libxh = (void *)(PAGE_LIBX << PAGE_SHIFT);
+	
+	if (strcmp(libxh->arch, isa))
+	{
+		_sysmesg(libxh->arch);
+		_sysmesg("\n");
+		
+		msg = "ISA mismatch";
+		goto clean;
+	}
+	
+	if (libxh->baseaddr != libxh)
+	{
+		msg = "Base address mismatch";
+		goto clean;
+	}
+	
+	if (libxh->sysmajver  > SYSVER_MAJOR || (libxh->sysmajver == SYSVER_MAJOR && libxh->sysminver > SYSVER_MINOR))
+	{
+		msg = "Newer OS version required";
+		goto clean;
+	}
+	
+	libxh->entry(SYSVER_MAJOR, SYSVER_MINOR, &libx);
+clean:
+	if (getpid() == 1 && msg)
+	{
+		_sysmesg(_PATH_L_LIBX);
+		_sysmesg(": ");
+		_sysmesg(msg);
+		_sysmesg("\n");
+	}
+	close(fd);
+}
+
 void load_main(char *arg, int arg_len, char *progname, int progfd)
 {
 	int	interp = 0;
@@ -442,6 +534,7 @@ void load_main(char *arg, int arg_len, char *progname, int progfd)
 	else
 		noargs();
 	
+	load_libx();
 retry:
 	_set_errno(0);
 	if (read(__libc_progfd, magic, sizeof magic) != sizeof magic)
@@ -464,6 +557,9 @@ retry:
 		_set_environ_ptr(p_environ);
 	if (p_errno)
 		_set_errno_ptr(p_errno);
+	
+	if (libx.progstart)
+		libx.progstart(__libc_progname, __libc_argc, __libc_argv);
 	
 	exit(p_main(__libc_argc, __libc_argv, _get_environ(), libc_entry));
 }

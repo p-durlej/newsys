@@ -45,7 +45,9 @@
 #define PAGE_LDR		0x0007fc00
 #define PAGE_LDR_END		0x00080000
 #define PAGE_IMAGE		0x00040000	/* XXX belongs to userspace */
-#define PAGE_IMAGE_END		0x0007fc00	/* XXX belongs to userspace */
+#define PAGE_IMAGE_END		0x0007f800	/* XXX belongs to userspace */
+#define PAGE_LIBX		0x0007f800
+#define PAGE_LIBX_END		0x0007fc00
 #define PAGE_HEAP		0x00080000	/* XXX belongs to userspace */
 #define PAGE_HEAP_END		0x000ff800	/* XXX belongs to userspace */
 #define PAGE_STACK		0x000ff800
