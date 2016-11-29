@@ -40,7 +40,7 @@
 
 /* extensions */
 
-#define _PATH_B_DEFSHELL	_PATH_B_CLI
+#define _PATH_B_DEFSHELL	_PATH_BSHELL
 
 #define _PATH_E_BOOT_CONF	"/etc/boot.conf"
 #define _PATH_E_SS_COPY		"/etc/sysinstall.copy"
