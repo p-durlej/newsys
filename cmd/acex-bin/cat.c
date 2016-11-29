@@ -52,6 +52,7 @@ static void do_cat(const char *name)
 			warn("%s: open", name);
 			return;
 		}
+		do_close = 1;
 	}
 	else
 	{
