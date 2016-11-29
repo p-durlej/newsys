@@ -7,6 +7,7 @@
 755 /bin/edit
 755 /bin/filemgr
 755 /bin/filemgr.slave
+755 /bin/hexdump
 755 /bin/pictview
 755 /bin/pref.color
 755 /bin/pref.display
