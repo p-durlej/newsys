@@ -248,9 +248,9 @@ use_chs:	.byte	0
 	.org	0x1ba
 
 #if HDFLAT
-	.org	0x1ee
-	.byte	0x80,	0,	1,	0
-	.byte	0xcc,	0,	2,	0
+	.org	0x1be
+	.byte	0x80,	1,	1,	0
+	.byte	0xcc,	15,	32,	31
 	.long	1,	16383
 #endif
 
