@@ -229,7 +229,7 @@ halt:
 msg_rdash:	.ascii	"|/-\\"
 msg_wait:	.asciz	"Loading ... "
 msg_error:	.asciz	"\r\n\r\nError!\r\n"
-msg_chs:	.asciz	"CHS!\007\007\007\r\n"
+msg_chs:	.asciz	"CHS!\r\n"
 
 cnt:		.word	0
 disk_c:		.long	0
