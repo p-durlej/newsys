@@ -40,13 +40,22 @@ static void hexdump(char *pathname)
 	FILE *f;
 	int i;
 	
-	f = fopen(pathname, "r");
-	if (!f)
+	if (pathname)
 	{
-		perror(pathname);
-		err = errno;
-		return;
+		f = fopen(pathname, "r");
+		if (!f)
+		{
+			perror(pathname);
+			err = errno;
+			return;
+		}
 	}
+	else
+	{
+		pathname = "stdin";
+		f = stdin;
+	}
+	
 	while (cnt = fread(buf, 1, sizeof buf, f), cnt)
 	{
 		printf("%08lx ", (long)off);
@@ -72,7 +81,8 @@ static void hexdump(char *pathname)
 		perror(pathname);
 		err = errno;
 	}
-	fclose(f);
+	if (f != stdin)
+		fclose(f);
 }
 
 int main(int argc, char **argv)
@@ -81,5 +91,7 @@ int main(int argc, char **argv)
 	
 	for (i = 1; i < argc; i++)
 		hexdump(argv[i]);
+	if (argc < 2)
+		hexdump(NULL);
 	return err;
 }
