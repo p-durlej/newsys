@@ -38,3 +38,5 @@ dd status=none if=/dev/null		of=disks/cdrom.iso	seek=16384
 cross/mkbfs disks/cdrom.iso 0 128 tree.tmp
 
 cross/mkbfs disks/pxe.img 0 128 tree.tmp
+
+genisoimage -V "NamelessOS" -o disks/altcd.iso -hard-disk-boot -eltorito-boot hdflat.img -hide boot.catalog -hide hdflat.img disks/hdflat.img doc/readme.txt

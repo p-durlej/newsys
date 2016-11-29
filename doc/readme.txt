@@ -1,0 +1,1 @@
+This is a bootable NamelessOS installation CD.
