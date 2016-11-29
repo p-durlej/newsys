@@ -32,4 +32,4 @@ cpu_shutdown:
 	lidt	1f
 	lgdt	1f
 	ljmp	(1f)
-1:	.word	0, 0, 0
+1:	.space	10
