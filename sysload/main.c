@@ -122,7 +122,7 @@ void fail(const char *s, const char *s1)
 static void copyright(void)
 {
 	con_gotoxy(0, 0);
-	con_puts("Operating System Loader v1.2\n"
+	con_puts("Operating System Loader v1.2.2\n"
 		 "Copyright (C) Piotr Durlej\n");
 	
 	con_gotoxy(81 - sizeof UTSNAME, 0);
