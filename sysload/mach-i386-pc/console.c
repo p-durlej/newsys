@@ -87,8 +87,11 @@ void con_showlogo(void *data, int size, int width)
 
 void con_hidelogo()
 {
-	con_logo = 0;
-	con_init();
+	if (con_logo)
+	{
+		con_logo = 0;
+		con_init();
+	}
 }
 
 void con_setattr(int bg, int fg, int attr)

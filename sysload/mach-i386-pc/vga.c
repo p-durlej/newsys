@@ -143,8 +143,15 @@ struct kfb *vga_init(void)
 			goto fini;
 	}
 	
-	bcp.eax	 = 0x0003;
+	bcp.eax	 = 0x0f00;
+	bcp.intr = 0x10;
 	bioscall();
+	
+	if ((bcp.eax & 255) != 3)
+	{
+		bcp.eax	 = 0x0003;
+		bioscall();
+	}
 	
 	bcp.eax	 = 0x0100;
 	bcp.ecx	 = 0x2000;
