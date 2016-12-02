@@ -366,44 +366,6 @@ static int read_uint(const char *prompt, unsigned min, unsigned max, unsigned *v
 	return 0;
 }
 
-static int read_yn(const char *prompt, int *vp)
-{
-	char buf[16];
-	char *p;
-	int cnt;
-	
-	for (;;)
-	{
-		fputs(prompt, stdout);
-		fflush(stdout);
-		
-		cnt = read(0, buf, sizeof buf - 1);
-		if (cnt < 0)
-		{
-			perror("stdin");
-			return -1;
-		}
-		if (!cnt)
-			return -1;
-		buf[cnt] = 0;
-		
-		p = strchr(buf, '\n');
-		if (p)
-			*p = 0;
-		
-		if (!strcmp(buf, "y") || !strcmp(buf, "yes"))
-		{
-			*vp = 1;
-			return 0;
-		}
-		if (!strcmp(buf, "n") || !strcmp(buf, "no"))
-		{
-			*vp = 0;
-			return 0;
-		}
-	}
-}
-
 static void delete_part(void)
 {
 	unsigned long i;
@@ -490,27 +452,28 @@ static void set_type(void)
 
 static void set_flags(void)
 {
-	unsigned flags;
 	unsigned i, n;
 	char msg[64];
-	int b;
 	
 	if (read_uint("Partition number: ", 0, 3, &i) || i < 0 || i >= part_cnt)
 		return;
-	if (read_uint("Flags: ", 0, 255, &flags))
+	for (n = 0; n < part_cnt; n++)
+	{
+		if (i == n || !part[n].flags)
+			continue;
+		
+		sprintf(msg, "Deactivating %i.\n", n);
+		part[n].flags = 0;
+	}
+	
+	if (part[i].flags == 128)
+	{
+		puts("Partition already active.");
 		return;
-	if (flags & 128)
-		for (n = 0; n < part_cnt; n++)
-		{
-			if (i == n || !part[n].flags)
-				continue;
-			
-			sprintf(msg, "Deactivate %i? ", n);
-			if (!read_yn(msg, &b) && b)
-				part[n].flags = 0;
-		}
-	part[i].flags = flags;
-	printf("Changed.\n");
+	}
+	
+	part[i].flags = 128;
+	printf("Changed active partition.\n");
 }
 
 static void install_ipl(void)
@@ -555,7 +518,7 @@ static void init_disk(void)
 static void help(void)
 {
 	puts("a  new partition");
-	puts("b  partition flags");
+	puts("b  change active partition");
 	puts("B  install IPL");
 	puts("d  delete partition");
 	puts("i  initialize with defaults");
