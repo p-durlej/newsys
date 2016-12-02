@@ -735,6 +735,7 @@ int main(int argc, char **argv)
 				"Check and repair filesystem.\n\n"
 				"    -F   try to repair the filesystem\n"
 				"    -v   be verbose\n"
+				"    -q   quiet mode\n"
 				"    -w   remount the filesystem read/write after succesfull check\n\n"
 				"Default is not to modify the filesystem even if errors are detected.\n\n"
 				"The filesystem is not accessible during a check.\n\n");
