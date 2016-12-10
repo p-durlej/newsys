@@ -1,5 +1,5 @@
 
-BIN := mkbfs fnc modinfo fnconv enlarge ckexe cdcks cfont wc2c psysload
+BIN := mkbfs fnc modinfo fnconv enlarge ckexe cdcks cfont wc2c psysload sysver
 
 CC := cc
 

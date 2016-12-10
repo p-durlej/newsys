@@ -48,6 +48,8 @@ cp -p	sysload/sysload.pxe	release/release/pxe/tftpboot/m/sysload
 cp -p	disks/pxe.img		release/release/pxe/tftpboot/m/image
 cp -p	doc/pxe.example		release/release/pxe/dhcpd.conf.example
 
-(cd release && tar cf ../release-$ARCH.tar release)
-rm -f release-$ARCH.tar.gz
-gzip release-$ARCH.tar
+sysver=$(cross/sysver)
+
+(cd release && tar cf ../release-$sysver-$ARCH.tar release)
+rm -f release-$sysver-$ARCH.tar.gz
+gzip release-$sysver-$ARCH.tar
