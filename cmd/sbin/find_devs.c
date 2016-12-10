@@ -123,6 +123,20 @@ static int load_dev(struct device *dev)
 	return 0;
 }
 
+static void init_dev(struct device *dev)
+{
+	int i;
+	
+	bzero(dev, sizeof *dev);
+	
+	dev->pci_bus = dev->pci_dev = dev->pci_func = -1;
+	
+	for (i = 0; i < DEV_DMA_COUNT; i++)
+		dev->dma_nr[i] = -1U;
+	for (i = 0; i < DEV_IRQ_COUNT; i++)
+		dev->irq_nr[i] = -1U;
+}
+
 static int add_dev(struct device *dev)
 {
 	struct device dev2 = *dev;
@@ -453,7 +467,8 @@ static void find_pci_devs(void)
 			struct device dev;
 			int n;
 			
-			memset(&dev, 0, sizeof dev);
+			init_dev(&dev);
+			
 			strcpy(dev.driver, drv->pathname);
 			strcpy(dev.desc, drv->desc);
 			strcpy(dev.type, drv->type);
@@ -466,11 +481,6 @@ static void find_pci_devs(void)
 			dev.pci_bus  = pdv->bus;
 			dev.pci_dev  = pdv->dev;
 			dev.pci_func = pdv->func;
-			
-			for (n = 0; n < DEV_DMA_COUNT; n++)
-				dev.dma_nr[n] = -1U;
-			for (n = 0; n < DEV_IRQ_COUNT; n++)
-				dev.irq_nr[n] = -1U;
 			
 			pci_dev_active[i] = 1;
 			add_dev(&dev);
@@ -485,12 +495,12 @@ static void find_pci_devs(void)
 static void find_system(void)
 {
 	struct device dev;
-	int i;
 	
 	if (is_drv_listed(SYSINST_MACHINE_DRV))
 		return;
 	
-	memset(&dev, 0, sizeof dev);
+	init_dev(&dev);
+	
 	strcpy(dev.driver, SYSINST_MACHINE_DRV);
 	strcpy(dev.desc,   SYSINST_MACHINE_DESC);
 	strcpy(dev.name,   UTSNAME);
@@ -506,25 +516,18 @@ static void find_system(void)
 	dev.io_base[3]	= 0xc0;
 	dev.io_size[3]	= 0x20;
 	
-	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
-	
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		dev.dma_nr[i] = -1U;
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		dev.irq_nr[i] = -1U;
-	
 	add_dev(&dev);
 }
 
 static void find_cmos(void)
 {
 	struct device dev;
-	int i;
 	
 	if (!is_port_free(0x70, 2))
 		return;
 	
-	memset(&dev, 0, sizeof dev);
+	init_dev(&dev);
+	
 	strcpy(dev.driver, "/lib/drv/cmos.drv");
 	strcpy(dev.desc,   "PC CMOS RAM");
 	strcpy(dev.name,   "cmos");
@@ -533,20 +536,12 @@ static void find_cmos(void)
 	dev.io_base[0]	= 0x70;
 	dev.io_size[0]	= 0x02;
 	
-	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
-	
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		dev.dma_nr[i] = -1U;
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		dev.irq_nr[i] = -1U;
-	
 	add_dev(&dev);
 }
 
 static void find_pci(void)
 {
 	struct device dev;
-	int i;
 	
 	if (!is_port_free(0xcf8, 8))
 		return;
@@ -554,19 +549,12 @@ static void find_pci(void)
 	if (!is_name_free("pci"))
 		return;
 	
-	memset(&dev, 0, sizeof dev);
+	init_dev(&dev);
 	
 	strcpy(dev.driver, "/lib/drv/pci.drv");
 	strcpy(dev.desc,   "PCI");
 	strcpy(dev.name,   "pci");
 	strcpy(dev.type,   "bus");
-	
-	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
-	
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		dev.dma_nr[i] = -1U;
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		dev.irq_nr[i] = -1U;
 	
 	dev.io_base[0] = 0xcf8;
 	dev.io_size[0] = 8;
@@ -583,20 +571,13 @@ static void find_vga(void)
 		return;
 	
 #ifdef __MACH_AMD64_PC__
-	memset(&dev, 0, sizeof dev);
+	init_dev(&dev);
 	
 	strcpy(dev.desktop_name, "desktop0");
 	strcpy(dev.driver, "/lib/drv/bootfb.drv");
 	strcpy(dev.desc, "BOOTFB");
 	strcpy(dev.name, "display");
 	strcpy(dev.type, "display");
-	
-	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
-	
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		dev.dma_nr[i] = -1U;
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		dev.irq_nr[i] = -1U;
 	
 	if (!add_dev(&dev))
 		return;
@@ -639,54 +620,38 @@ static void find_vga(void)
 static void find_pckbd(void)
 {
 	struct device dev;
-	int i;
-
+	
 	if (!is_port_free(0x60, 0x10))
 		return;
 	if (!is_irq_free(1))
 		return;
 	if (!is_irq_free(12))
 		return;
-
-	memset(&dev, 0, sizeof dev);
 	
-	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
+	init_dev(&dev);
 	
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		dev.dma_nr[i] = -1U;
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		dev.irq_nr[i] = -1U;
-
 	strcpy(dev.desktop_name, "desktop0");
 	strcpy(dev.driver,	 "/lib/drv/pckbd.drv");
 	strcpy(dev.desc,	 "PC Keyboard");
 	strcpy(dev.name,	 "keyboard");
 	strcpy(dev.type,	 "keyboard");
-
+	
 	dev.io_base[0] = 0x60;
 	dev.io_size[0] = 0x10;
 	dev.irq_nr[0]  = 1;
 	dev.irq_nr[1]  = 12;
-
+	
 	add_dev(&dev);
 }
 
 static void find_pcspk(void)
 {
 	struct device dev;
-	int i;
 	
 	if (is_drv_listed("/lib/drv/pcspk.drv"))
 		return;
 	
-	memset(&dev, 0, sizeof dev);
-	
-	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
-	
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		dev.dma_nr[i] = -1U;
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		dev.irq_nr[i] = -1U;
+	init_dev(&dev);
 	
 	strcpy(dev.driver,	"/lib/drv/pcspk.drv");
 	strcpy(dev.desc,	"PC Speaker");
@@ -758,7 +723,6 @@ static void try_mouse(struct device *dev)
 static void try_serial(char *name, unsigned iobase, unsigned irq)
 {
 	struct device dev;
-	int i;
 	
 	if (!is_port_free(iobase, 8))
 		return;
@@ -773,14 +737,7 @@ static void try_serial(char *name, unsigned iobase, unsigned irq)
 	if (inb(iobase + 1) != 0xe0)
 		return;
 	
-	memset(&dev, 0, sizeof dev);
-	
-	dev.pci_bus = dev.pci_dev = dev.pci_func = -1;
-	
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		dev.dma_nr[i] = -1U;
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		dev.irq_nr[i] = -1U;
+	init_dev(&dev);
 	
 	strcpy(dev.driver,	"/lib/drv/serial.drv");
 	strcpy(dev.desc,	"Serial Port");
@@ -860,14 +817,7 @@ static void find_biosdisk(void)
 		return;
 	}
 	
-	bzero(&d, sizeof d);
-	
-	d.pci_bus = d.pci_dev = d.pci_func = -1;
-	
-	for (i = 0; i < DEV_IRQ_COUNT; i++)
-		d.irq_nr[i] = -1U;
-	for (i = 0; i < DEV_DMA_COUNT; i++)
-		d.dma_nr[i] = -1U;
+	init_dev(&d);
 	
 	strcpy(d.driver, "/lib/drv/biosdisk.drv");
 	strcpy(d.desc, "Int 13 Disk(s)");
@@ -882,7 +832,7 @@ static void find_disk(void)
 {
 	struct device d;
 	
-	memset(&d, 0, sizeof d);
+	init_dev(&d);
 	
 	strcpy(d.type, "disk");
 	
