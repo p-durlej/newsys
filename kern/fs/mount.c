@@ -200,7 +200,10 @@ int fs_activate(struct fs *fs)
 #endif
 	err = fs->type->mount(fs);
 	if (err)
+	{
+		blk_syncdev(fs->dev, SYNC_WRITE | SYNC_INVALIDATE);
 		return err;
+	}
 	
 	s = intr_dis();
 	

@@ -36,7 +36,7 @@
 #include <devices.h>
 
 #define FD_MAX_RETRIES		3
-#define FD_IO_TIMEOUT		(3 * clock_hz())
+#define FD_IO_TIMEOUT		(clock_hz() / 2)
 #define ERROR_PRINTK		KVERBOSE
 
 #define FD_SPINUP_DELAY		(1 * clock_hz())
@@ -174,7 +174,8 @@ static int fd_reset(void)
 	for (i = 0; i < PHYS_UNITS; i++)
 		curr_cyl[i] = -1;
 	
-	outb(FDC_DOR, fdc_dor | 0x08);
+	outb(FDC_DOR, 0);
+	clock_delay(1);
 	outb(FDC_DOR, fdc_dor | 0x0c);
 	
 	err = fd_wait();
@@ -201,23 +202,37 @@ static int fd_reset(void)
 	return 0;
 }
 
+static unsigned fd_ticks(void)
+{
+	return clock_time() * clock_hz() + clock_ticks();
+}
+
 static int fd_wait(void)
 {
+	time_t tmout = fd_ticks() + FD_IO_TIMEOUT;
 	int s;
 	
 	s = intr_dis();
-	while (!fd_irq)
+	while (!fd_irq && fd_ticks() < tmout)
 		asm volatile("sti; hlt; cli;");
 	intr_res(s);
 	
+	if (!fd_irq)
+	{
+#if ERROR_PRINTK
+		printk("fd_wait: timeout\n");
+#endif
+		need_reset = 1;
+		return EIO;
+	}
 	return 0;
 }
 
 static int fd_out(unsigned byte)
 {
-	time_t tmout = clock_time() + FD_IO_TIMEOUT / clock_hz();
+	time_t tmout = fd_ticks() + FD_IO_TIMEOUT;
 	
-	while ((inb(FDC_MSR) & 0xc0) != 0x80 && clock_time() < tmout);
+	while ((inb(FDC_MSR) & 0xc0) != 0x80 && fd_ticks() < tmout);
 	if ((inb(FDC_MSR) & 0xc0) != 0x80)
 	{
 #if ERROR_PRINTK
@@ -234,9 +249,9 @@ static int fd_out(unsigned byte)
 
 static int fd_in(unsigned *byte)
 {
-	time_t tmout = clock_time() + FD_IO_TIMEOUT / clock_hz();
+	time_t tmout = fd_ticks() + FD_IO_TIMEOUT;
 	
-	while ((inb(FDC_MSR) & 0xc0) != 0xc0 && clock_time() < tmout);
+	while ((inb(FDC_MSR) & 0xc0) != 0xc0 && fd_ticks() < tmout);
 	if ((inb(FDC_MSR) & 0xc0) != 0xc0)
 	{
 #if ERROR_PRINTK
@@ -598,7 +613,7 @@ static int fd_fmttrk(int u, struct fmttrack *fmt)
 	if ((err = fd_out(floppy[u].unit | (fmt->head << 2))))	goto unlock;
 	if ((err = fd_out(2)))					goto unlock; /* sector size: 512 bytes */
 	if ((err = fd_out(18)))					goto unlock; /* number of sectors */
-	if ((err = fd_out(27)))					goto unlock; /* GAP3 */
+	if ((err = fd_out(0x54)))				goto unlock; /* GAP3 */
 	if ((err = fd_out(0xcc)))				goto unlock; /* fill byte */
 	
 	if ((err = fd_wait()))					goto unlock;
