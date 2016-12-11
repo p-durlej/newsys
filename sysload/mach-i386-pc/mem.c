@@ -139,7 +139,7 @@ void mem_init(void)
 
 static void mem_rmov(int i)
 {
-	memmove(&mem_map[i], &mem_map[i + 1], mem_cnt - i - 1);
+	memmove(&mem_map[i], &mem_map[i + 1], sizeof *mem_map * (mem_cnt - i - 1));
 	mem_cnt--;
 }
 
@@ -175,6 +175,9 @@ void mem_adjmap(void)
 			mem_map[i].type = KMAPENT_SYSTEM;
 			continue;
 		}
+		
+		if (mem_map[i].base + mem_map[i].size <= 0x100000)
+			continue;
 		
 		size_t adj = mem_lbrk - mem_map[i].base;
 		
