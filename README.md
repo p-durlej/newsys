@@ -1,10 +1,10 @@
 # Nameless OS Lite
 
-This is the complete source code of Nameless OS Lite v1.2.3, it's around 92K LoC.
+This is the complete source code of Nameless OS Lite v1.2.4, it's around 92K LoC.
 
 The system is released under a BSD 2-clause license.
 
-![Nameless OS v1.2.3 desktop with apps](http://www.durlej.net/newsys/2016-v12.png)
+![Nameless OS v1.2.4 desktop with apps](http://www.durlej.net/newsys/2016-v12.png)
 
 ## Running
 
