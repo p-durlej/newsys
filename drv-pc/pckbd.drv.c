@@ -24,9 +24,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sysload/kparam.h>
+#include <sysload/flags.h>
 #include <kern/printk.h>
 #include <kern/wingui.h>
 #include <kern/config.h>
+#include <kern/start.h>
 #include <kern/clock.h>
 #include <kern/intr.h>
 #include <kern/lib.h>
@@ -430,7 +433,8 @@ static void reset(void)
 	}
 	else
 	{
-		printk("pckbd.drv: auxiliary unit reset failed\n");
+		if (kparam.boot_flags & BOOT_VERBOSE)
+			printk("pckbd.drv: auxiliary unit reset failed\n");
 		clock_delay(clock_hz() * 2);
 	}
 	
