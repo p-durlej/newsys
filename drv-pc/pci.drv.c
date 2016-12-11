@@ -210,7 +210,7 @@ static void config_pci_dev(struct pci_dev *p, int bus, int dev, int func)
 		
 		pci_write_reg(bus, dev, func, 4 + i, -1U);
 		
-		size  = ~pci_read_reg(bus, dev, func, 4 + i);
+		size = ~pci_read_reg(bus, dev, func, 4 + i);
 		
 		pci_write_reg(bus, dev, func, 4 + i, bar);
 		
@@ -229,7 +229,14 @@ static void config_pci_dev(struct pci_dev *p, int bus, int dev, int func)
 		
 		p->mem_base[i] = base;
 		p->mem_size[i] = size;
-		p->is_io[i]    = bar & 1;
+		p->is_io[i]    = 0;
+		
+		if (bar & 1)
+		{
+			p->mem_base[i] &= 0xffff;
+			p->mem_size[i] &= 0xffff;
+			p->is_io[i]	= 1;
+		}
 	}
 	
 	fix_device(p);
@@ -306,6 +313,13 @@ static void pci_scan(void)
 		printk("pci: found %i devices\n", pci_dev_cnt);
 	
 	err = kmalloc(&pci_dev, sizeof *pci_dev * pci_dev_cnt, "pci_dev");
+	if (err)
+	{
+		perror("pci: kmalloc", err);
+		return;
+	}
+	
+	memset(pci_dev, 0, sizeof *pci_dev * pci_dev_cnt);
 	p = pci_dev;
 	
 	for (bus = 0; bus < 256; bus++)
