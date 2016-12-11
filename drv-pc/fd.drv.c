@@ -37,6 +37,8 @@
 
 #define FD_MAX_RETRIES		3
 #define FD_IO_TIMEOUT		(clock_hz() / 2)
+#define FD_SEEK_TIMEOUT		(clock_hz() * 3)
+#define FD_FORMAT_TIMEOUT	(clock_hz() * 3)
 #define ERROR_PRINTK		KVERBOSE
 
 #define FD_SPINUP_DELAY		(1 * clock_hz())
@@ -68,7 +70,7 @@ struct floppy
 static void fd_irqv();
 
 static int fd_reset(void);
-static int fd_wait(void);
+static int fd_wait(unsigned timeout);
 static int fd_out(unsigned byte);
 static int fd_in(unsigned *byte);
 static int fd_open(int unit);
@@ -178,7 +180,7 @@ static int fd_reset(void)
 	clock_delay(1);
 	outb(FDC_DOR, fdc_dor | 0x0c);
 	
-	err = fd_wait();
+	err = fd_wait(FD_IO_TIMEOUT);
 	if (err)
 		return err;
 	
@@ -207,9 +209,9 @@ static unsigned fd_ticks(void)
 	return clock_time() * clock_hz() + clock_ticks();
 }
 
-static int fd_wait(void)
+static int fd_wait(unsigned timeout)
 {
-	time_t tmout = fd_ticks() + FD_IO_TIMEOUT;
+	time_t tmout = fd_ticks() + timeout;
 	int s;
 	
 	s = intr_dis();
@@ -296,7 +298,7 @@ static int fd_seek0(int u)
 	fd_irq = 0;
 	if ((err = fd_out(0x07)))		return err;
 	if ((err = fd_out(floppy[u].unit)))	return err;
-	if ((err = fd_wait()))
+	if ((err = fd_wait(FD_SEEK_TIMEOUT)))
 	{
 #if ERROR_PRINTK
 		printk("%s: fd_wait: error %i\n", __func__, err);
@@ -330,7 +332,7 @@ static int fd_seek(unsigned u, unsigned c, unsigned h)
 	if ((err = fd_out(0x0f)))		return err;
 	if ((err = fd_out(floppy[u].unit)))	return err;
 	if ((err = fd_out(c)))			return err;
-	if ((err = fd_wait()))			return err;
+	if ((err = fd_wait(FD_SEEK_TIMEOUT)))	return err;
 	
 	fd_out(0x08);
 	if ((err = fd_in(&st0)))		return err;
@@ -441,7 +443,7 @@ retry:
 	if ((err = fd_out(27)))				goto retry;
 	if ((err = fd_out(0xff)))			goto retry;
 	
-	if ((err = fd_wait()))				goto retry;
+	if ((err = fd_wait(FD_IO_TIMEOUT)))		goto retry;
 	
 	if ((err = fd_in(&st0)))			goto retry;
 	if ((err = fd_in(&st1)))			goto retry;
@@ -537,7 +539,7 @@ retry:
 	if ((err = fd_out(27)))				goto retry;
 	if ((err = fd_out(0xff)))			goto retry;
 	
-	if ((err = fd_wait()))				goto retry;
+	if ((err = fd_wait(FD_IO_TIMEOUT)))		goto retry;
 	
 	if ((err = fd_in(&st0)))			goto retry;
 	if ((err = fd_in(&st1)))			goto retry;
@@ -616,7 +618,7 @@ static int fd_fmttrk(int u, struct fmttrack *fmt)
 	if ((err = fd_out(0x54)))				goto unlock; /* GAP3 */
 	if ((err = fd_out(0xcc)))				goto unlock; /* fill byte */
 	
-	if ((err = fd_wait()))					goto unlock;
+	if ((err = fd_wait(FD_FORMAT_TIMEOUT)))			goto unlock;
 	
 	if ((err = fd_in(&st0)))				goto unlock;
 	if ((err = fd_in(&st1)))				goto unlock;
