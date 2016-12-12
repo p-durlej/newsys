@@ -149,6 +149,7 @@
 /cmd/tests/test.fmthuman
 /cmd/tests/test.getopt
 /cmd/tests/test.gui
+/cmd/tests/test.hideptr
 /cmd/tests/test.loopmark
 /cmd/tests/test.memdev
 /cmd/tests/test.pipe
