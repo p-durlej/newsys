@@ -211,25 +211,32 @@ int win_ptrmove(struct win_desktop *d, int x, int y)
 		y = d->display->height - 1;
 	
 	s = intr_dis();
+	
+	wd = d->ptr_down_wd;
+	
 	d->ptr_x = x;
 	d->ptr_y = y;
 	win_adjust_ptr(d);
 	
-	if (d->ptr_down)
-		wd = d->ptr_down_wd;
-	else
-		win_xywd(d, &wd, x, y);
-	
-	if (!d->display_locked)
-		d->display->moveptr(d->display->data, x - p->hx, y - p->hy);
-	else
-		d->ptr_moved = 1;
+	win_lock1(d);
 	intr_res(s);
 	
-	win_update_ptr(d);
+	if (!d->ptr_down)
+		win_xywd(d, &wd, x, y);
+	
+	if (d->display_locked == 1)
+	{
+		d->display->moveptr(d->display->data, x - p->hx, y - p->hy);
+		win_update_ptr_ulk(d);
+	}
+	else
+		d->ptr_moved = 1;
+	
+	win_unlock1(d);
 	
 	if (wd < 0)
 		return 0;
+	
 	memset(&e, 0, sizeof e);
 	e.win.wd    = wd;
 	e.win.type  = WIN_E_PTR_MOVE;

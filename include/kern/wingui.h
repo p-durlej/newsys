@@ -206,6 +206,7 @@ void	win_uninstall_input(struct win_desktop *d, int md);
 
 void	win_rect_preview_invert(int ox, int oy, int w, int h);
 
+void	win_update_ptr_ulk(struct win_desktop *d);
 void	win_update_ptr(struct win_desktop *d);
 
 void	win_broadcast_setmode(struct win_desktop *d);
@@ -228,6 +229,9 @@ int	win_ptrmove_rel(struct win_desktop *d, int x, int y);
 int	win_ptrmove(struct win_desktop *d, int x, int y);
 int	win_ptrdown(struct win_desktop *d, int button);
 int	win_ptrup(struct win_desktop *d, int button);
+
+void	win_lock1(struct win_desktop *d);
+void	win_unlock1(struct win_desktop *d);
 
 void	win_lock(void);
 void	win_unlock(void);

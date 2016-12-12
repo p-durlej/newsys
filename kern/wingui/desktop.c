@@ -362,13 +362,11 @@ void win_uninstall_input(struct win_desktop *d, int md)
 	panic("win_uninstall_input: module not found in list");
 }
 
-void win_update_ptr(struct win_desktop *d)
+void win_update_ptr_ulk(struct win_desktop *d)
 {
 	struct win_pointer *p;
 	int wd;
-	int s;
 	
-	s = intr_dis();
 	if (d->ptr_down)
 		wd = d->ptr_down_wd;
 	else
@@ -383,7 +381,13 @@ void win_update_ptr(struct win_desktop *d)
 		d->display->setptr(d->display->data, p->pixels, p->mask);
 		d->currptr = p;
 	}
-	intr_res(s);
+}
+
+void win_update_ptr(struct win_desktop *d)
+{
+	win_lock1(d);
+	win_update_ptr_ulk(d);
+	win_unlock1(d);
 }
 
 int win_modeinfo(int mode, struct win_modeinfo *buf)
@@ -548,6 +552,32 @@ int win_reset(void)
 	return 0;
 }
 
+void win_lock1(struct win_desktop *d)
+{
+	d->display_locked++;
+}
+
+void win_unlock1(struct win_desktop *d)
+{
+	int s;
+	
+retry:
+	s = intr_dis();
+	if (d->ptr_moved && d->display_locked == 1)
+	{
+		d->ptr_moved = 0;
+		intr_res(s);
+		
+		d->display->moveptr(d->display->data, d->ptr_x - d->currptr->hx, d->ptr_y - d->currptr->hy);
+		win_update_ptr_ulk(d);
+		
+		goto retry;
+	}
+	
+	d->display_locked--;
+	intr_res(s);
+}
+
 void win_lock(void)
 {
 	struct win_desktop *d = curr->win_task.desktop;
@@ -555,26 +585,16 @@ void win_lock(void)
 	if (!d)
 		panic("win_lock: !curr->win_task.desktop");
 	
-	d->display_locked++;
+	win_lock1(d);
 }
 
 void win_unlock(void)
 {
 	struct win_desktop *d = curr->win_task.desktop;
-	int s;
-	
 	if (!d)
 		panic("win_lock: !curr->win_task.desktop");
 	
-	s = intr_dis();
-	d->display_locked--;
-	if (d->ptr_moved && !d->display_locked)
-	{
-		d->ptr_moved = 0;
-		d->display->moveptr(d->display->data, d->ptr_x - d->currptr->hx, d->ptr_y - d->currptr->hy);
-		win_update_ptr(d);
-	}
-	intr_res(s);
+	win_unlock1(d);
 }
 
 struct win_desktop *win_getdesktop(void)
