@@ -88,6 +88,7 @@ void fb_moveptr_32(void *dd, int x, int y)
 	{
 		fb->ptr_x = x;
 		fb->ptr_y = y;
+		return;
 	}
 	
 	memcpy(oback, fb->ptr_back, sizeof oback);
@@ -618,6 +619,7 @@ void fb_moveptr_8(void *dd, int x, int y)
 	{
 		fb->ptr_x = x;
 		fb->ptr_y = y;
+		return;
 	}
 	
 	memcpy(oback, fb->ptr_back, sizeof oback);
