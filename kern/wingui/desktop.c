@@ -568,7 +568,7 @@ void win_unlock(void)
 	
 	s = intr_dis();
 	d->display_locked--;
-	if (d->ptr_moved)
+	if (d->ptr_moved && !d->display_locked)
 	{
 		d->ptr_moved = 0;
 		d->display->moveptr(d->display->data, d->ptr_x - d->currptr->hx, d->ptr_y - d->currptr->hy);
