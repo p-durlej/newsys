@@ -668,7 +668,7 @@ static int devfs_read(struct fs_rwreq *req)
 			if (l > count)
 				l = count;
 			
-			if (count == BLK_SIZE)
+			if (l == BLK_SIZE)
 			{
 				err = bd->read(bd->unit, offset / BLK_SIZE, buf);
 				if (err)
@@ -808,7 +808,7 @@ static int devfs_write(struct fs_rwreq *req)
 			if (l > count)
 				l = count;
 			
-			if (count == BLK_SIZE)
+			if (l == BLK_SIZE)
 			{
 				err = bd->write(bd->unit, offset / BLK_SIZE, buf);
 				if (err)
