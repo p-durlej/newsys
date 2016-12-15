@@ -536,7 +536,7 @@ int main(int argc, char **argv)
 	int cnt;
 	int c;
 	
-	if (!strcmp(argv[1], "--help"))
+	if (argc == 2 && !strcmp(argv[1], "--help"))
 	{
 		fprintf(stderr, "Usage: fdisk DEVICE\n\n"
 				"View and edit disk partitions.\n\n");
