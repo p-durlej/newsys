@@ -494,9 +494,6 @@ static void list(void)
 	struct tar *tar;
 	int i;
 	
-	for (i = 0; members[i]; i++)
-		warnx("* %s", members[i]);
-	
 	tar = tar_open(tar_pathname);
 	if (!tar)
 		err(1, "%s", tar_pathname);
