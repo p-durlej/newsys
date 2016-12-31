@@ -87,6 +87,8 @@ struct tar *tar_open2(const char *pathname, int wr)
 		if (*u.hd.pathname)
 			fcnt++;
 	}
+	if (rcnt < 0)
+		goto fail;
 	
 	tar->files = calloc(fcnt, sizeof *tar->files);
 	tar->file_cnt = fcnt;
@@ -103,6 +105,11 @@ struct tar *tar_open2(const char *pathname, int wr)
 		off_t size;
 		
 		rcnt = read(tar->fd, &u.buf, sizeof u.buf);
+		if (rcnt < 0)
+		{
+			tar_close(tar);
+			return NULL;
+		}
 		
 		if (rcnt < sizeof u.buf)
 		{
