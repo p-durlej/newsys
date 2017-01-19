@@ -23,6 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <string.h>
@@ -490,9 +491,9 @@ static void list(void)
 
 static void usage(void)
 {
-	printf("\nUsage: ls [-adilqC] [FILE...]\n"
+	printf("\nUsage: ls [-1adilqC] [FILE...]\n"
 		"Directory listing.\n\n"
-		"  -1 single-column output\n\n"
+		"  -1 single-column output\n"
 		"  -a show all files\n"
 		"  -d do not enter directories\n"
 		"  -i show inode numbers\n"
