@@ -51,18 +51,7 @@ struct file_type
 	char exec[PATH_MAX];
 };
 
-struct fm_config
-{
-	int show_dotfiles;
-	int form_w;
-	int form_h;
-	int sort_order;
-	int large_icons;
-	int show_path;
-	int win_desk;
-};
-
-extern struct fm_config config;
+extern struct pref_filemgr *config;
 extern int	desktop;
 
 extern int	backdrop_tile;

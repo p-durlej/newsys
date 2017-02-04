@@ -601,3 +601,6 @@ win_set_font_map
 dlg_reboot
 pref_wbeep_get
 pref_wbeep_save
+pref_filemgr_reload
+pref_filemgr_save
+pref_filemgr_get

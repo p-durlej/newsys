@@ -24,68 +24,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_metrics.h>
+#include <config/defaults.h>
 #include <prefs/filemgr.h>
-#include <wingui_msgbox.h>
-#include <wingui_form.h>
 #include <confdb.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <err.h>
 
-#include "filemgr.h"
+static struct pref_filemgr pref_filemgr;
 
-#define MAIN_FORM	"/lib/forms/pref.filemgr.frm"
+int pref_filemgr_loaded;
 
-static struct gadget *chk1;
-static struct gadget *chk2;
-static struct gadget *chk3;
-static struct gadget *chk4;
-static struct form *f;
-
-struct pref_filemgr *config;
-
-static int on_close(struct form *f)
+void pref_filemgr_reload(void)
 {
-	exit(0);
+	int tl;
+	
+	if (c_load("/user/filemgr", &pref_filemgr, sizeof pref_filemgr))
+	{
+		memset(&pref_filemgr, 0, sizeof pref_filemgr);
+		
+		tl = wm_get(WM_THIN_LINE);
+		
+		pref_filemgr.show_dotfiles	= 0;
+		pref_filemgr.form_w		= 332 * tl;
+		pref_filemgr.form_h		= 150 * tl;
+		pref_filemgr.show_path		= 0;
+		pref_filemgr.large_icons	= win_get_dpi_class();
+	}
+	pref_filemgr_loaded = 1;
 }
 
-static void ok_click()
+struct pref_filemgr *pref_filemgr_get(void)
 {
-	char msg[256];
+	if (!pref_filemgr_loaded)
+		pref_filemgr_reload();
 	
-	config->show_dotfiles = chkbox_get_state(chk1);
-	config->show_path     = chkbox_get_state(chk2);
-	config->large_icons   = chkbox_get_state(chk3);
-	config->win_desk      = chkbox_get_state(chk4);
-	
-	if (pref_filemgr_save())
-		msgbox_perror(f, "File Manager Prefs", "Cannot save configuration", errno);
-	else
-		exit(0);
+	return &pref_filemgr;
 }
 
-int main(int argc, char **argv)
+int pref_filemgr_save(void)
 {
-	if (win_attach())
-		err(255, NULL);
+	if (!pref_filemgr_get())
+		return -1;
 	
-	config = pref_filemgr_get();
-	
-	f    = form_load(MAIN_FORM);
-	chk1 = gadget_find(f, "dots");
-	chk2 = gadget_find(f, "pathname");
-	chk3 = gadget_find(f, "large");
-	chk4 = gadget_find(f, "windesk");
-	
-	form_on_close(f, on_close);
-	
-	chkbox_set_state(chk1, config->show_dotfiles);
-	chkbox_set_state(chk2, config->show_path);
-	chkbox_set_state(chk3, config->large_icons);
-	chkbox_set_state(chk4, config->win_desk);
-	
-	while (form_wait(f) != 2)
-		ok_click();
-	return 0;
+	return c_save("/user/filemgr", &pref_filemgr, sizeof pref_filemgr);
 }

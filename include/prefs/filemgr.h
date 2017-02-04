@@ -24,68 +24,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <prefs/filemgr.h>
-#include <wingui_msgbox.h>
-#include <wingui_form.h>
-#include <confdb.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <err.h>
+#ifndef _PREFS_FILEMGR_H
+#define _PREFS_FILEMGR_H
 
-#include "filemgr.h"
-
-#define MAIN_FORM	"/lib/forms/pref.filemgr.frm"
-
-static struct gadget *chk1;
-static struct gadget *chk2;
-static struct gadget *chk3;
-static struct gadget *chk4;
-static struct form *f;
-
-struct pref_filemgr *config;
-
-static int on_close(struct form *f)
+struct pref_filemgr
 {
-	exit(0);
-}
+	int show_dotfiles;
+	int form_w;
+	int form_h;
+	int sort_order;
+	int large_icons;
+	int show_path;
+	int win_desk;
+};
 
-static void ok_click()
-{
-	char msg[256];
-	
-	config->show_dotfiles = chkbox_get_state(chk1);
-	config->show_path     = chkbox_get_state(chk2);
-	config->large_icons   = chkbox_get_state(chk3);
-	config->win_desk      = chkbox_get_state(chk4);
-	
-	if (pref_filemgr_save())
-		msgbox_perror(f, "File Manager Prefs", "Cannot save configuration", errno);
-	else
-		exit(0);
-}
+struct pref_filemgr *pref_filemgr_get(void);
+int pref_filemgr_save(void);
 
-int main(int argc, char **argv)
-{
-	if (win_attach())
-		err(255, NULL);
-	
-	config = pref_filemgr_get();
-	
-	f    = form_load(MAIN_FORM);
-	chk1 = gadget_find(f, "dots");
-	chk2 = gadget_find(f, "pathname");
-	chk3 = gadget_find(f, "large");
-	chk4 = gadget_find(f, "windesk");
-	
-	form_on_close(f, on_close);
-	
-	chkbox_set_state(chk1, config->show_dotfiles);
-	chkbox_set_state(chk2, config->show_path);
-	chkbox_set_state(chk3, config->large_icons);
-	chkbox_set_state(chk4, config->win_desk);
-	
-	while (form_wait(f) != 2)
-		ok_click();
-	return 0;
-}
+#endif

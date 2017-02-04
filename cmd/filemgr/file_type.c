@@ -25,6 +25,7 @@
  */
 
 #include <config/defaults.h>
+#include <prefs/filemgr.h>
 #include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
@@ -82,7 +83,7 @@ static int find_icon(char *buf, size_t sz)
 	{
 		theme[sizeof theme - 1] = 0;
 		
-		if (config.large_icons)
+		if (config->large_icons)
 		{
 			cnt = snprintf(pathname, sizeof pathname, THEMEDIR "%s/icons64/%s", theme, buf);
 			if (cnt < 0 || cnt >= sizeof pathname)
@@ -100,7 +101,7 @@ static int find_icon(char *buf, size_t sz)
 			goto found;
 	}
 	
-	if (config.large_icons)
+	if (config->large_icons)
 	{
 		cnt = snprintf(pathname, sizeof pathname, ICON64DIR "%s", buf);
 		if (cnt < 0 || cnt >= sizeof pathname)

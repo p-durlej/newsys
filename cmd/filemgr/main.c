@@ -57,10 +57,11 @@
 #include <os386.h>
 #include <pwd.h>
 #include <err.h>
+#include <prefs/filemgr.h>
 
 #include "filemgr.h"
 
-struct fm_config config;
+struct pref_filemgr *config;
 
 struct timer *	refresh_timer;
 struct gadget *	main_icbox;
@@ -118,7 +119,7 @@ static void update_title(void)
 		return;
 	}
 	
-	if (config.show_path)
+	if (config->show_path)
 	{
 		form_set_title(main_form, cwd);
 		return;
@@ -143,18 +144,7 @@ static void update_title(void)
 
 void load_config(void)
 {
-	int tl;
-	
-	if (c_load("filemgr", &config, sizeof config))
-	{
-		tl = wm_get(WM_THIN_LINE);
-		
-		config.show_dotfiles	= 0;
-		config.form_w		= 332 * tl;
-		config.form_h		= 150 * tl;
-		config.show_path	= 0;
-		config.large_icons	= win_get_dpi_class();
-	}
+	config = pref_filemgr_get();
 }
 
 void launch(const char *pathname, int follow_link)
@@ -290,8 +280,8 @@ void main_form_resize(struct form *form, int w, int h)
 	
 	if (!full_screen)
 	{
-		config.form_w = w;
-		config.form_h = h;
+		config->form_w = w;
+		config->form_h = h;
 		
 		gadget_resize(main_icbox, w - sbw, h);
 		gadget_move(main_sbar, w - sbw, 0);
@@ -379,9 +369,9 @@ int cmp_file_info(const void *a, const void *b)
 	if (S_ISDIR(f1->st.st_mode) != S_ISDIR(f2->st.st_mode))
 		return S_ISDIR(f1->st.st_mode) ? -1 : 1;
 	
-	if (config.sort_order == SORT_SIZE && f1->st.st_size != f2->st.st_size)
+	if (config->sort_order == SORT_SIZE && f1->st.st_size != f2->st.st_size)
 		return f1->st.st_size > f2->st.st_size ? 1 : -1;
-	else if (config.sort_order == SORT_TYPE)
+	else if (config->sort_order == SORT_TYPE)
 	{
 		r = strcmp(f1->type_desc, f2->type_desc);
 		if (r)
@@ -533,7 +523,7 @@ static void load_dirinfo(void)
 	int ut = 0;
 	int smul = 1;
 	
-	if (config.large_icons)
+	if (config->large_icons)
 		smul = 2;
 	
 	if (*dirname)
@@ -570,11 +560,11 @@ static void load_dirinfo(void)
 				break;
 			case 'W':
 				if (!main_form)
-					config.form_w = atoi(buf + 1) * smul;
+					config->form_w = atoi(buf + 1) * smul;
 				break;
 			case 'H':
 				if (!main_form)
-					config.form_h = atoi(buf + 1) * smul;
+					config->form_h = atoi(buf + 1) * smul;
 				break;
 			case 'M':
 				show_menu = atoi(buf + 1);
@@ -631,7 +621,7 @@ restart:
 	
 	while ((de = readdir(dir)))
 	{
-		if ((!config.show_dotfiles || desktop) && *de->d_name == '.')
+		if ((!config->show_dotfiles || desktop) && *de->d_name == '.')
 			continue;
 		file_cnt++;
 	}
@@ -647,7 +637,7 @@ restart:
 	errno = 0;
 	while (de = readdir(dir), de)
 	{
-		if ((!config.show_dotfiles || desktop) && *de->d_name == '.')
+		if ((!config->show_dotfiles || desktop) && *de->d_name == '.')
 			continue;
 		
 		if (i >= file_cnt)
@@ -1009,7 +999,7 @@ void updir_click(struct menu_item *m)
 
 void dotfile_click(struct menu_item *m)
 {
-	config.show_dotfiles = !config.show_dotfiles;
+	config->show_dotfiles = !config->show_dotfiles;
 	load_dir();
 }
 
@@ -1017,13 +1007,8 @@ void save_click(struct menu_item *m)
 {
 	char msg[256];
 	
-	if (c_save("filemgr", &config, sizeof config))
-	{
-		int err = errno;
-		
-		msgbox_perror(main_form, "File Manager", "Cannot save configuration", err);
-		return;
-	}
+	if (pref_filemgr_save())
+		msgbox_perror(main_form, "File Manager", "Cannot save configuration", errno);
 }
 
 void passwd_click(struct menu_item *m)
@@ -1041,19 +1026,19 @@ void passwd_click(struct menu_item *m)
 
 void by_name_click(struct menu_item *m)
 {
-	config.sort_order = SORT_NAME;
+	config->sort_order = SORT_NAME;
 	load_dir();
 }
 
 void by_size_click(struct menu_item *m)
 {
-	config.sort_order = SORT_SIZE;
+	config->sort_order = SORT_SIZE;
 	load_dir();
 }
 
 void by_type_click(struct menu_item *m)
 {
-	config.sort_order = SORT_TYPE;
+	config->sort_order = SORT_TYPE;
 	load_dir();
 }
 
@@ -1364,15 +1349,15 @@ void create_form(void)
 	
 	win_ws_getrect(&wsr);
 	
-	if (config.form_w < 200)
-		config.form_w = 200;
-	if (config.form_h < 64)
-		config.form_h = 64;
+	if (config->form_w < 200)
+		config->form_w = 200;
+	if (config->form_h < 64)
+		config->form_h = 64;
 	
-	if (config.form_w > wsr.w)
-		config.form_w = wsr.w;
-	if (config.form_h > wsr.h)
-		config.form_h = wsr.h;
+	if (config->form_w > wsr.w)
+		config->form_w = wsr.w;
+	if (config->form_h > wsr.h)
+		config->form_h = wsr.h;
 	
 	file = menu_creat();
 	if (listfd < 0)
@@ -1483,7 +1468,7 @@ void create_form(void)
 	}
 	else
 	{
-		main_form = form_creat(FORM_APPFLAGS | FORM_NO_BACKGROUND, 0, -1, -1, config.form_w, config.form_h, cwd);
+		main_form = form_creat(FORM_APPFLAGS | FORM_NO_BACKGROUND, 0, -1, -1, config->form_w, config->form_h, cwd);
 		if (show_menu)
 			form_set_menu(main_form, m);
 		form_on_key_down(main_form, main_form_key_down);
@@ -1492,16 +1477,16 @@ void create_form(void)
 		form_on_move(main_form, main_form_move);
 		update_title();
 		
-		main_icbox = icbox_creat(main_form, 0, 0, config.form_w - sbw, config.form_h);
+		main_icbox = icbox_creat(main_form, 0, 0, config->form_w - sbw, config->form_h);
 		icbox_on_select(main_icbox, main_icbox_select);
 		icbox_on_request(main_icbox, main_icbox_request);
 		icbox_on_scroll(main_icbox, main_icbox_scroll);
 		
-		main_sbar = vsbar_creat(main_form, config.form_w - sbw, 0, sbw, config.form_h);
+		main_sbar = vsbar_creat(main_form, config->form_w - sbw, 0, sbw, config->form_h);
 		vsbar_on_move(main_sbar, main_sbar_move);
-		vsbar_set_step(main_sbar, config.large_icons ? 32 : 16);
+		vsbar_set_step(main_sbar, config->large_icons ? 32 : 16);
 	}
-	if (config.large_icons)
+	if (config->large_icons)
 		icbox_set_icon_size(main_icbox, 64, 64);
 	
 	gadget_on_drop(main_icbox, on_drop);
@@ -1714,7 +1699,7 @@ int main(int argc, char **argv)
 	if (listfd < 0)
 		load_dirinfo();
 	
-	if (desktop && !config.win_desk)
+	if (desktop && !config->win_desk)
 		full_screen = 1;
 	
 	getcwd(cwd, sizeof cwd);
