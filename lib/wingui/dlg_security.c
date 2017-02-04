@@ -183,14 +183,14 @@ int dlg_gid(struct form *pf, const char *title, gid_t *gid)
 	if (_get_errno())
 	{
 		msgbox_perror(NULL, title, "Unable to read group list", _get_errno());
-		endpwent();
+		endgrent();
 		return 0;
 	}
 	group = calloc(cnt, sizeof *group);
 	if (!group)
 	{
 		msgbox_perror(NULL, title, "Unable to allocate memory", _get_errno());
-		endpwent();
+		endgrent();
 		return 0;
 	}
 	
