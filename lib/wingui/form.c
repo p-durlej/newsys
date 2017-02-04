@@ -1650,6 +1650,17 @@ static void form_drag(struct form *f)
 		g->udrag(g);
 }
 
+static void form_switch_to(struct form *f)
+{
+	if (!f->child_dialog)
+	{
+		f->focused = 1;
+		form_draw_decoration(f);
+	}
+	else
+		form_focus(f->child_dialog);
+}
+
 static int form_event(struct event *e)
 {
 	struct form *f = e->data;
@@ -1665,7 +1676,10 @@ static int form_event(struct event *e)
 		if (e->win.type == WIN_E_KEY_DOWN && (e->win.ch == '\n' || e->win.ch == ' '))
 			form_umini(f);
 		if (e->win.type == WIN_E_SWITCH_TO && !f->control_menu_active)
+		{
+			form_switch_to(f);
 			form_umini(f);
+		}
 		goto fini;
 	}
 	
@@ -1709,13 +1723,7 @@ static int form_event(struct event *e)
 	
 	if (e->win.type == WIN_E_SWITCH_TO)
 	{
-		if (!f->child_dialog)
-		{
-			f->focused = 1;
-			form_draw_decoration(f);
-		}
-		else
-			form_focus(f->child_dialog);
+		form_switch_to(f);
 		goto fini;
 	}
 	if (e->win.type == WIN_E_SWITCH_FROM)
@@ -2576,6 +2584,7 @@ void form_minimize(struct form *form)
 		return;
 	
 	form->minimized = 1;
+	form->focused = 0;
 	form_update_pos(form);
 	win_ufocus(form->wd);
 }
