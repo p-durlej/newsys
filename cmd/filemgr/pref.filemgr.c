@@ -54,9 +54,11 @@ static int on_close(struct form *f)
 
 static void ok_click()
 {
+	int sdc, swd, sli;
 	char msg[256];
-	int sdc;
 	
+	sli = config->large_icons;
+	swd = config->win_desk;
 	sdc = config->double_click;
 	
 	config->show_dotfiles = chkbox_get_state(chk1);
@@ -71,7 +73,8 @@ static void ok_click()
 		return;
 	}
 	
-	if (sdc != config->double_click)
+	if (sdc != config->double_click || sli != config->large_icons ||
+	    swd != config->win_desk)
 		dlg_newsess(f, NULL);
 	exit(0);
 }

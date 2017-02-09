@@ -30,6 +30,7 @@
 #include <wingui_msgbox.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
+#include <wingui_dlg.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <signal.h>
@@ -71,21 +72,7 @@ static void restart_sess(void)
 	if (!need_sess_restart)
 		return;
 	
-	if (msgbox_ask(main_form, "Theme",
-		"The current session needs to be restarted to fully apply the new theme.\n\n"
-		"Do you want to restart the session?") == MSGBOX_YES)
-	{
-		char *p = getenv("SESSMGR");
-		
-		if (!p)
-		{
-			msgbox(main_form, "Theme", "Session manager not found.");
-			return;
-		}
-		
-		if (kill(atoi(p), SIGUSR1))
-			msgbox(main_form, "Theme", "Failed to restart the session.");
-	}
+	dlg_newsess(main_form, "Theme");
 }
 
 static void setfwidth(int w)
