@@ -56,5 +56,6 @@ int dlg_input5(struct form *pf, const char *title, char *buf, int maxlen, int fl
 int dlg_input(struct form *pf, const char *title, char *buf, int maxlen);
 
 void dlg_reboot(struct form *pf, const char *title);
+void dlg_newsess(struct form *pf, const char *title);
 
 #endif

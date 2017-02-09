@@ -35,6 +35,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -499,4 +500,26 @@ void dlg_reboot(struct form *pf, const char *title)
 	}
 	
 	msgbox(pf, title, "Reboot to update the configuration.");
+}
+
+void dlg_newsess(struct form *pf, const char *title)
+{
+	if (!title)
+		title = "Session Restart";
+	
+	if (msgbox_ask(pf, title,
+		"The configuration change requires a session restart.\n\n"
+		"Do you want to restart the session?") == MSGBOX_YES)
+	{
+		char *p = getenv("SESSMGR");
+		
+		if (!p)
+		{
+			msgbox(pf, title, "Session manager not found.");
+			return;
+		}
+		
+		if (kill(atoi(p), SIGUSR1))
+			msgbox(pf, title, "Failed to restart the session.");
+	}
 }
