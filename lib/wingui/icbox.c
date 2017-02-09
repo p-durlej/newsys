@@ -37,7 +37,6 @@
 #define DEFAULT_ICON	"/lib/icons/file.pnm"
 
 #define TEXT_BELOW_ICON	1
-#define DOUBLE_CLICK	0
 
 static void icbox_remove(struct gadget *g);
 static int  icbox_defsizes(struct gadget *g);
@@ -366,9 +365,7 @@ static void icbox_ptr_up(struct gadget *g, int x, int y, int button)
 	static int px = -1;
 	static int py = -1;
 	
-#if DOUBLE_CLICK
 	int dcd;
-#endif
 	int i;
 	
 	if (!g->ptr_down_cnt && g->icbox.dragdrop)
@@ -388,29 +385,30 @@ static void icbox_ptr_up(struct gadget *g, int x, int y, int button)
 		return;
 	}
 	
-#if DOUBLE_CLICK
-	dcd = wm_get(WM_DOUBLECLICK);
-	
-	if (!button)
+	if (g->icbox.double_click)
 	{
-		if (px != -1 && abs(x - px) <= dcd && abs(y - py) <= dcd)
+		dcd = wm_get(WM_DOUBLECLICK);
+		
+		if (!button)
 		{
-			px = -1;
-			py = -1;
-			
-			if (i >= 0 && g->icbox.request)
-				g->icbox.request(g, i, button);
+			if (px != -1 && abs(x - px) <= dcd && abs(y - py) <= dcd)
+			{
+				px = -1;
+				py = -1;
+				
+				if (i >= 0 && g->icbox.request)
+					g->icbox.request(g, i, button);
+			}
+			else
+			{
+				px = x;
+				py = y;
+			}
 		}
-		else
-		{
-			px = x;
-			py = y;
-		}
+		return;
 	}
-#else
 	if (!button && i >= 0 && g->icbox.request && !g->icbox.dragdrop)
 		g->icbox.request(g, i, button);
-#endif
 }
 
 static void icbox_do_defops(struct gadget *g)
@@ -746,4 +744,9 @@ int icbox_set_dd_data(struct gadget *g, int index, const void *data, size_t len)
 	it->dd_data = p;
 	it->dd_len  = len;
 	return 0;
+}
+
+void icbox_set_double_click(struct gadget *g, int flag)
+{
+	g->icbox.double_click = flag;
 }

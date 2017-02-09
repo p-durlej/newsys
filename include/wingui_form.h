@@ -259,6 +259,8 @@ struct gadget
 			
 			int dragdrop;
 			
+			int double_click;
+			
 			struct icbox_item
 			{
 				struct bitmap *icon;
@@ -580,6 +582,7 @@ int icbox_on_scroll(struct gadget *g, icbox_scroll_cb *proc);
 void icbox_set_bg_cb(struct gadget *g, icbox_drawbg_cb *proc);
 void icbox_set_item_cb(struct gadget *g, icbox_drawitem_cb *proc);
 void icbox_set_size_cb(struct gadget *g, icbox_sizeitem_cb *proc);
+void icbox_set_double_click(struct gadget *g, int flag);
 
 struct gadget *colorsel_creat(struct form *f, int x, int y, int w, int h);
 void colorsel_on_change(struct gadget *g, colorsel_change_cb *proc);
