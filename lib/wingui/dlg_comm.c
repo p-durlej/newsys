@@ -135,7 +135,7 @@ static void dlg_file_request(struct gadget *g, int i, int b)
 static void dlg_file_select(struct gadget *g, int i, int b)
 {
 	struct dlg_file *d = g->p_data;
-	char *s;
+	const char *s;
 	
 	s = list_get_text(g, i);
 	if (!s)
@@ -148,7 +148,7 @@ static void dlg_dir_request(struct gadget *g, int i, int b)
 {
 	struct dlg_file *d = g->p_data;
 	char *p;
-	char *n;
+	const char *n;
 	
 	n = list_get_text(g, i);
 	if (!strcmp(n, "."))
