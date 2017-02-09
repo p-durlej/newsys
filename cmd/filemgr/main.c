@@ -1489,6 +1489,8 @@ void create_form(void)
 	if (config->large_icons)
 		icbox_set_icon_size(main_icbox, 64, 64);
 	
+	icbox_set_double_click(main_icbox, config->double_click);
+	
 	gadget_on_drop(main_icbox, on_drop);
 	gadget_on_drag(main_icbox, on_drag);
 	

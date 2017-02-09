@@ -25,13 +25,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-form(-1,-1,200,85,	"File Manager Prefs");
+form(-1,-1,200,101,	"File Manager Prefs");
 flag(FORM_FXS_APPFLAGS);
 
-chkbox("pathname",2,4,	"Show full pathname in the title bar");
-chkbox("dots",2,20,	"Show hidden files");
-chkbox("windesk",2,36,	"Show desktop in a window");
-chkbox("large",2,52,	"Use large icons");
+chkbox("pathname",2,4,		"Show full pathname in the title bar");
+chkbox("dots",2,20,		"Show hidden files");
+chkbox("windesk",2,36,		"Show desktop in a window");
+chkbox("large",2,52,		"Use large icons");
+chkbox("doubleclick",2,68,	"Double click to open");
 
-button(NULL,2,67,60,16,	"OK",1);
-button(NULL,64,67,60,16,"Cancel",2);
+button(NULL,2,83,60,16,	"OK",1);
+button(NULL,64,83,60,16,"Cancel",2);

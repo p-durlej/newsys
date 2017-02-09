@@ -36,6 +36,7 @@ struct pref_filemgr
 	int large_icons;
 	int show_path;
 	int win_desk;
+	int double_click;
 };
 
 struct pref_filemgr *pref_filemgr_get(void);

@@ -27,6 +27,7 @@
 #include <prefs/filemgr.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
+#include <wingui_dlg.h>
 #include <confdb.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -41,6 +42,7 @@ static struct gadget *chk1;
 static struct gadget *chk2;
 static struct gadget *chk3;
 static struct gadget *chk4;
+static struct gadget *chk5;
 static struct form *f;
 
 struct pref_filemgr *config;
@@ -53,16 +55,25 @@ static int on_close(struct form *f)
 static void ok_click()
 {
 	char msg[256];
+	int sdc;
+	
+	sdc = config->double_click;
 	
 	config->show_dotfiles = chkbox_get_state(chk1);
 	config->show_path     = chkbox_get_state(chk2);
 	config->large_icons   = chkbox_get_state(chk3);
 	config->win_desk      = chkbox_get_state(chk4);
+	config->double_click  = chkbox_get_state(chk5);
 	
 	if (pref_filemgr_save())
+	{
 		msgbox_perror(f, "File Manager Prefs", "Cannot save configuration", errno);
-	else
-		exit(0);
+		return;
+	}
+	
+	if (sdc != config->double_click)
+		dlg_newsess(f, NULL);
+	exit(0);
 }
 
 int main(int argc, char **argv)
@@ -77,6 +88,7 @@ int main(int argc, char **argv)
 	chk2 = gadget_find(f, "pathname");
 	chk3 = gadget_find(f, "large");
 	chk4 = gadget_find(f, "windesk");
+	chk5 = gadget_find(f, "doubleclick");
 	
 	form_on_close(f, on_close);
 	
@@ -84,6 +96,7 @@ int main(int argc, char **argv)
 	chkbox_set_state(chk2, config->show_path);
 	chkbox_set_state(chk3, config->large_icons);
 	chkbox_set_state(chk4, config->win_desk);
+	chkbox_set_state(chk5, config->double_click);
 	
 	while (form_wait(f) != 2)
 		ok_click();
