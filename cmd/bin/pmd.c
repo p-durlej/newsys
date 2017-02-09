@@ -131,30 +131,30 @@ static uint64_t read64(uint32_t a)
 
 static void show_regs(struct core_head *hd)
 {
-	printf(" GS     = 0x%08lx\n", (long)hd->regs.gs);
-	printf(" FS     = 0x%08lx\n", (long)hd->regs.fs);
-	printf(" ES     = 0x%08lx\n", (long)hd->regs.es);
-	printf(" DS     = 0x%08lx\n", (long)hd->regs.ds);
-	printf(" RBP    = 0x%08lx\n", (long)hd->regs.rbp);
-	printf(" RDI    = 0x%08lx\n", (long)hd->regs.rdi);
-	printf(" RSI    = 0x%08lx\n", (long)hd->regs.rsi);
-	printf(" RDX    = 0x%08lx\n", (long)hd->regs.rdx);
-	printf(" RCX    = 0x%08lx\n", (long)hd->regs.rcx);
-	printf(" RBX    = 0x%08lx\n", (long)hd->regs.rbx);
-	printf(" RAX    = 0x%08lx\n", (long)hd->regs.rax);
-	printf(" R8     = 0x%08lx\n", (long)hd->regs.r8);
-	printf(" R9     = 0x%08lx\n", (long)hd->regs.r9);
-	printf(" R10    = 0x%08lx\n", (long)hd->regs.r10);
-	printf(" R11    = 0x%08lx\n", (long)hd->regs.r11);
-	printf(" R12    = 0x%08lx\n", (long)hd->regs.r12);
-	printf(" R13    = 0x%08lx\n", (long)hd->regs.r13);
-	printf(" R14    = 0x%08lx\n", (long)hd->regs.r14);
-	printf(" R15    = 0x%08lx\n", (long)hd->regs.r15);
-	printf(" RIP    = 0x%08lx\n", (long)hd->regs.rip);
-	printf(" CS     = 0x%08lx\n", (long)hd->regs.cs);
-	printf(" RFLAGS = 0x%08lx\n", (long)hd->regs.rflags);
-	printf(" RSP    = 0x%08lx\n", (long)hd->regs.rsp);
-	printf(" SS     = 0x%08lx\n", (long)hd->regs.ss);
+	printf(" GS     =             0x%04lx\n", (long)hd->regs.gs);
+	printf(" FS     =             0x%04lx\n", (long)hd->regs.fs);
+	printf(" ES     =             0x%04lx\n", (long)hd->regs.es);
+	printf(" DS     =             0x%04lx\n", (long)hd->regs.ds);
+	printf(" RBP    = 0x%016lx\n", (long)hd->regs.rbp);
+	printf(" RDI    = 0x%016lx\n", (long)hd->regs.rdi);
+	printf(" RSI    = 0x%016lx\n", (long)hd->regs.rsi);
+	printf(" RDX    = 0x%016lx\n", (long)hd->regs.rdx);
+	printf(" RCX    = 0x%016lx\n", (long)hd->regs.rcx);
+	printf(" RBX    = 0x%016lx\n", (long)hd->regs.rbx);
+	printf(" RAX    = 0x%016lx\n", (long)hd->regs.rax);
+	printf(" R8     = 0x%016lx\n", (long)hd->regs.r8);
+	printf(" R9     = 0x%016lx\n", (long)hd->regs.r9);
+	printf(" R10    = 0x%016lx\n", (long)hd->regs.r10);
+	printf(" R11    = 0x%016lx\n", (long)hd->regs.r11);
+	printf(" R12    = 0x%016lx\n", (long)hd->regs.r12);
+	printf(" R13    = 0x%016lx\n", (long)hd->regs.r13);
+	printf(" R14    = 0x%016lx\n", (long)hd->regs.r14);
+	printf(" R15    = 0x%016lx\n", (long)hd->regs.r15);
+	printf(" RIP    = 0x%016lx\n", (long)hd->regs.rip);
+	printf(" CS     =             0x%04lx\n", (long)hd->regs.cs);
+	printf(" RFLAGS = 0x%016lx\n", (long)hd->regs.rflags);
+	printf(" RSP    = 0x%016lx\n", (long)hd->regs.rsp);
+	printf(" SS     =             0x%04lx\n", (long)hd->regs.ss);
 }
 
 static void backtrace(struct core_head *hd)
