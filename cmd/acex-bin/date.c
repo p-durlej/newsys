@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 			errx(255, "invalid date string");
 		
 		tm = localtime(&t);
-		tm->tm_mon  = dd2int(s)-1;
+		tm->tm_mon  = dd2int(s) - 1;
 		tm->tm_mday = dd2int(s + 2);
 		tm->tm_hour = dd2int(s + 4);
 		tm->tm_min  = dd2int(s + 6);
