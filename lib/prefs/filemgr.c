@@ -48,6 +48,7 @@ void pref_filemgr_reload(void)
 		pref_filemgr.form_h		= 150 * tl;
 		pref_filemgr.show_path		= 0;
 		pref_filemgr.large_icons	= win_get_dpi_class();
+		pref_filemgr.double_click	= DEFAULT_DOUBLE_CLICK;
 	}
 	pref_filemgr_loaded = 1;
 }
