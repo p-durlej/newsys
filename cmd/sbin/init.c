@@ -703,6 +703,7 @@ static void find_devs(void)
 static void sig_down(int nr)
 {
 	char *opt = "-h";
+	int i;
 	
 	switch (nr)
 	{
@@ -719,9 +720,11 @@ static void sig_down(int nr)
 		abort();
 	}
 	
+	for (i = 1; i <= NSIG; i++)
+		signal(i, SIG_IGN);
+	
 	execl(_PATH_B_SHUTDOWN, _PATH_B_SHUTDOWN, opt, (void *)NULL);
 	warn("%s", _PATH_B_SHUTDOWN);
-	signal(nr, sig_down);
 }
 
 static void sig_alrm(int nr)
