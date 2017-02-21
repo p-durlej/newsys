@@ -137,6 +137,8 @@ int main(int argc, char **argv)
 		case 3:
 			test();
 			break;
+		default:
+			return 0;
 		}
 	}
 	
