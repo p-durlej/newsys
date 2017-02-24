@@ -70,7 +70,7 @@ signal_entry:
 	movq	16(%rbp), %rax
 	call	*%rax
 	
-	popq	%rax
+	popq	%rdi
 	call	_set_errno
 	
 	popq	%r15
