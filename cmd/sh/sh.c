@@ -195,6 +195,8 @@ static struct sstkel
 
 extern char *__progname;
 
+static char	lastprompt[256];
+static char *	promptp;
 static int	v6_flag;
 static int	l_flag;
 static int	u_flag = 1;
@@ -615,8 +617,17 @@ syn_err:
 	return NULL;
 }
 
+static void promptchar(char c)
+{
+	if (promptp < lastprompt + sizeof lastprompt - 1)
+		*promptp++ = c;
+	putchar(c);
+}
+
 static void prompt(const char *s)
 {
+	promptp = lastprompt;
+	
 	while (*s)
 	{
 		switch (*s)
@@ -628,27 +639,29 @@ static void prompt(const char *s)
 				if (uid)
 				{
 					if (v6_flag)
-						putchar('%');
+						promptchar('%');
 					else
-						putchar('%');
+						promptchar('%');
 				}
 				else
-					putchar('#');
+					promptchar('#');
 				break;
 			case 0:
-				putchar('\\');
+				promptchar('\\');
 				break;
 			default:
-				putchar('\\');
-				putchar(*s);
+				promptchar('\\');
+				promptchar(*s);
 				break;
 			}
 			break;
 		default:
-			putchar(*s);
+			promptchar(*s);
 		}
 		s++;
 	}
+	
+	*promptp = 0;
 }
 
 static int waitexit(int st)
@@ -713,6 +726,9 @@ static char *readln(void)
 			goto too_long;
 		*p++ = c;
 	}
+	
+	*lastprompt = 0;
+	
 	if (c == EOF)
 	{
 		if (ferror(source))
@@ -722,6 +738,7 @@ static char *readln(void)
 	*p = 0;
 	return buf;
 too_long:
+	*lastprompt = 0;
 	errno = ENOMEM;
 	return NULL;
 }
@@ -1617,6 +1634,13 @@ static void var_fetch(void)
 			err(ERR_MEM, "var_assign");
 }
 
+static void siginth(int nr)
+{
+	write(1, lastprompt, strlen(lastprompt));
+	
+	signal(nr, siginth);
+}
+
 int main(int argc, char **argv)
 {
 	int c;
@@ -1667,7 +1691,7 @@ int main(int argc, char **argv)
 	
 	sigquit = signal(SIGQUIT, SIG_IGN);
 	sigterm = signal(SIGTERM, SIG_IGN);
-	sigint  = signal(SIGINT,  SIG_IGN);
+	sigint  = signal(SIGINT,  siginth);
 	
 	loop();
 	return waitexit(lastst);
