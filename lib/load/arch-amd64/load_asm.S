@@ -48,6 +48,9 @@ signal_entry:
 	pushfq
 	pushq	%rbp
 	movq	%rsp, %rbp
+	subq	$512, %rsp
+	andq	$~15, %rsp
+	fxsave	(%rsp)
 	pushq	%rax
 	pushq	%rbx
 	pushq	%rcx
@@ -87,6 +90,8 @@ signal_entry:
 	popq	%rcx
 	popq	%rbx
 	popq	%rax
+	fxrstor	(%rsp)
+	movq	%rbp, %rsp
 	popq	%rbp
 	popfq
 	
