@@ -66,7 +66,7 @@ signal_entry:
 	call	_get_errno
 	pushq	%rax
 	
-	movq	24(%ebp), %rdi
+	movq	24(%rbp), %rdi
 	movq	16(%rbp), %rax
 	call	*%rax
 	
