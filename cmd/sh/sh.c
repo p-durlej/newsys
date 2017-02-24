@@ -1626,13 +1626,6 @@ int main(int argc, char **argv)
 	
 	arg0 = argv[0];
 	uid  = getuid();
-	/* ps1  = getenv("PS1");
-	ps2  = getenv("PS2");
-	
-	if (ps1 == NULL)
-		ps1 = "\\$ ";
-	if (ps2 == NULL)
-		ps2 = "> "; */
 	
 	var_fetch();
 	
