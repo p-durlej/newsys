@@ -32,6 +32,58 @@
 #include <mount.h>
 #include <stdio.h>
 #include <errno.h>
+#include <err.h>
+
+static const char *flagstr(int flags)
+{
+	static char buf[8];
+	
+	char *p;
+	
+	p = buf;
+	if (flags & MF_READ_ONLY)
+		*p++ = 'r';
+	else
+		*p++ = 'w';
+	
+	if (flags & MF_NO_ATIME)
+		*p++ = 'n';
+	
+	if (flags & MF_REMOVABLE)
+		*p++ = 'm';
+	
+	if (flags & MF_INSECURE)
+		*p++ = 'i';
+	
+	*p = 0;
+	return buf;
+}
+
+static void fmnt(struct _mtab *m)
+{
+	char *prefix;
+	
+	if (!m->mounted)
+		return;
+	
+	prefix = m->prefix;
+	if (!*prefix)
+		prefix = "/";
+	
+	printf("%-10s %-16s %-6s %s\n", m->device, prefix, m->fstype, flagstr(m->flags));
+}
+
+static void printmounts(void)
+{
+	struct _mtab mtab[MOUNT_MAX];
+	int i;
+	
+	if (_mtab(mtab, sizeof mtab))
+		err(1, NULL);
+	
+	for (i = 0; i < MOUNT_MAX; i++)
+		fmnt(&mtab[i]);
+}
 
 void usage()
 {
@@ -58,6 +110,12 @@ int main(int argc, char **argv)
 	if (argc == 2 && !strcmp(argv[1], "--help"))
 	{
 		usage();
+		return 0;
+	}
+	
+	if (argc == 1)
+	{
+		printmounts();
 		return 0;
 	}
 	
