@@ -186,7 +186,7 @@ end_opt:
 	strcpy(prefix, argv[i + 1]);
 	
 	_mkcanon("/dev", device);
-	_mkcanon(".",	 prefix);
+	_mkcanon(NULL,	 prefix);
 	
 	if (!strncmp(device, "/dev/", 5))
 		devname = device + 5;

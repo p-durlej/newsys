@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 	}
 	
 	strcpy(prefix, argv[1]);
-	_mkcanon(prefix, prefix);
+	_mkcanon(NULL, prefix);
 	
 	if (_umount(prefix))
 	{
