@@ -42,7 +42,7 @@ void usage()
 	fprintf(stderr, " -m       mount a removable disk drive\n");
 	fprintf(stderr, " -i       mount in insecure mode\n");
 	fprintf(stderr, " -R       remount filesystem\n");
-	fprintf(stderr, " -A       do not update access time on files in this filesystem\n\n");
+	fprintf(stderr, " -n       do not update access time on files in this filesystem\n\n");
 }
 
 int main(int argc, char **argv)
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 				case 'm':
 					flags |= MF_REMOVABLE;
 					break;
-				case 'A':
+				case 'n':
 					flags |= MF_NO_ATIME;
 					break;
 				case 'i':
