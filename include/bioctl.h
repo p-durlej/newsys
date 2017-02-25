@@ -27,6 +27,8 @@
 #ifndef _BIOCTL_H
 #define _BIOCTL_H
 
+#include <sys/types.h>
+#include <stdint.h>
 #include <limits.h>
 
 struct bdev_stat
