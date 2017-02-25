@@ -237,6 +237,12 @@ static void sstk_pop(void)
 {
 	struct sstkel *e;
 	
+	if (source != stdin)
+	{
+		fclose(source);
+		source = NULL;
+	}
+	
 	e = source_stk;
 	source_stk  = e->next;
 	source_name = e->name;
