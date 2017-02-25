@@ -647,7 +647,7 @@ static void prompt(const char *s)
 					if (v6_flag)
 						promptchar('%');
 					else
-						promptchar('%');
+						promptchar('$');
 				}
 				else
 					promptchar('#');
