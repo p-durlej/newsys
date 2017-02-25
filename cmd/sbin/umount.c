@@ -33,15 +33,14 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include <err.h>
+
 int main(int argc, char **argv)
 {
 	char prefix[PATH_MAX];
 	
 	if (argc != 2)
-	{
-		fprintf(stderr, "umount: wrong number of arguments\n");
-		return 255;
-	}
+		errx(255, "wrong number of arguments");
 	
 	if (!strcmp(argv[1], "--help"))
 	{
@@ -54,10 +53,7 @@ int main(int argc, char **argv)
 	_mkcanon(NULL, prefix);
 	
 	if (_umount(prefix))
-	{
-		perror("umount: _umount");
-		return errno;
-	}
+		err(1, NULL);
 	
 	return 0;
 }
