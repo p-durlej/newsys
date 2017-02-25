@@ -98,6 +98,13 @@
 /cmd/inet/netstat
 /cmd/inet/slattach
 /cmd/inet/telnetd
+/cmd/bin/bell
+/cmd/sbin/kdebug
+/cmd/sbin/addblk
+/cmd/sbin/bstat
+/cmd/sbin/panic
+/cmd/sbin/sysmesg
+/cmd/sbin/systat
 /cmd/sbin/check_devs
 /cmd/sbin/daemon
 /cmd/sbin/diskfree

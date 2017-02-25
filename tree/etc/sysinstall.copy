@@ -1,5 +1,6 @@
 755 /bin/aclock
 755 /bin/avail
+755 /bin/bell
 755 /bin/calc
 755 /bin/charmap
 755 /bin/clear
@@ -35,6 +36,12 @@
 755 /bin/box
 755 /bin/tar
 
+700 /sbin/kdebug
+700 /sbin/addblk
+700 /sbin/bstat
+700 /sbin/panic
+700 /sbin/sysmesg
+700 /sbin/systat
 700 /sbin/diskperf
 755 /sbin/mode
 755 /sbin/hwclock
