@@ -40,10 +40,8 @@
 
 #define SECONDS	1
 
-#define WIDTH	160
-#define HEIGHT	160
-
-#define abs(a)	((a) >= 0 ? (a) : -(a))
+#define min(a,b)	((a) < (b) ? (a) : (b))
+#define abs(a)		((a) >= 0 ? (a) : -(a))
 
 int sine_tab[60] =
 {
@@ -61,6 +59,7 @@ int sine_tab[60] =
 
 struct
 {
+	int w, h;
 	int x;
 	int y;
 } config;
@@ -83,8 +82,8 @@ void old_clock_redraw(struct gadget *g, int wd)
 	win_rgb2color(&fg, 0, 0, 0);
 	
 	win_text_size(WIN_FONT_DEFAULT, &w, &h, s);
-	win_rect(wd, bg, 0, 0, WIDTH, HEIGHT);
-	win_text(wd, fg, (WIDTH-w) >> 1, (HEIGHT-h) >> 1, s);
+	win_rect(wd, bg, 0, 0, config.w, config.h);
+	win_text(wd, fg, (config.w-w) >> 1, (config.h-h) >> 1, s);
 }
 
 void win_line(int wd, win_color c, int x0, int y0, int x1, int y1)
@@ -129,20 +128,28 @@ void win_line(int wd, win_color c, int x0, int y0, int x1, int y1)
 void draw_marks(int wd)
 {
 	win_color fg;
+	int d1, d2, d3;
+	int sz;
 	int x, y;
 	int i;
 	
 	fg = wc_get(WC_FG);
+	
+	sz = min(config.w, config.h);
+	
+	d1 = sz * 60 / 160;
+	d2 = sz * 65 / 160;
+	d3 = sz * 70 / 160;
 	
 	for (i = 0; i < 12; i++)
 	{
 		x = sine_tab[i * 5];
 		y = sine_tab[(i * 5 + 15) % 60];
 		
-		win_line(wd, fg, (WIDTH  >> 1) + x * 60 / 1000,
-				 (HEIGHT >> 1) - y * 60 / 1000,
-				 (WIDTH  >> 1) + x * 70 / 1000,
-				 (HEIGHT >> 1) - y * 70 / 1000);
+		win_line(wd, fg, (config.w >> 1) + x * d1 / 1000,
+				 (config.h >> 1) - y * d1 / 1000,
+				 (config.w >> 1) + x * d3 / 1000,
+				 (config.h >> 1) - y * d3 / 1000);
 	}
 	
 	for (i = 0; i < 60; i++)
@@ -153,19 +160,28 @@ void draw_marks(int wd)
 		x = sine_tab[i];
 		y = sine_tab[(i + 15) % 60];
 		
-		win_line(wd, fg, (WIDTH  >> 1) + x * 65 / 1000,
-				 (HEIGHT >> 1) - y * 65 / 1000,
-				 (WIDTH  >> 1) + x * 70 / 1000,
-				 (HEIGHT >> 1) - y * 70 / 1000);
+		win_line(wd, fg, (config.w >> 1) + x * d2 / 1000,
+				 (config.h >> 1) - y * d2 / 1000,
+				 (config.w >> 1) + x * d3 / 1000,
+				 (config.h >> 1) - y * d3 / 1000);
 	}
 }
 
 static void draw_hand(int wd, win_color c, int w, int l, int a)
 {
 	int x0, y0, x1, y1, x2, y2, x3, y3;
+	int sz;
 	
-	x0 = WIDTH  >> 1;
-	y0 = HEIGHT >> 1;
+	sz = min(config.w, config.h);
+	
+	l *= sz;
+	l /= 160;
+	
+	w *= sz;
+	w /= 160;
+	
+	x0 = config.w >> 1;
+	y0 = config.h >> 1;
 	
 	x1 = x0 + (-sine_tab[a] - sine_tab[(a + 15) % 60]) * w / 1000;
 	y1 = y0 + (-sine_tab[a] + sine_tab[(a + 15) % 60]) * w / 1000;
@@ -197,10 +213,10 @@ void clock_redraw(struct gadget *g, int wd)
 	bg = wc_get(WC_BG);
 	fg = wc_get(WC_FG);
 	
-	win_rect(wd, bg, 0, 0, WIDTH, HEIGHT);
+	win_rect(wd, bg, 0, 0, config.w, config.h);
 	draw_marks(wd);
 	
-	win_rect(wd, fg, (WIDTH >> 1) - 3, (HEIGHT >> 1) - 3, 6, 6);
+	win_rect(wd, fg, (config.w >> 1) - 3, (config.h >> 1) - 3, 6, 6);
 	
 #if SECONDS
 	draw_hand(wd, red, 2, 60, tm->tm_sec);
@@ -233,6 +249,18 @@ void sig_term(int nr)
 	exit(0);
 }
 
+void on_resize(struct form *f, int w, int h)
+{
+	if (w < 80) w = 80;
+	if (h < 80) h = 80;
+	
+	config.w = w;
+	config.h = h;
+	
+	gadget_resize(clock_gadget, w, h);
+	form_resize(main_form, w, h);
+}
+
 void on_move(struct form *f, int x, int y)
 {
 	config.x = x;
@@ -261,15 +289,17 @@ int main()
 	
 	win_ws_getrect(&wsr);
 	
+	config.w = 160;
+	config.h = 160;
 	config.x = 20;
 	config.y = 20;
 	c_load("aclock", &config, sizeof config);
 	
-	if (config.x + WIDTH > wsr.w)
-		config.x = wsr.w - WIDTH;
+	if (config.x + config.w > wsr.w)
+		config.x = wsr.w - config.w;
 	
-	if (config.y + HEIGHT > wsr.h)
-		config.y = wsr.h - HEIGHT;
+	if (config.y + config.h > wsr.h)
+		config.y = wsr.h - config.h;
 	
 	mm = menu_creat();
 	
@@ -277,14 +307,13 @@ int main()
 	menu_newitem(m, "About ...", about_click);
 	menu_submenu(mm, "Options", m);
 	
-	main_form = form_creat(
-		   FORM_TITLE | FORM_FRAME | FORM_ALLOW_CLOSE | FORM_ALLOW_MINIMIZE | FORM_NO_BACKGROUND, 1,
-		   config.x, config.y, WIDTH, HEIGHT, "Clock");
+	main_form = form_creat(FORM_APPFLAGS | FORM_NO_BACKGROUND, 1, config.x, config.y, config.w, config.h, "Clock");
 	form_set_menu(main_form, mm);
+	form_on_resize(main_form, on_resize);
 	form_on_close(main_form, on_close);
 	form_on_move(main_form, on_move);
 	
-	clock_gadget = gadget_creat(main_form, 0, 0, WIDTH, HEIGHT);
+	clock_gadget = gadget_creat(main_form, 0, 0, config.w, config.h);
 	clock_gadget->redraw = clock_redraw;
 	
 	tmr_creat(&tv, &tv, timer_proc, NULL, 1);
