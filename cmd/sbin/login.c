@@ -63,6 +63,7 @@ static void print_file(const char *pathname)
 
 static void do_login(void)
 {
+	char pathname[PATH_MAX];
 	struct passwd *pwd;
 	char *p;
 	int i;
@@ -96,7 +97,18 @@ static void do_login(void)
 	if (access(".hushlogin", 0))
 		print_file(_PATH_E_MOTD);
 	
-	execl(pwd->pw_shell, pwd->pw_shell, NULL);
+	if (strlen(pwd->pw_shell) >= sizeof pathname)
+		errx(255, "Bad shell pathname");
+	
+	strcpy(pathname, pwd->pw_shell);
+	
+	p = strrchr(pathname, '/');
+	if (p)
+		*p = '-';
+	else
+		p = pathname;
+	
+	execl(pwd->pw_shell, p, NULL);
 	perror(pwd->pw_shell);
 	exit(255);
 }
