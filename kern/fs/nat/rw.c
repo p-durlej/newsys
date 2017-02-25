@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <kern/panic.h>
 #include <kern/clock.h>
 #include <kern/natfs.h>
 #include <kern/errno.h>
@@ -165,6 +166,9 @@ int nat_write(struct fs_rwreq *req)
 		err = nat_bmap(fso, off / BLK_SIZE, 1);
 		if (err)
 			return err;
+		
+		if (!fso->nat.bmap_phys)
+			panic("nat_write: !fso->nat.bmap_phys");
 		
 		if (off + l > fso->size)
 		{
