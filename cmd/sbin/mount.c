@@ -36,8 +36,7 @@
 void usage()
 {
 	fprintf(stderr, "Usage: mount OPTIONS [--] DEVICE PREFIX\n\n");
-	fprintf(stderr, "Mount DEVICE at PREFIX.\n\n");
-	fprintf(stderr, " Do not prepend \"/dev/\" to DEVICE. PREFIX is mount point.\n\n");
+	fprintf(stderr, "Mount a file system.\n\n");
 	fprintf(stderr, " -t TYPE  device contains file system of type TYPE\n");
 	fprintf(stderr, " -r       mount read-only\n");
 	fprintf(stderr, " -m       mount a removable disk drive\n");
@@ -48,6 +47,8 @@ void usage()
 int main(int argc, char **argv)
 {
 	char prefix[PATH_MAX];
+	char device[PATH_MAX];
+	char *devname;
 	char *type = "native";
 	int remount = 0;
 	int flags = 0;
@@ -119,13 +120,21 @@ end_opt:
 		return 255;
 	}
 	
+	strcpy(device, argv[i]);
 	strcpy(prefix, argv[i + 1]);
-	_mkcanon(prefix, prefix);
+	
+	_mkcanon("/dev", device);
+	_mkcanon(".",	 prefix);
+	
+	if (!strncmp(device, "/dev/", 5))
+		devname = device + 5;
+	else
+		devname = device;
 	
 	if (remount)
 		_umount(prefix);
 	
-	if (_mount(prefix, argv[i], type, flags))
+	if (_mount(prefix, devname, type, flags))
 	{
 		perror("mount: _mount");
 		return errno;
