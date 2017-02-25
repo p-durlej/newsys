@@ -188,7 +188,7 @@ int nat_bmap(struct fso *fso, blk_t log, int alloc)
 	int indl;
 	int err;
 	
-	if (fso->nat.bmap_valid && fso->nat.bmap_log == log)
+	if (fso->nat.bmap_valid && fso->nat.bmap_log == log && (!alloc || fso->nat.bmap_phys))
 		return 0;
 	
 	if (log < fso->nat.ndirblks)
@@ -313,6 +313,7 @@ int nat_trunc(struct fso *fso)
 		
 		fso->nat.bmap[i] = 0;
 	}
+	fso->nat.bmap_valid = 0;
 	fso->dirty  = 1;
 	fso->blocks = 1;
 	fso->size   = 0;
