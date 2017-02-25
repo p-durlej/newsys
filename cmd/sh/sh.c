@@ -1659,6 +1659,9 @@ int main(int argc, char **argv)
 	
 	var_fetch();
 	
+	if (*argv[0] == '-')
+		l_flag = 1;
+	
 	while (c = getopt(argc, argv, "6c:tl"), c > 0)
 		switch (c)
 		{
