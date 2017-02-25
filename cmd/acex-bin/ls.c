@@ -26,6 +26,7 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fmthuman.h>
 #include <string.h>
 #include <dirent.h>
 #include <limits.h>
@@ -35,6 +36,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <os386.h>
+#include <fcntl.h>
 #include <time.h>
 #include <pwd.h>
 #include <grp.h>
@@ -49,10 +51,12 @@ static int flag1;
 static int lflag;
 static int aflag;
 static int dflag;
+static int hflag;
 static int iflag;
 static int qflag;
 static int multi;
 static int bigC;
+static int bigD;
 static int ttyw;
 
 static int xit;
@@ -87,7 +91,7 @@ static void procopt(int argc, char **argv)
 {
 	int opt;
 	
-	while (opt = getopt(argc, argv, "ladiq1C"), opt > 0)
+	while (opt = getopt(argc, argv, "ladhiq1CD"), opt > 0)
 		switch (opt)
 		{
 		case 'l':
@@ -98,6 +102,9 @@ static void procopt(int argc, char **argv)
 			break;
 		case 'd':
 			dflag = 1;
+			break;
+		case 'h':
+			hflag = 1;
 			break;
 		case 'i':
 			iflag = 1;
@@ -110,6 +117,9 @@ static void procopt(int argc, char **argv)
 			break;
 		case 'C':
 			bigC = 1;
+			break;
+		case 'D':
+			bigD = 1;
 			break;
 		default:
 			exit(255);
@@ -219,7 +229,10 @@ static void pdirent(const struct ls_de *de)
 			printf(cols.fmtdv, (long)major(de->st.st_rdev), (long)minor(de->st.st_rdev));
 			break;
 		default:
-			printf(cols.fmtsz, (unsigned long long)de->st.st_size);
+			if (hflag)
+				printf(cols.fmtsz, fmthumanoffs(de->st.st_size, 0));
+			else
+				printf(cols.fmtsz, (unsigned long long)de->st.st_size);
 		}
 		
 		fputs(tm, stdout);
@@ -338,6 +351,34 @@ static void collect_dir(char *pathname)
 	closedir(dir);
 }
 
+static void collect_fd(void)
+{
+	char name[NAME_MAX + 1];
+	struct stat st;
+	
+	int f;
+	int i;
+	
+	for (i = 0; i < OPEN_MAX; i++)
+	{
+		f = fcntl(i, F_GETFD, 0);
+		if (f < 0 && errno == EBADF)
+			continue;
+		if (f & FD_CLOEXEC)
+			continue;
+		
+		if (fstat(i, &st))
+		{
+			warn("fd %i", i);
+			xit = 1;
+			continue;
+		}
+		
+		sprintf(name, "fd %i", i);
+		adirent(name, &st, name);
+	}
+}
+
 static int numlen(unsigned long long v)
 {
 	int len;
@@ -390,7 +431,11 @@ static void cwid(void)
 					cols.group_w = len;
 			}
 			
-			len = numlen(p->st.st_size);
+			if (hflag)
+				len = strlen(fmthumanoffs(p->st.st_size, 0));
+			else
+				len = numlen(p->st.st_size);
+			
 			if (len > cols.size_w)
 				cols.size_w = len;
 			
@@ -412,7 +457,7 @@ static void cwid(void)
 	}
 	sprintf(cols.fmt0, "%%%ilu ", cols.ino_w);
 	sprintf(cols.fmt1, "%%%ii %%-%is %%-%is ", cols.nlink_w, cols.owner_w, cols.group_w);
-	sprintf(cols.fmtsz, "%%%illu ", cols.size_w);
+	sprintf(cols.fmtsz, "%%%i%s ", cols.size_w, hflag ? "s" : "llu");
 	sprintf(cols.fmtdv, "%%%ilu, %%%ilu ", size_maj, size_min);
 }
 
@@ -491,15 +536,17 @@ static void list(void)
 
 static void usage(void)
 {
-	printf("\nUsage: ls [-1adilqC] [FILE...]\n"
+	printf("\nUsage: ls [-1adilqCD] [FILE...]\n"
 		"Directory listing.\n\n"
 		"  -1 single-column output\n"
 		"  -a show all files\n"
 		"  -d do not enter directories\n"
+		"  -h use human-readable units when printing file sizes\n"
 		"  -i show inode numbers\n"
 		"  -l enable long list format\n"
 		"  -q replace non-printable characters with '?'\n"
-		"  -C multi-column output (cannot be used with -l)\n\n"
+		"  -C multi-column output (cannot be used with -l)\n"
+		"  -D list file descriptors instead of files in the current directory\n\n"
 		);
 	exit(0);
 }
@@ -523,6 +570,9 @@ int main(int argc, char **argv)
 	if (!strcmp(p, "ll"))
 		lflag = 1;
 	
+	if (!strcmp(p, "lsfd"))
+		bigD = 1;
+	
 	if (isatty(1))
 	{
 		bigC  = 1;
@@ -532,6 +582,14 @@ int main(int argc, char **argv)
 		if (!ioctl(1, PTY_GSIZE, &psz))
 			ttyw = psz.w;
 	}
+	
+	if (bigD)
+	{
+		dflag = 1;
+		iflag = 1;
+		lflag = 1;
+	}
+	
 	if (lflag || flag1)
 		bigC = 0;
 	
@@ -542,7 +600,12 @@ int main(int argc, char **argv)
 		collect(argv[i]);
 	
 	if (optind >= argc)
-		collect(".");
+	{
+		if (bigD)
+			collect_fd();
+		else
+			collect(".");
+	}
 	
 	qsort(dirents, de_cnt, sizeof *dirents, de_cmp);
 	cwid();

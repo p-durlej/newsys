@@ -1,5 +1,6 @@
 /bin/clear		/bin/clr
 /bin/ls			/bin/ll
+/bin/ls			/bin/lsfd
 /bin/ps			/bin/top
 /sbin/shutdown		/sbin/reboot
 /sbin/shutdown		/sbin/pwoff
