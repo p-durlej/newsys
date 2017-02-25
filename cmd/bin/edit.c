@@ -122,7 +122,7 @@ static void main_form_resize(struct form *form, int w, int h)
 	int sbw = wm_get(WM_SCROLLBAR);
 	
 	gadget_resize(main_edbox, w - sbw, h - sbw);
-	gadget_resize(main_vsbar, sbw, h);
+	gadget_resize(main_vsbar, sbw, h - sbw);
 	gadget_resize(main_hsbar, w - sbw, sbw);
 	gadget_move(main_vsbar, w - sbw, 0);
 	gadget_move(main_hsbar, 0, h - sbw);
@@ -554,10 +554,12 @@ static void create_form(void)
 	edbox_on_vscroll(main_edbox, main_edbox_vscroll);
 	main_edbox->menu = edit;
 	
-	main_vsbar = vsbar_creat(main_form, FW - sbw, 0, sbw, FH);
+	main_vsbar = vsbar_creat(main_form, FW - sbw, 0, sbw, FH - sbw);
 	main_hsbar = hsbar_creat(main_form, 0, FH - sbw, FW - sbw, sbw);
 	vsbar_on_move(main_vsbar, main_vsbar_move);
 	hsbar_on_move(main_hsbar, main_hsbar_move);
+	
+	sizebox_creat(main_form, sbw, sbw);
 	
 	if (!c_load("edit_fst", &fst, sizeof fst))
 		form_set_state(main_form, &fst);
