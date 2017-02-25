@@ -41,7 +41,7 @@ void usage()
 	fprintf(stderr, " -r       mount read-only\n");
 	fprintf(stderr, " -m       mount a removable disk drive\n");
 	fprintf(stderr, " -i       mount in insecure mode\n");
-	fprintf(stderr, " -R       remount filesystem\n");
+	fprintf(stderr, " -R       remount a filesystem\n");
 	fprintf(stderr, " -n       do not update access time on files in this filesystem\n\n");
 }
 
