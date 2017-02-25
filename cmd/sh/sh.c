@@ -1689,7 +1689,7 @@ int main(int argc, char **argv)
 	if (l_flag)
 		profile();
 	
-	sigquit = signal(SIGQUIT, SIG_IGN);
+	sigquit = signal(SIGQUIT, siginth);
 	sigterm = signal(SIGTERM, SIG_IGN);
 	sigint  = signal(SIGINT,  siginth);
 	
