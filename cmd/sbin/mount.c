@@ -36,10 +36,11 @@
 void usage()
 {
 	fprintf(stderr, "Usage: mount OPTIONS [--] DEVICE PREFIX\n\n");
-	fprintf(stderr, "Mount a file system.\n\n");
+	fprintf(stderr, "Mount a filesystem.\n\n");
 	fprintf(stderr, " -t TYPE  device contains file system of type TYPE\n");
 	fprintf(stderr, " -r       mount read-only\n");
 	fprintf(stderr, " -m       mount a removable disk drive\n");
+	fprintf(stderr, " -i       mount in insecure mode\n");
 	fprintf(stderr, " -R       remount filesystem\n");
 	fprintf(stderr, " -A       do not update access time on files in this filesystem\n\n");
 }
@@ -98,6 +99,9 @@ int main(int argc, char **argv)
 					break;
 				case 'A':
 					flags |= MF_NO_ATIME;
+					break;
+				case 'i':
+					flags |= MF_INSECURE;
 					break;
 				case '-':
 					i++;
