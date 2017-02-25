@@ -75,7 +75,7 @@ WINGUI_O = wingui/wait.o wingui/form.o wingui/button.o wingui/label.o	      \
            wingui/hsbar.o wingui/form_load.o wingui/bell.o		      \
            wingui/buf.o wingui/break.o wingui/util.o wingui/metrics.o	      \
            wingui/colorsel.o wingui/pointer.o wingui/bargraph.o		      \
-           wingui/theme.o wingui/theme-flat.o wingui/draw.o
+           wingui/theme.o wingui/theme-flat.o wingui/draw.o wingui/sizebox.o
 
 PASSWD_O = passwd/passwd.o passwd/group.o
 

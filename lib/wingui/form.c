@@ -898,8 +898,8 @@ static int form_resize_event(struct event *e)
 		if (e->win.more)
 			break;
 		
-		w = e->win.ptr_x - f->workspace_rect.x - f->frame_width;
-		h = e->win.ptr_y - f->workspace_rect.y - f->frame_width;
+		w = f->workspace_rect.w + (e->win.ptr_x - f->ptr_down_x);
+		h = f->workspace_rect.h + (e->win.ptr_y - f->ptr_down_y);
 		
 		if (w < 1)
 			w = 1;
@@ -912,8 +912,8 @@ static int form_resize_event(struct event *e)
 				    h + f->workspace_rect.y + f->frame_width + 1);
 		break;
 	case WIN_E_PTR_UP:
-		w = e->win.ptr_x - f->workspace_rect.x - f->frame_width + 1;
-		h = e->win.ptr_y - f->workspace_rect.y - f->frame_width + 1;
+		w = f->workspace_rect.w + (e->win.ptr_x - f->ptr_down_x);
+		h = f->workspace_rect.h + (e->win.ptr_y - f->ptr_down_y);
 		
 		if (w < 1)
 			w = 1;
@@ -1305,7 +1305,12 @@ static void form_ptr_down(struct event *e)
 {
 	struct form *f = e->data;
 	struct gadget *g;
+	int sbx;
+	int sby;
 	int x, y;
+	
+	sbx = f->workspace_rect.x + f->workspace_rect.w;
+	sby = f->workspace_rect.y + f->workspace_rect.h;
 	
 	if (!(f->flags & FORM_BACKDROP))
 		win_raise(f->wd);
@@ -1349,9 +1354,13 @@ static void form_ptr_down(struct event *e)
 		return;
 	}
 	
-	if (x >= f->workspace_rect.x + f->workspace_rect.w &&
-	    y >= f->workspace_rect.y + f->workspace_rect.h &&
-	    (f->flags & FORM_ALLOW_RESIZE))
+	if (f->sizebox)
+	{
+		sbx -= f->sizebox->rect.w;
+		sby -= f->sizebox->rect.h;
+	}
+	
+	if (x >= sbx && y >= sby && (f->flags & FORM_ALLOW_RESIZE))
 	{
 		form_resize_event(e);
 		return;
@@ -1585,8 +1594,16 @@ static void form_update_ptr_now(struct form *f)
 	
 	if (f->flags & FORM_ALLOW_RESIZE)
 	{
-		if (f->last_x >= f->workspace_rect.x + f->workspace_rect.w &&
-		    f->last_y >= f->workspace_rect.y + f->workspace_rect.h)
+		int sbx = f->workspace_rect.x + f->workspace_rect.w;
+		int sby = f->workspace_rect.y + f->workspace_rect.h;
+		
+		if (f->sizebox)
+		{
+			sbx -= f->sizebox->rect.w;
+			sby -= f->sizebox->rect.h;
+		}
+		
+		if (f->last_x >= sbx && f->last_y >= sby)
 		{
 			win_setptr(f->wd, WIN_PTR_NW_SE);
 			return;
@@ -2515,6 +2532,9 @@ void form_resize(struct form *form, int w, int h)
 	if (form->win_rect.w == prev_w && form->win_rect.h == prev_h)
 		return;
 	form->bg_rects_valid = 0;
+	
+	if (form->sizebox)
+		gadget_move(form->sizebox, w - form->sizebox->rect.w, h - form->sizebox->rect.h);
 	
 	form_update_pos(form);
 	if (form->resize)

@@ -768,6 +768,34 @@ fail:
 	return -1;
 }
 
+static int do_sizebox(FILE *f, struct form *frm, struct scale *sc)
+{
+	struct gadget *g;
+	char *name = NULL;
+	int x, y, w, h;
+	
+	if (get_nstring(f, 0, &name))	return -1;
+	if (get_number(f, 1, &w))	goto fail;
+	if (get_number(f, 1, &h))	goto fail;
+	
+#if DEBUG
+	_cprintf("sizebox(\"%s\", %i, %i);\n", name, w, h);
+#endif
+	
+	RESCALE_X(w, sc);
+	RESCALE_Y(h, sc);
+	
+	g = sizebox_creat(frm, w, h);
+	if (!g)
+		goto fail;
+	g->name = name;
+	
+	return 0;
+fail:
+	free(name);
+	return -1;
+}
+
 static const struct dispatch
 {
 	int (*func)(FILE *f, struct form *frm, struct scale *sc);
@@ -787,6 +815,7 @@ static const struct dispatch
 	{ do_vsbar,	"vsbar"		},
 	{ do_colorsel,	"colorsel"	},
 	{ do_bargraph,	"bargraph"	},
+	{ do_sizebox,	"sizebox"	},
 };
 
 static const struct

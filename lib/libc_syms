@@ -606,3 +606,4 @@ pref_filemgr_save
 pref_filemgr_get
 icbox_set_double_click
 dlg_newsess
+sizebox_creat

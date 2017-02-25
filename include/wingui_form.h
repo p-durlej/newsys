@@ -414,6 +414,8 @@ struct form
 	
 	struct gadget *	drag_gadget;
 	
+	struct gadget *	sizebox;
+	
 	form_key_cb *	key_down;
 	form_key_cb *	key_up;
 	form_close_cb *	close;
@@ -595,6 +597,8 @@ void bargraph_set_value(struct gadget *g, int value);
 
 struct gadget *frame_creat(struct form *f, int x, int y, int w, int h, const char *text);
 void frame_set_text(struct gadget *g, const char *text);
+
+struct gadget *sizebox_creat(struct form *f, int w, int h);
 
 /* loadable form support */
 
