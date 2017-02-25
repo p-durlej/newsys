@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <fmthuman.h>
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -45,6 +46,7 @@ static int ino_cnt;
 static int ino_cap;
 
 static int all	 = 0;
+static int hflag = 0;
 static int kbyte = 0;
 static int psub	 = 1;
 static int xdev	 = 1;
@@ -55,11 +57,14 @@ static void procopt(int argc, char **argv)
 {
 	int opt;
 	
-	while (opt = getopt(argc, argv, "aksx"), opt > 0)
+	while (opt = getopt(argc, argv, "ahksx"), opt > 0)
 		switch (opt)
 		{
 		case 'a':
 			all = 1;
+			break;
+		case 'h':
+			hflag = 1;
 			break;
 		case 'k':
 			kbyte = 1;
@@ -165,7 +170,9 @@ static blkcnt_t do_du(const char *path, dev_t dev, int sub)
 	
 	if ((S_ISDIR(st.st_mode) && psub) || !sub || all)
 	{
-		if (!kbyte)
+		if (hflag)
+			printf("%-10s %s\n", fmthumanoffs(cnt * 512LL, 0), path);
+		else if (!kbyte)
 			printf("%-10i %s\n", cnt, path);
 		else
 			printf("%-10i %s\n", cnt / 2, path);
@@ -179,6 +186,7 @@ static void usage(void)
 		"Show how many 512-byte blocks does file NAME use.\n\n"
 		" -a  show all files, not only directiories\n"
 		" -k  use kbytes for printing sizes\n"
+		" -h  use human-readable units for printing sizes\n"
 		" -s  do not show info on subdirectories\n"
 		" -x  do not cross device boundaries\n\n"
 		);
