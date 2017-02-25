@@ -36,3 +36,5 @@ list("tasks",2,15,296,143,7);
 
 button("term",2,162,100,16,	"Terminate",0);
 button("kill",104,162,50,16,	"Kill",0);
+
+sizebox(NULL,12,12);
