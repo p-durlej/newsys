@@ -32,10 +32,18 @@
 int _mkcanon(const char *cwd, char *buf)
 {
 	char lbuf[PATH_MAX];
+	char cbuf[PATH_MAX];
 	char *d_p = lbuf;
 	char *s_p = buf;
 	char *psep;
 	int l;
+	
+	if (!cwd)
+	{
+		if (!getcwd(cbuf, sizeof cbuf))
+			return -1;
+		cwd = cbuf;
+	}
 	
 	if (strlen(cwd) >= PATH_MAX)
 	{
