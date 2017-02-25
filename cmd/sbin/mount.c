@@ -94,7 +94,7 @@ int main(int argc, char **argv)
 				case 'r':
 					flags |= MF_READ_ONLY;
 					break;
-				case 'n':
+				case 'm':
 					flags |= MF_REMOVABLE;
 					break;
 				case 'A':
