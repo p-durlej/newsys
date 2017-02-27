@@ -153,6 +153,8 @@ void launch(const char *pathname, int follow_link)
 	struct stat st;
 	pid_t pid;
 	
+	form_busy(main_form);
+	
 	if (stat(pathname, &st))
 	{
 		char msg[64 + PATH_MAX];
@@ -161,7 +163,7 @@ void launch(const char *pathname, int follow_link)
 		sprintf(msg, "Cannot stat \"%s\"", pathname);
 		
 		msgbox_perror(main_form, "File Manager", msg, err);
-		return;
+		goto fini;
 	}
 	
 	if (S_ISREG(st.st_mode) && st.st_mode & 0111)
@@ -175,7 +177,7 @@ void launch(const char *pathname, int follow_link)
 			
 			sprintf(msg, "Type information of \"%s\" is not available", pathname);
 			msgbox_perror(main_form, "File Manager", msg, err);
-			return;
+			goto fini;
 		}
 		
 		if (follow_link && !strcmp(ft.type, "shlink"))
@@ -224,7 +226,7 @@ void launch(const char *pathname, int follow_link)
 						if (strlen(home) + strlen(wd) >= sizeof wd)
 						{
 							msgbox(main_form, "File Manager", "Path too long.");
-							return;
+							goto fini;
 						}
 						
 						memmove(wd + strlen(home) - 1, wd, strlen(wd));
@@ -235,7 +237,7 @@ void launch(const char *pathname, int follow_link)
 					{
 						sprintf(msg, "Cannot change into \"%s\"", wd);
 						msgbox_perror(main_form, "File Manager", msg, errno);
-						return;
+						goto fini;
 					}
 				}
 				launch(exec, 0);
@@ -245,20 +247,20 @@ void launch(const char *pathname, int follow_link)
 					sprintf(msg, "Cannot change into \"%s\"", cwd);
 					msgbox_perror(main_form, "File Manager", msg, errno);
 					strcpy(cwd, "/");
-					return;
+					goto fini;
 				}
-				return;
+				goto fini;
 			}
 			
 			sprintf(msg, "Invalid shell link \"%s\".", pathname);
 			msgbox(main_form, "File Manager", msg);
-			return;
+			goto fini;
 		}
 		
 		if (!*ft.exec)
 		{
 			msgbox(main_form, pathname, "No handler installed for this file type.");
-			return;
+			goto fini;
 		}
 		
 		pid = _newtaskl(ft.exec, ft.exec, pathname, (void *)NULL);
@@ -266,6 +268,9 @@ void launch(const char *pathname, int follow_link)
 	
 	if (pid < 0)
 		msgbox_perror(main_form, "File Manager", "Task creation failed", errno);
+	
+fini:
+	form_unbusy(main_form);
 }
 
 void main_form_move(struct form *form, int x, int y)
