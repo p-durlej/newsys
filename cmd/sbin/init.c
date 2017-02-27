@@ -740,6 +740,13 @@ int main()
 	int status;
 	int i;
 	
+	if (getpid() != 1)
+	{
+		if (!win_attach())
+			msgbox(NULL, "init", "This program should not be called directly.");
+		errx(255, "this program should not be called directly");
+	}
+	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("init: booting...\n");
 	
@@ -752,9 +759,6 @@ int main()
 	signal(SIGCHLD, SIG_DFL);
 	signal(SIGEVT,  SIG_DFL);
 	umask(077);
-	
-	if (getpid() != 1)
-		err(255, "getpid() != 1\n");
 	
 	if (access(_PATH_E_SS, 0))
 	{
