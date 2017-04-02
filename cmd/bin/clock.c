@@ -160,6 +160,7 @@ int main(int argc, char **argv)
 	
 	load_config();
 	win_creat(&wd, 1, config.x, config.y, WIDTH, HEIGHT, event, NULL);
+	win_setlayer(wd, WIN_LAYER_BELOW_MENU);
 	win_raise(wd);
 	
 	signal(SIGTERM, sigterm);

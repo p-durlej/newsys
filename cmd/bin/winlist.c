@@ -162,6 +162,7 @@ int main()
 	bmp_conv(icon);
 	
 	win_creat(&wd, 1, config.x, config.y, WIDTH, HEIGHT, w_proc, NULL);
+	win_setlayer(wd, WIN_LAYER_BELOW_MENU);
 	win_raise(wd);
 	
 	for (;;)
