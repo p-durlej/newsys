@@ -354,9 +354,11 @@ static int devfs_readdir(struct fso *dir, struct fs_dirent *de, int index)
 		return 0;
 	case PTY_INDEX:
 		strcpy(de->name, "pty");
+		de->index = PTY_INDEX;
 		return 0;
 	case RDIR_INDEX:
 		strcpy(de->name, "rdsk");
+		de->index = RDIR_INDEX;
 		return 0;
 	}
 	
