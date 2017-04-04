@@ -186,7 +186,7 @@ static int setmode(void *dd, int mode, int refresh)
 			color2rgba(NULL, &r, &g, &b, &a, i);
 			setdac(i + n * 16, r >> 2, g >> 2, b >> 2);
 		}
-	setdac(16, 0, 128, 255);
+	setdac(16, 0, 0, 0);
 	
 	outb(VGA_PORT + 0xe, 0x05);
 	outb(VGA_PORT + 0xf, 0x02);
