@@ -1123,6 +1123,9 @@ static void form_zoom(struct form *f)
 		f->zoomed = 0;
 		form_setup_rects(f, f->saved_rect.w, f->saved_rect.h);
 		
+		if (f->sizebox)
+			gadget_move(f->sizebox, f->saved_rect.w - f->sizebox->rect.w, f->saved_rect.h - f->sizebox->rect.h);
+		
 		form_update_pos(f);
 		if (f->resize)
 			f->resize(f, f->workspace_rect.w, f->workspace_rect.h);
@@ -1140,6 +1143,9 @@ static void form_zoom(struct form *f)
 		
 		win_ws_getrect(&wsr);
 		form_do_zoom(f, &wsr);
+		
+		if (f->sizebox)
+			gadget_move(f->sizebox, f->workspace_rect.w - f->sizebox->rect.w, f->workspace_rect.h - f->sizebox->rect.h);
 	}
 	form_putref(f);
 }
