@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
@@ -32,11 +33,24 @@ static void sizebox_redraw(struct gadget *g, int wd)
 {
 	win_color fg;
 	win_color bg;
+	int i, w;
+	int tl;
+	int m, s;
 	
+	tl = wm_get(WM_THIN_LINE);
 	fg = wc_get(WC_WIN_FG);
 	bg = wc_get(WC_WIN_BG);
 	
+	m = 2 * tl;
+	s = 3 * tl;
+	
 	win_rect(wd, bg, 0, 0, g->rect.w, g->rect.h);
+	win_rect(wd, fg, m, m, g->rect.w - 2 * m, g->rect.h - 2 * m);
+	
+	w = g->rect.w;
+	if (w == g->rect.h)
+		for (i = 0; i < w; i++)
+			win_hline(wd, bg, w - i - s / 2 - 1, i, s);
 }
 
 static void sizebox_remove(struct gadget *g)
