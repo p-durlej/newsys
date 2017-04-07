@@ -83,6 +83,7 @@
 /cmd/bin/ps
 /cmd/bin/tar
 /cmd/bin/taskbar
+/cmd/bin/textbench
 /cmd/bin/tinycomm
 /cmd/bin/uptime
 /cmd/bin/vtty
