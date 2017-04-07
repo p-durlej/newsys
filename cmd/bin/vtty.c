@@ -65,6 +65,9 @@
 #define FG_DEFAULT		17
 #define CURSOR			18
 
+#define MIN_COLUMNS		20
+#define MIN_LINES		5
+
 static const struct timeval cur_rate = { .tv_sec = 0, .tv_usec = 333333 };
 
 static const char *title = "Command Line";
@@ -218,10 +221,10 @@ static void resize_tty(int ncol, int nlin)
 	int x, y;
 	int i;
 	
-	if (ncol < 20)
-		ncol = 20;
-	if (nlin < 5)
-		nlin = 5;
+	if (ncol < MIN_COLUMNS)
+		ncol = MIN_COLUMNS;
+	if (nlin < MIN_LINES)
+		nlin = MIN_LINES;
 	if (ncol > 1024)
 		ncol = 1024;
 	if (nlin > 1024)
@@ -827,6 +830,7 @@ static void font_click(struct menu_item *mi)
 			config.ftd = WIN_FONT_MONO;
 		
 		win_chr_size(config.ftd, &font_w, &font_h, 'X');
+		form_min_size(main_form, font_w * MIN_COLUMNS, font_h * MIN_LINES);
 		form_resize(main_form, font_w * nr_col, font_h * nr_lin);
 	}
 	
@@ -921,6 +925,7 @@ int main(int argc, char **argv)
 		if (bigM)
 			form_flags = FORM_FRAME | FORM_TITLE | FORM_NO_BACKGROUND | FORM_ALLOW_CLOSE | FORM_ALLOW_RESIZE;
 		main_form = form_creat(form_flags, 0, form_x, form_y, config.nr_col * font_w, config.nr_lin * font_h, title);
+		form_min_size(main_form, font_w * MIN_COLUMNS, font_h * MIN_LINES);
 		form_set_menu(main_form, mm);
 	}
 	form_on_resize(main_form, on_resize);

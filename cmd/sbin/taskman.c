@@ -325,6 +325,7 @@ int main(int argc, char **argv)
 	
 	form_on_resize(main_form, main_resize);
 	form_on_close(main_form, main_close);
+	form_min_size(main_form, kill_btn->rect.x + kill_btn->rect.w + main_form->sizebox->rect.w, 100);
 	form_set_menu(main_form, m);
 	
 	refresh();

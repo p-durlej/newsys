@@ -251,14 +251,10 @@ void sig_term(int nr)
 
 void on_resize(struct form *f, int w, int h)
 {
-	if (w < 80) w = 80;
-	if (h < 80) h = 80;
-	
 	config.w = w;
 	config.h = h;
 	
 	gadget_resize(clock_gadget, w, h);
-	form_resize(main_form, w, h);
 }
 
 void on_move(struct form *f, int x, int y)
@@ -312,6 +308,7 @@ int main()
 	form_on_resize(main_form, on_resize);
 	form_on_close(main_form, on_close);
 	form_on_move(main_form, on_move);
+	form_min_size(main_form, 80, 80);
 	
 	clock_gadget = gadget_creat(main_form, 0, 0, config.w, config.h);
 	clock_gadget->redraw = clock_redraw;
