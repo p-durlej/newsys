@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -725,6 +726,15 @@ static void procopt(int argc, char **argv)
 		}
 }
 
+static void sig_int(int nr)
+{
+	if (mount)
+		_mount(mount->prefix, mount->device, mount->fstype, mount->flags);
+	
+	signal(nr, SIG_DFL);
+	raise(nr);
+}
+
 int main(int argc, char **argv)
 {
 	int i;
@@ -766,6 +776,10 @@ int main(int argc, char **argv)
 	}
 	
 	find_mount();
+	
+	signal(SIGQUIT, sig_int);
+	signal(SIGINT, sig_int);
+	
 	if (mount && _umount(mount->prefix))
 		err(errno, "_umount");
 	
