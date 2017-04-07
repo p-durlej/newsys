@@ -607,3 +607,5 @@ pref_filemgr_get
 icbox_set_double_click
 dlg_newsess
 sizebox_creat
+form_min_size
+form_max_size

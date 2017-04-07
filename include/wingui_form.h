@@ -367,6 +367,9 @@ struct form
 	int		autoclose;
 	int		refcnt;
 	
+	int		min_w, min_h;
+	int		max_w, max_h;
+	
 	struct win_rect workspace_rect;
 	struct win_rect closebtn_rect;
 	struct win_rect title_rect;
@@ -462,6 +465,9 @@ void form_focus(struct form *form);
 
 void form_newref(struct form *form);
 void form_putref(struct form *form);
+
+void form_min_size(struct form *form, int w, int h);
+void form_max_size(struct form *form, int w, int h);
 
 struct gadget *gadget_creat(struct form *form, int x, int y, int w, int h);
 int gadget_remove(struct gadget *gadget);

@@ -901,10 +901,15 @@ static int form_resize_event(struct event *e)
 		w = f->workspace_rect.w + (e->win.ptr_x - f->ptr_down_x);
 		h = f->workspace_rect.h + (e->win.ptr_y - f->ptr_down_y);
 		
-		if (w < 1)
-			w = 1;
-		if (h < 1)
-			h = 1;
+		if (w < f->min_w)
+			w = f->min_w;
+		if (h < f->min_h)
+			h = f->min_h;
+		
+		if (w > f->max_w)
+			w = f->max_w;
+		if (h > f->max_h)
+			h = f->max_h;
 		
 		win_rect_preview(1, f->win_rect.x,
 				    f->win_rect.y,
@@ -915,10 +920,15 @@ static int form_resize_event(struct event *e)
 		w = f->workspace_rect.w + (e->win.ptr_x - f->ptr_down_x);
 		h = f->workspace_rect.h + (e->win.ptr_y - f->ptr_down_y);
 		
-		if (w < 1)
-			w = 1;
-		if (h < 1)
-			h = 1;
+		if (w < f->min_w)
+			w = f->min_w;
+		if (h < f->min_h)
+			h = f->min_h;
+		
+		if (w > f->max_w)
+			w = f->max_w;
+		if (h > f->max_h)
+			h = f->max_h;
 		
 		f->resizing--;
 		win_rect_preview(0, 0, 0, 0, 0);
@@ -2097,8 +2107,7 @@ static int form_redraw_rect(struct form *f, int x, int y, int w, int h)
 		
 		if (x0 < x1 && y0 < y1)
 		{
-			win_clip(g->form->wd, x0, y0, x1 - x0, y1 - y0,
-				 g->rect.x, g->rect.y);
+			gadget_clip(g, x0 - g->rect.x, y0 - g->rect.y, x1 - x0, y1 - y0, 0, 0);
 			win_set_font(f->wd, g->font);
 			g->redraw(g, g->form->wd);
 		}
@@ -2154,6 +2163,10 @@ struct form *form_creat(int flags, int visible, int x, int y, int w, int h, cons
 	f->win_rect.y	   = y;
 	f->title	   = t;
 	f->flags	   = flags;
+	f->min_w	   = 80;
+	f->min_h	   = 40;
+	f->max_w	   = INT_MAX;
+	f->max_h	   = INT_MAX;
 	win_deflayer(&f->layer);
 	
 	if (f->flags & FORM_FRAME)
@@ -2802,6 +2815,7 @@ void gadget_show(struct gadget *g)
 
 void gadget_clip(struct gadget *g, int x, int y, int w, int h, int x0, int y0)
 {
+	struct form *f = g->form;
 	int rx0, ry0, rx1, ry1;
 	
 	if (!g->visible)
@@ -2822,8 +2836,17 @@ void gadget_clip(struct gadget *g, int x, int y, int w, int h, int x0, int y0)
 	if (ry1 > g->rect.y + g->rect.h)
 		ry1 = g->rect.y + g->rect.h;
 	
-	win_clip(g->form->wd, rx0, ry0, rx1 - rx0, ry1 - ry0,
-			      x0 + g->rect.x, y0 + g->rect.y);
+	if (rx0 < f->workspace_rect.x)
+		rx0 = f->workspace_rect.x;
+	if (ry0 < f->workspace_rect.y)
+		ry0 = f->workspace_rect.y;
+	
+	if (rx1 > f->workspace_rect.x + f->workspace_rect.w)
+		rx1 = f->workspace_rect.x + f->workspace_rect.w;
+	if (ry1 > f->workspace_rect.y + f->workspace_rect.h)
+		ry1 = f->workspace_rect.y + f->workspace_rect.h;
+	
+	win_clip(g->form->wd, rx0, ry0, rx1 - rx0, ry1 - ry0, x0 + g->rect.x, y0 + g->rect.y);
 }
 
 void gadget_defer(struct gadget *g)
@@ -3054,6 +3077,18 @@ void form_ws_resized(void)
 			continue;
 		form_do_zoom(f, &wsr);
 	}
+}
+
+void form_min_size(struct form *form, int w, int h)
+{
+	form->min_w = w;
+	form->min_h = h;
+}
+
+void form_max_size(struct form *form, int w, int h)
+{
+	form->max_w = w;
+	form->max_h = h;
 }
 
 void form_init(void)
