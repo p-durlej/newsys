@@ -529,13 +529,59 @@ static int win_autoclip_glyph(struct win_request *rq, int x0, int y0, struct win
 	return 0;
 }
 
+static void win_bmp_hline(struct win_display *d, win_color bg, win_color fg, int x, int y, int w, const uint8_t *data, int off)
+{
+	const uint8_t *p = data + (off >> 3);
+	void *dd = d->data;
+	uint8_t b;
+	int nb;
+	
+	if (d->bmp_hline)
+	{
+		d->bmp_hline(dd, x, y, w, data, off, bg, fg);
+		return;
+	}
+	
+	b  = *p++ >> (off & 7);
+	nb = 8 - (off & 7);
+	for (; w; x++, w--)
+	{
+		if (b & 1)
+			d->putpix(dd, x, y, fg);
+		else
+			d->putpix(dd, x, y, bg);
+		
+		if (!--nb)
+		{
+			b  = *p++;
+			nb = 8;
+		}
+		else
+			b >>= 1;
+	}
+}
+
+static int win_autoclip_bglyph_fast(struct win_request *rq, int x0, int y0, struct win_glyph *gl, struct win_font *font)
+{
+	win_color bg = rq->bg_color;
+	win_color fg = rq->color;
+	int y;
+	
+	for (y = 0; y < gl->height; y++)
+		win_bmp_hline(rq->display, bg, fg, x0, y0 + y, gl->width, font->bitmap + y * font->linelen, gl->pos);
+	
+	return 0;
+}
+
 static int win_autoclip_bglyph(struct win_request *rq, int x0, int y0, struct win_glyph *gl, struct win_font *font)
 {
 	void *dd = rq->display->data;
-	uint8_t d;
 	int i = 0;
 	int x;
 	int y;
+	
+	if (x0 >= rq->clip_x0 && y0 >= rq->clip_y0 && x0 + gl->width <= rq->clip_x1 && y0 + gl->height <= rq->clip_y1)
+		return win_autoclip_bglyph_fast(rq, x0, y0, gl, font);
 	
 	for (y = 0; y < gl->height; y++)
 		for (x = 0; x < gl->width; x++, i++)
@@ -554,7 +600,7 @@ static int win_autoclip_bglyph(struct win_request *rq, int x0, int y0, struct wi
 			else
 				rq->display->putpix(dd, x + x0, y + y0, rq->bg_color);
 next:
-			d >>= 1;
+			;
 		}
 	return 0;
 }

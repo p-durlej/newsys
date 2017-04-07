@@ -29,6 +29,9 @@
 #include <dev/framebuf.h>
 #include <stdint.h>
 
+#define min(a, b)	((a) < (b) ? (a) : (b))
+#define max(a, b)	((a) > (b) ? (a) : (b))
+
 static void fb_putpix_p_32(void *dd, int x, int y, win_color c);
 static void fb_getpix_p_32(void *dd, int x, int y, win_color *c);
 
@@ -65,6 +68,8 @@ void fb_free(struct framebuf *fb)
 {
 	free(fb);
 }
+
+/* ---- 32-bit display support functions ----------------------------------- */
 
 void fb_setptr_32(void *dd, const win_color *shape, const unsigned *mask)
 {
@@ -227,7 +232,40 @@ void fb_hideptr_32(void *dd)
 		}
 }
 
-/* ---- 32-bit display support functions ----------------------------------- */
+static void fb_rptr_32(void *dd, int x, int y, int w, int h)
+{
+	struct framebuf *fb = dd;
+	uint32_t *fbuf = fb->fbuf;
+	uint32_t *p;
+	int x0, x1, y0, y1;
+	int xs, ys;
+	int cx, cy;
+	int i;
+	
+	if (fb->ptr_hide_count)
+		return;
+	
+	x0 = max(x,	fb->ptr_x);
+	x1 = min(x + w, fb->ptr_x + PTR_WIDTH);
+	y0 = max(y,	fb->ptr_y);
+	y1 = min(y + h, fb->ptr_y + PTR_HEIGHT);
+	
+	if (x1 <= x0)
+		return;
+	
+	for (cy = y0; cy < y1; cy++)
+	{
+		i = (x0 - fb->ptr_x) + (cy - fb->ptr_y) * PTR_WIDTH;
+		p = fbuf + x0 + cy * fb->vwidth;
+		
+		for (cx = x0; cx < x1; cx++, i++, p++)
+			if (fb->ptr_mask[i])
+			{
+				fb->ptr_back[i] = *p;
+				*p = fb->ptr_shape[i];
+			}
+	}
+}
 
 #ifdef __ARCH_I386__
 static void cpy32fw(volatile uint32_t *dst, volatile uint32_t *src, unsigned len);
@@ -458,6 +496,43 @@ void fb_copy_32(void *dd, int x0, int y0, int x1, int y1, int w, int h)
 				w);
 	}
 	fb_showptr_32(dd);
+}
+
+void fb_bmp_hline_32(void *dd, int x, int y, int w, const uint8_t *data, int off, win_color bg, win_color fg)
+{
+	const uint8_t *p = data + (off >> 3);
+	struct framebuf *fb = dd;
+	uint32_t *dp;
+	uint8_t b;
+	int x0, w0;
+	int nb;
+	
+	x0 = x;
+	w0 = w;
+	
+	dp  = fb->fbuf;
+	dp += fb->vwidth * y;
+	dp += x;
+	
+	b  = *p++ >> (off & 7);
+	nb = 8 - (off & 7);
+	for (; w; x++, w--)
+	{
+		if (b & 1)
+			*dp++ = fg;
+		else
+			*dp++ = bg;
+		
+		if (!--nb)
+		{
+			b  = *p++;
+			nb = 8;
+		}
+		else
+			b >>= 1;
+	}
+	
+	fb_rptr_32(dd, x0, y, w0, 1);
 }
 
 /* ---- 8-bit display support functions ------------------------------------ */
@@ -698,6 +773,78 @@ void fb_hideptr_8(void *dd)
 				fb_putpix_p_8(dd, x + fb->ptr_x, y + fb->ptr_y, fb->ptr_back[i]);
 			i++;
 		}
+}
+
+static void fb_rptr_8(void *dd, int x, int y, int w, int h)
+{
+	struct framebuf *fb = dd;
+	uint8_t *fbuf = fb->fbuf;
+	uint8_t *p;
+	int x0, x1, y0, y1;
+	int xs, ys;
+	int cx, cy;
+	int i;
+	
+	if (fb->ptr_hide_count)
+		return;
+	
+	x0 = max(x,	fb->ptr_x);
+	x1 = min(x + w, fb->ptr_x + PTR_WIDTH);
+	y0 = max(y,	fb->ptr_y);
+	y1 = min(y + h, fb->ptr_y + PTR_HEIGHT);
+	
+	if (x1 <= x0)
+		return;
+	
+	for (cy = y0; cy < y1; cy++)
+	{
+		i = (x0 - fb->ptr_x) + (cy - fb->ptr_y) * PTR_WIDTH;
+		p = fbuf + x0 + cy * fb->vwidth;
+		
+		for (cx = x0; cx < x1; cx++, i++, p++)
+			if (fb->ptr_mask[i])
+			{
+				fb->ptr_back[i] = *p;
+				*p = fb->ptr_shape[i];
+			}
+	}
+}
+
+void fb_bmp_hline_8(void *dd, int x, int y, int w, const uint8_t *data, int off, win_color bg, win_color fg)
+{
+	const uint8_t *p = data + (off >> 3);
+	struct framebuf *fb = dd;
+	uint8_t *dp;
+	uint8_t b;
+	int x0, w0;
+	int nb;
+	
+	x0 = x;
+	w0 = w;
+	
+	dp  = fb->fbuf;
+	dp += fb->vwidth * y;
+	dp += x;
+	
+	b  = *p++ >> (off & 7);
+	nb = 8 - (off & 7);
+	for (; w; x++, w--)
+	{
+		if (b & 1)
+			*dp++ = fg;
+		else
+			*dp++ = bg;
+		
+		if (!--nb)
+		{
+			b  = *p++;
+			nb = 8;
+		}
+		else
+			b >>= 1;
+	}
+	
+	fb_rptr_8(dd, x0, y, w0, 1);
 }
 
 int mod_onload(unsigned md, const char *pathname, void *data, unsigned sz)

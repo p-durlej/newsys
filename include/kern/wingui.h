@@ -106,6 +106,8 @@ struct win_display
 	
 	int  (*swapctl)(void *dd, int ena);
 	void (*swap)(void *dd);
+	
+	void (*bmp_hline)(void *dd, int x, int y, int w, const uint8_t *data, int off, win_color bg, win_color fg);
 };
 
 struct win_pointer

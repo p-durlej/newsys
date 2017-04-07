@@ -58,6 +58,8 @@ void fb_vline_32(void *dd, int x, int y, int len, win_color c);
 void fb_rect_32(void *dd, int x, int y, int w, int h, win_color c);
 void fb_copy_32(void *dd, int x0, int y0, int x1, int y1, int w, int h);
 
+void fb_bmp_hline_32(void *dd, int x, int y, int w, const uint8_t *data, int off, win_color bg, win_color fg);
+
 void fb_putpix_8(void *dd, int x, int y, win_color c);
 void fb_getpix_8(void *dd, int x, int y, win_color *c);
 void fb_hline_8(void *dd, int x, int y, int len, win_color c);
@@ -69,5 +71,7 @@ void fb_setptr_8(void *dd, const win_color *shape, const unsigned *mask);
 void fb_moveptr_8(void *dd, int x, int y);
 void fb_showptr_8(void *dd);
 void fb_hideptr_8(void *dd);
+
+void fb_bmp_hline_8(void *dd, int x, int y, int w, const uint8_t *data, int off, win_color bg, win_color fg);
 
 #endif

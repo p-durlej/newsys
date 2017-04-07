@@ -144,6 +144,8 @@ static struct win_display disp =
 	.color2rgba	= color2rgba_32,
 	.invert		= invert_32,
 	
+	.bmp_hline	= fb_bmp_hline_32,
+	
 	.setcte		= NULL,
 };
 
@@ -592,6 +594,7 @@ static int setmode_8(struct modeinfo *m)
 	disp.combbuf	= NULL;
 	disp.swapctl	= NULL;
 	disp.swap	= NULL;
+	disp.bmp_hline	= fb_bmp_hline_8;
 	return 0;
 }
 
@@ -736,6 +739,7 @@ static int setmode(void *dd, int mode, int refresh)
 	disp.combbuf	= combbuf_32;
 	disp.swapctl	= swapctl_32;
 	disp.swap	= swap_32;
+	disp.bmp_hline	= fb_bmp_hline_32;
 	return 0;
 }
 
