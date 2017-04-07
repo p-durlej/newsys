@@ -34,7 +34,9 @@
 	pushl	ureg;			\
 	movl	$0,ureg;		\
 	movl	%esp,%eax;		\
-	movl	$irq_stack_top,%esp;	\
+	movl	irq_stack, %ebx;	\
+	addl	$65536, %ebx;		\
+	movl	%ebx, %esp;		\
 	pushl	%eax;			\
 	/* movl	$0,%ebp; */		\
 1:					\
@@ -91,8 +93,3 @@ IRQHAND(12)
 IRQHAND(13)
 IRQHAND(14)
 IRQHAND(15)
-
-	.data
-irq_stack:
-	.space	65536
-irq_stack_top:

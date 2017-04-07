@@ -109,12 +109,8 @@ static struct modeinfo
 
 static struct win_display disp;
 
-static struct framebuf mfb =
-{
-	.disp = &disp,
-};
-
-static struct framebuf *fb = &mfb;
+static struct framebuf *mfb;
+static struct framebuf *fb;
 
 static int pixbuf_cnt;
 
@@ -128,7 +124,6 @@ static struct win_display disp =
 	.user_cte_count	= 0,
 	.mode		= 0,
 	.transparent	= (win_color)-1,
-	.data		= &mfb,
 	
 	.modeinfo	= modeinfo,
 	.setmode	= setmode,
@@ -197,7 +192,7 @@ static void freebuf_32(void *dd, struct win_pixbuf *pb)
 static void setbuf_32(void *dd, struct win_pixbuf *pb)
 {
 	if (pb == NULL)
-		fb = &mfb;
+		fb = mfb;
 	else
 		fb = pb->data;
 	disp.data = fb;
@@ -544,10 +539,11 @@ static int setmode_8(struct modeinfo *m)
 	err = phys_map(&fbuf, m->fbuf, fbuf_size, READ_CACHE);
 	if (err)
 		return err;
-	mfb.vwidth = m->bytes_per_line;
-	mfb.width  = m->xres;
-	mfb.height = m->yres;
-	mfb.fbuf   = fbuf;
+	
+	if (mfb)
+		fb_free(mfb);
+	
+	fb = mfb = fb_creat5(&disp, fbuf, m->xres, m->yres, m->bytes_per_line);
 	
 	reg->ax	  = 0x4f02;
 	reg->bx	  = m->nr;
@@ -574,6 +570,7 @@ static int setmode_8(struct modeinfo *m)
 #endif
 	disp.mode	    = m - modetab;
 	disp.transparent    = (win_color)-1;
+	disp.data	    = mfb;
 	
 	disp.setptr	= fb_setptr_8;
 	disp.moveptr	= fb_moveptr_8;
@@ -702,10 +699,11 @@ static int setmode(void *dd, int mode, int refresh)
 	err = phys_map(&fbuf, modetab[mode].fbuf, fbuf_size, READ_CACHE);
 	if (err)
 		return err;
-	mfb.vwidth = m->bytes_per_line / 4; // XXX
-	mfb.width  = m->xres;
-	mfb.height = m->yres;
-	mfb.fbuf   = fbuf;
+	
+	if (mfb)
+		fb_free(mfb);
+	
+	fb = mfb = fb_creat5(&disp, fbuf, m->xres, m->yres, m->bytes_per_line / 4);
 	
 	memset(fbuf, 0, sizeof *fbuf * m->xres * m->yres);
 	
@@ -716,6 +714,7 @@ static int setmode(void *dd, int mode, int refresh)
 	disp.user_cte_count = 0;
 	disp.mode	    = mode;
 	disp.transparent    = 0;
+	disp.data	    = mfb;
 	
 	disp.setptr	= fb_setptr_32;
 	disp.moveptr	= fb_moveptr_32;

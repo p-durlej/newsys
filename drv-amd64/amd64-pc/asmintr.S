@@ -34,7 +34,9 @@
 	pushq	ureg;			\
 	movq	$0, ureg;		\
 	movq	%rsp, %rax;		\
-	movq	$irq_stack_top, %rsp;	\
+	movq	irq_stack, %rbx;	\
+	addq	$65536, %rbx;		\
+	movq	%rbx, %rsp;		\
 	pushq	%rax;			\
 1:	sti
 
@@ -88,8 +90,3 @@ IRQHAND(12)
 IRQHAND(13)
 IRQHAND(14)
 IRQHAND(15)
-
-	.data
-irq_stack:
-	.space	65536
-irq_stack_top:

@@ -32,6 +32,7 @@
 static int		irq_spur[16];
 static void *		irq_hand[16];
 int			irq_level;
+void *			irq_stack;
 
 void asm_irq_0();
 void asm_irq_1();
@@ -153,6 +154,15 @@ void intr_irq(int i)
 
 void intr_init(void)
 {
+	int err;
+	
+	err = kmalloc(&irq_stack, 65536, "irq_stack");
+	if (err)
+	{
+		perror("intr_init: allocating irq stack", err);
+		panic("intr_init: cannot allocate irq stack");
+	}
+	
 	intr_dis(); // XXX
 	
 	intr_set(IRQ_BASE     , asm_irq_0,  0);
