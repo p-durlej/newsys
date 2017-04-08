@@ -19,7 +19,6 @@
 755 /bin/pref.sound
 755 /bin/pref.theme
 755 /bin/vtty
-755 /bin/cli
 755 /bin/df
 755 /bin/ps
 6755 /bin/passwd
