@@ -130,6 +130,8 @@ copy_sdk()
 	rm -rf		tree.tmp/usr/include/machine-*
 	rm -rf		tree.tmp/usr/include/arch-*
 	
+	do_strip	tree.tmp/usr/bin/tcc
+	
 	make_sdk_lists
 }
 
