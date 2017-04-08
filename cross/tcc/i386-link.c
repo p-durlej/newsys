@@ -1,0 +1,1 @@
+../../cmd/tcc/i386-link.c

@@ -33,4 +33,5 @@ make_dirs
 copy_sysinstall
 copy_files
 copy_sys
+copy_sdk
 make_disks

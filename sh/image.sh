@@ -102,6 +102,37 @@ copy_sys()
 	chmod a-x tree.tmp/lib/sys/*.bin > /dev/null 2>&1 # XXX
 }
 
+make_sdk_lists()
+{
+	(cd tree.tmp && find usr/include usr/lib -type d) | while read i; do
+		echo "755 /$i"
+	done > tree.tmp/etc/sdk.mkdir
+	
+	(cd tree.tmp && find usr/include usr/lib -type f) | while read i; do
+		echo "644 /$i"
+	done > tree.tmp/etc/sdk.copy
+	
+	cat >> tree.tmp/etc/sdk.copy << EOF
+755 /usr/bin/tcc
+EOF
+}
+
+copy_sdk()
+{
+	cp -Lrpf	include/*		tree.tmp/usr/include/
+	cp -pf		lib/arch/crt0/libc.a	tree.tmp/usr/lib/
+	cp -pf		lib/arch/crt0/crt0.o	tree.tmp/usr/lib/
+	cp -pf		cmd/tcc.lib/libtcc1.a	tree.tmp/usr/lib/
+	cp -pf		cmd/tcc/tcc		tree.tmp/usr/bin/
+	
+	rm -rf		tree.tmp/usr/include/kern/machine-*
+	rm -rf		tree.tmp/usr/include/kern/arch-*
+	rm -rf		tree.tmp/usr/include/machine-*
+	rm -rf		tree.tmp/usr/include/arch-*
+	
+	make_sdk_lists
+}
+
 make_disks()
 {
 	[ -d disks ] || mkdir disks
