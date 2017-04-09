@@ -38,6 +38,8 @@
 #include <errno.h>
 #include <os386.h>
 
+#define CHECK_PTRS	0
+
 #define NR_SMALL_PAGES	256
 #define MMAGIC		0x0ace3860
 
@@ -83,6 +85,36 @@ void __libc_malloc_init(void)
 	small_heap->free  = 1;
 	small_heap->last  = 1;
 }
+
+#if CHECK_PTRS
+
+#define check_ptr(ptr)	do { m_check_ptr((ptr), __func__, __LINE__); } while (0);
+
+static m_check_ptr(void *ptr, const char *func, int line)
+{
+	uintptr_t p = ptr;
+	unsigned pg = p >> PAGE_SHIFT;
+	char buf[80];
+	
+	if (pg >= small_page && pg < first_page)
+		return;
+	
+	if (pg >= first_page && pg < PAGE_HEAP_END)
+	{
+		if ((p & PAGE_PMASK) != sizeof(size_t))
+		{
+			sprintf(buf, "m_check_ptr: %s: %i: %p: unaligned large chunk", func, line, ptr);
+			__libc_panic(buf);
+		}
+		return;
+	}
+	
+	sprintf(buf, "m_check_ptr: %s: %i: %p: ptr outside heap address space", func, line, ptr);
+	__libc_panic(buf);
+}
+#else
+#define check_ptr(ptr)	do {} while (0);
+#endif
 
 static void *small_malloc(size_t size)
 {
@@ -175,7 +207,10 @@ void *malloc(size_t size)
 	{
 		p = small_malloc(size);
 		if (p)
+		{
+			check_ptr(p);
 			return p;
+		}
 	}
 	
 	for (i = first_page; i < PAGE_HEAP_END; i++)
@@ -193,6 +228,7 @@ void *malloc(size_t size)
 					return NULL;
 				
 				*p = size + sizeof *p;
+				check_ptr(p + 1);
 				return p + 1;
 			}
 		}
@@ -215,6 +251,8 @@ void free(void *ptr)
 	
 	if (!ptr)
 		return;
+	
+	check_ptr(ptr);
 	
 	if (is_small(ptr))
 	{
@@ -241,6 +279,8 @@ void *realloc(void *ptr, size_t size)
 	if (!ptr)
 		return malloc(size);
 	
+	check_ptr(ptr);
+	
 	if (is_small(ptr))
 	{
 		she = ptr;
@@ -264,6 +304,7 @@ void *realloc(void *ptr, size_t size)
 		memcpy(nptr, ptr, old_size);
 	
 	free(ptr);
+	check_ptr(nptr);
 	return nptr;
 }
 
