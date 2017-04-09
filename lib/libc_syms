@@ -64,6 +64,7 @@ c_save
 ctime
 _ctty
 _cwarn
+_cwarnx
 __cxa_atexit
 __cxa_finalize
 _debug

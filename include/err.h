@@ -29,6 +29,7 @@
 
 void _cerr(int status, const char *fmt, ...) __attribute__((noreturn));
 
+void _cwarnx(const char *fmt, ...);
 void _cwarn(const char *fmt, ...);
 
 void errc(int status, int err, const char *fmt, ...) __attribute__((noreturn));

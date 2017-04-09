@@ -32,6 +32,34 @@
 #include <errno.h>
 #include <err.h>
 
+void _cwarnx(const char *fmt, ...)
+{
+	char buf[256]; /* XXX */
+	const char *a0;
+	const char *p;
+	char *dp;
+	va_list ap;
+	
+	a0 = __libc_argv[0];
+	p  = strrchr(a0, '/');
+	if (p == NULL)
+		p = a0;
+	else
+		p++;
+	
+	strcpy(buf, p);
+	strcat(buf, ": ");
+	
+	dp = buf + strlen(buf);
+	
+	va_start(ap, fmt);
+	vsprintf(dp, fmt, ap);
+	va_end(ap);
+	strcat(dp, "\n");
+	
+	_sysmesg(buf);
+}
+
 void _cwarn(const char *fmt, ...)
 {
 	char buf[256]; /* XXX */
