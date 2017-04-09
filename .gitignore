@@ -52,6 +52,7 @@
 /cmd/acex-bin/whoami
 /cmd/acex-sbin/chown
 /cmd/acex-sbin/nologin
+/cmd/bin/aout
 /cmd/bin/aclock
 /cmd/bin/avail
 /cmd/bin/bltbench
