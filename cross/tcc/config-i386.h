@@ -1,0 +1,1 @@
+#define TCC_TARGET_I386

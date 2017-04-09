@@ -1,6 +1,6 @@
 
 OBJ	= libtcc1.o
-CC	= $(TOPDIR)/cross/tcc/ctcc
+CC	= $(TOPDIR)/cross/tcc/ctcc -I$(TOPDIR)/include
 
 all: libtcc1.a
 

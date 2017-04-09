@@ -120,6 +120,7 @@ EOF
 copy_sdk()
 {
 	cp -Lrpf	include/*		tree.tmp/usr/include/
+	cp -pf		cmd/tcc.include/*	tree.tmp/usr/include/
 	cp -pf		lib/arch/crt0/libc.a	tree.tmp/usr/lib/
 	cp -pf		lib/arch/crt0/crt0.o	tree.tmp/usr/lib/
 	cp -pf		cmd/tcc.lib/libtcc1.a	tree.tmp/usr/lib/

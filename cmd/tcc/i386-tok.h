@@ -235,7 +235,7 @@
 #define DEF_ASM_OP2(name, opcode, group, instr_type, op0, op1)
 #define DEF_ASM_OP3(name, opcode, group, instr_type, op0, op1, op2)
 #ifdef TCC_TARGET_X86_64
-# include "x86_64-asm.h"
+# include "amd64-asm.h"
 #else
 # include "i386-asm.h"
 #endif
@@ -247,7 +247,7 @@
 #define DEF_ASM_OP2(name, opcode, group, instr_type, op0, op1) DEF_ASM(name)
 #define DEF_ASM_OP3(name, opcode, group, instr_type, op0, op1, op2) DEF_ASM(name)
 #ifdef TCC_TARGET_X86_64
-# include "x86_64-asm.h"
+# include "amd64-asm.h"
 #else
 # include "i386-asm.h"
 #endif

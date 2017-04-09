@@ -300,8 +300,8 @@
 # include "i386-link.c"
 #endif
 #ifdef TCC_TARGET_X86_64
-# include "x86_64-gen.c"
-# include "x86_64-link.c"
+# include "amd64-gen.c"
+# include "amd64-link.c"
 #endif
 #ifdef TCC_TARGET_ARM
 # include "arm-gen.c"

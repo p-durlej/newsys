@@ -1,0 +1,1 @@
+../../cmd/tcc/amd64-link.c
