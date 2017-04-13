@@ -69,7 +69,6 @@ static const char help[] =
     "  -Bdir       set tcc's private include/library dir\n"
     "  -MD         generate dependency file for make\n"
     "  -MF file    specify dependency file name\n"
-    "  -m32/64     defer to i386/x86_64 cross compiler\n"
     "Tools:\n"
     "  create library  : tcc -ar [rcsv] lib.a files\n"
 #ifdef TCC_TARGET_PE
@@ -243,8 +242,6 @@ redo:
             return printf(help), 1;
         if (opt == OPT_HELP2)
             return printf(help2), 1;
-        if (opt == OPT_M32 || opt == OPT_M64)
-            tcc_tool_cross(s, argv, opt); /* never returns */
         if (s->verbose)
             printf(version);
         if (opt == OPT_AR)

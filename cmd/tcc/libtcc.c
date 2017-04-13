@@ -1465,7 +1465,6 @@ enum {
     TCC_OPTION_W,
     TCC_OPTION_O,
     TCC_OPTION_mfloat_abi,
-    TCC_OPTION_m,
     TCC_OPTION_f,
     TCC_OPTION_isystem,
     TCC_OPTION_iwithprefix,
@@ -1535,7 +1534,6 @@ static const TCCOption tcc_options[] = {
 #ifdef TCC_TARGET_ARM
     { "mfloat-abi", TCC_OPTION_mfloat_abi, TCC_OPTION_HAS_ARG },
 #endif
-    { "m", TCC_OPTION_m, TCC_OPTION_HAS_ARG | TCC_OPTION_NOSEP },
     { "f", TCC_OPTION_f, TCC_OPTION_HAS_ARG | TCC_OPTION_NOSEP },
     { "isystem", TCC_OPTION_isystem, TCC_OPTION_HAS_ARG },
     { "iwithprefix", TCC_OPTION_iwithprefix, TCC_OPTION_HAS_ARG },
@@ -1854,15 +1852,6 @@ reparse:
                 tcc_error("unsupported float abi '%s'", optarg);
             break;
 #endif
-        case TCC_OPTION_m:
-            if (set_flag(s, options_m, optarg) < 0) {
-                if (x = atoi(optarg), x != 32 && x != 64)
-                    goto unsupported_option;
-                if (PTR_SIZE != x/8)
-                    return x;
-                ++noaction;
-            }
-            break;
         case TCC_OPTION_W:
             if (set_flag(s, options_W, optarg) < 0)
                 goto unsupported_option;
