@@ -6,7 +6,9 @@ OBJ	+= $(OBJ_I386)
 OBJ	+= $(OBJ_SUP)
 BIN	 = tcc
 
-CC	 = $(ARCH)-os386-elf-gcc -Iinclude -Isinclude
+include config.mk
+
+CPPFLAGS	+= -Isinclude
 
 all: $(BIN)
 
