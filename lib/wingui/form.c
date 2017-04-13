@@ -873,8 +873,11 @@ static int form_menu_event(struct event *e)
 		if (i < 0)
 			break;
 		
-		m->selection = i;
-		form_draw_menu(f, 1);
+		if (m->selection != i)
+		{
+			m->selection = i;
+			form_draw_menu(f, 1);
+		}
 		break;
 	}
 	
