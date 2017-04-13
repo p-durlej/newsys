@@ -607,11 +607,7 @@ static void gcall_or_jmp(int is_jmp)
         /* constant case */
         if (vtop->r & VT_SYM) {
             /* relocation case */
-#ifdef TCC_TARGET_PE
             greloca(cur_text_section, vtop->sym, ind + 1, R_X86_64_PC32, (int)(vtop->c.i-4));
-#else
-            greloca(cur_text_section, vtop->sym, ind + 1, R_X86_64_PLT32, (int)(vtop->c.i-4));
-#endif
         } else {
             /* put an empty PC32 relocation */
             put_elf_reloca(symtab_section, cur_text_section,
