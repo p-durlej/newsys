@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define _LIB_INTERNALS
+
 #include <config/defaults.h>
 
 #include <priv/copyright.h>

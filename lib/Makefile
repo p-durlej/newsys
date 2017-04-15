@@ -99,7 +99,7 @@ LIB_O = crt0c.o perror.o dirent.o time.o confdb.o cprintf.o		\
 
 CRT0D_O = crt0d/getopt.o
 
-CFLAGS += -D_LIB_INTERNALS
+CFLAGS += -Wall -Werror -D_LIB_INTERNALS
 
 include arch/arch.mk
 

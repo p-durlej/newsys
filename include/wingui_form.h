@@ -113,6 +113,7 @@ struct gadget
 	
 	/* private members; do not access */
 	
+#ifdef _LIB_INTERNALS
 	struct list_item deferred_item;
 	struct gadget *next;
 	int delayed_redraw;
@@ -312,6 +313,7 @@ struct gadget
 	
 	void (*drag)(struct gadget *g);
 	void (*udrag)(struct gadget *g);
+#endif
 };
 
 struct form_defop
@@ -350,6 +352,7 @@ struct form
 	
 	/* private members; do not access */
 	
+#ifdef _LIB_INTERNALS
 	struct list_item list_item;
 	
 	struct form *	child_dialog;
@@ -373,11 +376,9 @@ struct form
 	int		min_w, min_h;
 	int		max_w, max_h;
 	
-	struct win_rect workspace_rect;
 	struct win_rect closebtn_rect;
 	struct win_rect title_rect;
 	struct win_rect menu_rect;
-	struct win_rect win_rect;
 	struct win_rect zoombtn_rect;
 	struct win_rect minibtn_rect;
 	struct win_rect saved_rect;
@@ -428,6 +429,7 @@ struct form
 	form_resize_cb *resize;
 	form_move_cb *	move;
 	form_raise_cb *	raise;
+#endif
 };
 
 struct form *form_creat(int flags, int visible, int x, int y, int w, int h, const char *title);
