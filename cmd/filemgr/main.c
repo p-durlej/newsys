@@ -84,6 +84,7 @@ int		list_mode;
 int		show_menu = 1;
 int		do_refresh;
 int		logout;
+int		do_save_pos;
 
 #define MAX_SLAVES	1024
 
@@ -107,6 +108,10 @@ static void icbox_redraw_list_item(struct gadget *g, int i, int wd, int x, int y
 static void icbox_size_list_item(struct gadget *g, int i, int *w, int *h);
 
 static void on_resize(void);
+
+static void save_pos(int complain);
+static void autosave_pos(void);
+static void load_pos(void);
 
 static void update_title(void)
 {
@@ -329,6 +334,7 @@ static int enter_dir(const char *pathname)
 		load_dir();
 	}
 	
+	do_save_pos = 0;
 	return 0;
 }
 
@@ -921,6 +927,7 @@ static void prepare_logout(void)
 static void restart_sess(void)
 {
 	prepare_logout();
+	autosave_pos();
 	exit(253);
 }
 
@@ -1016,6 +1023,101 @@ void save_click(struct menu_item *m)
 	
 	if (pref_filemgr_save())
 		msgbox_perror(main_form, "File Manager", "Cannot save configuration", errno);
+}
+
+static void save_pos(int complain)
+{
+	struct form_state ost;
+	struct form_state fst;
+	int fd = -1;
+	
+	bzero(&fst, sizeof fst);
+	form_get_state(main_form, &fst);
+	
+	if (unlink(WINPOS) && errno != ENOENT)
+		goto fail;
+	
+	fd = open(WINPOS, O_CREAT | O_TRUNC | O_EXCL | O_RDWR, 0600);
+	if (fd < 0)
+		goto fail;
+	
+	if (read(fd, &ost, sizeof fst) != sizeof ost || memcmp(&fst, &ost, sizeof fst))
+	{
+		errno = EINVAL;
+		if (write(fd, &fst, sizeof fst) != sizeof fst)
+			goto fail;
+	}
+	
+	if (close(fd))
+		goto fail;
+	return;
+
+fail:
+	if (complain)
+		msgbox_perror(main_form, "File Manager", "Cannot save window state", errno);
+	if (fd >= 0)
+		close(fd);
+}
+
+static void autosave_pos(void)
+{
+	char cwd[PATH_MAX];
+	size_t hlen;
+	char *h;
+	
+	if (!do_save_pos)
+		return;
+	
+	if (!getcwd(cwd, sizeof cwd))
+		return;
+	
+	h = getenv("HOME");
+	if (!h)
+		return;
+	hlen = strlen(h);
+	
+	if (strncmp(cwd, h, hlen))
+		return;
+	
+	if (cwd[hlen] && cwd[hlen] != '/')
+		return;
+	
+	save_pos(0);
+}
+
+static void load_pos(void)
+{
+	struct form_state fst;
+	struct stat st;
+	int fd = -1;
+	
+	fd = open(WINPOS, O_RDONLY);
+	if (fd < 0)
+		return;
+	
+	if (fstat(fd, &st))
+		goto clean;
+	
+	if (st.st_uid != getuid())
+		goto clean;
+	if (!S_ISREG(st.st_mode))
+		goto clean;
+	
+	if (read(fd, &fst, sizeof fst) != sizeof fst)
+		goto clean;
+	
+	close(fd);
+	
+	form_set_state(main_form, &fst);
+	return;
+
+clean:
+	close(fd);
+}
+
+static void save_pos_click(struct menu_item *m)
+{
+	save_pos(1);
 }
 
 void passwd_click(struct menu_item *m)
@@ -1335,6 +1437,8 @@ static void on_drag(struct gadget *g)
 
 int main_form_close(struct form *form)
 {
+	autosave_pos();
+	
 	if (desktop)
 	{
 		logout_click(NULL);
@@ -1401,6 +1505,7 @@ void create_form(void)
 		menu_newitem (view, "-", NULL);
 		menu_newitem4(view, "Refresh", 'R', refresh_click);
 		menu_newitem (view, "-", NULL);
+		menu_newitem4(view, "Save window position", 'W', save_pos_click);
 		menu_newitem4(view, "Save settings", 'S', save_click);
 	}
 	
@@ -1718,6 +1823,12 @@ int main(int argc, char **argv)
 	win_on_setmode(on_setmode);
 	win_on_resize(on_resize);
 	win_on_update(on_update);
+	
+	if (!full_screen)
+	{
+		do_save_pos = 1;
+		load_pos();
+	}
 	
 	tv.tv_sec   = 1;
 	tv.tv_usec  = 0;

@@ -36,6 +36,7 @@
 #define SHUTDOWN	_PATH_B_SHUTDOWN
 #define SLAVE		_PATH_B_FILEMGR_SLAVE
 #define EDITOR		_PATH_B_EDIT
+#define WINPOS		".filemgr.winpos"
 
 #define SORT_NAME	0
 #define SORT_SIZE	1
