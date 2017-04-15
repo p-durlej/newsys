@@ -69,6 +69,8 @@ struct timer *	refresh_timer;
 struct gadget *	main_icbox;
 struct gadget *	main_sbar;
 struct form *	main_form;
+struct form *	bg_form;
+struct gadget *	bg;
 int		backdrop_tile;
 void *		backdrop;
 
@@ -1318,7 +1320,7 @@ static void icbox_size_list_item(struct gadget *g, int i, int *w, int *h)
 	*h = th + 2;
 }
 
-static void icbox_redraw_bg(struct gadget *g, int wd, int x, int y, int w, int h)
+static void redraw_bg(int wd, int x, int y, int w, int h, int yoff)
 {
 	int x0, y0, x1, y1;
 	int cx, cy;
@@ -1347,10 +1349,15 @@ static void icbox_redraw_bg(struct gadget *g, int wd, int x, int y, int w, int h
 		
 		x0  = (dw - bw) >> 1;
 		y0  = (dh - bh) >> 1;
-		y0 -= g->rect.y;
+		y0 -= yoff;
 		
 		bmp_draw(wd, backdrop, x0, y0);
 	}
+}
+
+static void icbox_redraw_bg(struct gadget *g, int wd, int x, int y, int w, int h)
+{
+	redraw_bg(wd, x, y, w, h, g->rect.y);
 }
 
 static void v_icons_click(struct menu_item *m)
@@ -1457,7 +1464,7 @@ int main_form_close(struct form *form)
 	exit(0);
 }
 
-void create_form(void)
+static void create_main_form(void)
 {
 	int sbw = wm_get(WM_SCROLLBAR);
 	struct win_rect wsr;
@@ -1625,17 +1632,50 @@ void create_form(void)
 	win_idle();
 }
 
+static void bg_redraw(struct gadget *g, int wd)
+{
+	redraw_bg(wd, 0, 0, g->rect.w, g->rect.h, 0);
+}
+
+static void create_bg_form(void)
+{
+	struct win_rect wsr;
+	
+	if (!desktop || full_screen)
+		return;
+	
+	win_ws_getrect(&wsr);
+	
+	bg_form = form_creat(FORM_BACKDROP, 1, wsr.x, wsr.y, wsr.w, wsr.h, "bg");
+	bg = gadget_creat(bg_form, 0, 0, wsr.w, wsr.h);
+	
+	bg->redraw = bg_redraw;
+}
+
+static void create_forms(void)
+{
+	create_bg_form();
+	create_main_form();
+}
+
 static void on_resize(void)
 {
 	struct win_rect ws;
 	
+	win_ws_getrect(&ws);
+	
 	if (full_screen)
 	{
-		win_ws_getrect(&ws);
-		
 		gadget_resize(main_icbox, ws.w, ws.h - main_form->menu_rect.h);
 		form_resize(main_form, ws.w, ws.h - main_form->menu_rect.h);
 		form_move(main_form, ws.x, ws.y);
+	}
+	
+	if (bg_form)
+	{
+		gadget_resize(bg, ws.w, ws.h);
+		form_resize(bg_form, ws.w, ws.h);
+		form_move(bg_form, ws.x, ws.y);
 	}
 }
 
@@ -1666,6 +1706,9 @@ void on_update(void)
 	}
 	else
 		load_dir();
+	
+	if (bg)
+		gadget_redraw(bg);
 }
 
 void startup(void)
@@ -1826,7 +1869,7 @@ int main(int argc, char **argv)
 		full_screen = 1;
 	
 	getcwd(cwd, sizeof cwd);
-	create_form();
+	create_forms();
 	enter_dir(".");
 	
 	win_on_setmode(on_setmode);
