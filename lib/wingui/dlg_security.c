@@ -55,18 +55,6 @@ struct gs
 	gid_t gid;
 };
 
-static void ok_click(struct gadget *g)
-{
-	g->form->result = RESULT_OK;
-	form_hide(g->form);
-}
-
-static void cancel_click(struct gadget *g)
-{
-	g->form->result = RESULT_CANCEL;
-	form_hide(g->form);
-}
-
 static int user_cmp(const void *a, const void *b)
 {
 	return strcmp(((struct us *)a)->name, ((struct us *)b)->name);
@@ -83,7 +71,6 @@ int dlg_uid(struct form *pf, const char *title, uid_t *uid)
 	struct gadget *li;
 	struct form *f;
 	struct us *user;
-	char msg[256];
 	int cnt;
 	int i;
 	
@@ -174,7 +161,6 @@ int dlg_gid(struct form *pf, const char *title, gid_t *gid)
 	struct group *gr;
 	struct gadget *li;
 	struct form *f;
-	char msg[256];
 	int cnt;
 	int i;
 	
@@ -263,7 +249,6 @@ int dlg_newpass(struct form *pf, char *pass, int maxlen)
 {
 	struct gadget *pi;
 	struct gadget *ci;
-	struct gadget *g;
 	struct form *f;
 	
 	f = form_load("/lib/forms/chpass.frm");

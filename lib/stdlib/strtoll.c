@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <errno.h>
+#include <ctype.h>
 
 long long strtoll(const char *nptr, char **endptr, int base)
 {
@@ -49,7 +50,7 @@ long long strtoll(const char *nptr, char **endptr, int base)
 	uv = strtoull(ptr, &ep, base);
 	if (neg)
 	{
-		if (uv > (unsigned long long)-LLONG_MIN)
+		if (uv > (unsigned long long)LLONG_MAX + 1)
 		{
 			_set_errno(ERANGE);
 			return LLONG_MIN;

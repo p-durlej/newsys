@@ -31,8 +31,6 @@
 #include <stdio.h>
 #include <errno.h>
 
-#warning buggy implementation
-
 char *mktemp(char *tpl)
 {
 	pid_t pid;

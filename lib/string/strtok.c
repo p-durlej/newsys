@@ -30,7 +30,6 @@ static char *strtok_p;
 
 char *strtok(char *s, const char *delim)
 {
-	size_t toklen;
 	char *r;
 	
 	if (s)

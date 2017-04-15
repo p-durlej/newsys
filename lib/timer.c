@@ -45,9 +45,7 @@ struct timer
 	void *		data;
 };
 
-static struct list	tmr_list;
-static time_t		tmr_seconds;
-static long		tmr_useconds;
+static struct list tmr_list;
 
 static int tv_cmp(const struct timeval *tv1, const struct timeval *tv2)
 {
@@ -166,7 +164,7 @@ void tmr_reset(struct timer *tmr, const struct timeval *delay, const struct time
 	if (!repeat->tv_sec && !repeat->tv_usec)
 	{
 		_set_errno(EINVAL);
-		return NULL;
+		return;
 	}
 	
 	r = tmr->listed;

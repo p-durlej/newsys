@@ -1483,7 +1483,6 @@ static void form_key_down(struct form *f, unsigned ch, unsigned shift)
 {
 	struct gadget *new_focus = NULL;
 	struct gadget *g;
-	int i;
 	
 	if (f->key_down && !f->key_down(f, ch, shift))
 		return;
@@ -1897,6 +1896,7 @@ static int form_grow_bg_rects(struct form *f, int cap)
 	return 0;
 }
 
+#if 0
 static void form_clip_rect(struct win_rect *d, struct win_rect *s)
 {
 	int x0, y0, x1, y1;
@@ -1920,6 +1920,7 @@ static void form_clip_rect(struct win_rect *d, struct win_rect *s)
 	d->w = x1 - x0;
 	d->h = y1 - y0;
 }
+#endif
 
 static int form_make_bg_rects(struct form *f)
 {
@@ -2259,8 +2260,6 @@ int form_close(struct form *form)
 
 static void form_update_title(struct form *form)
 {
-	int display = 1;
-	
 	if ((form->flags & FORM_EXCLUDE_FROM_LIST) || form->parent_form || !form->visible)
 		win_set_title(form->wd, "");
 	else
@@ -2926,10 +2925,7 @@ struct gadget *form_get_focus(struct form *form)
 int gadget_dragdrop(struct gadget *gadget, const void *data, size_t len)
 {
 	if (win_dragdrop(data, len))
-	{
-		warn("win_dragdrop");
 		return -1;
-	}
 	
 	gadget->form->drag_gadget = gadget;
 	return 0;

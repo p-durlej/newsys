@@ -28,7 +28,6 @@
 #define _STDIO_H
 
 #include <sys/types.h>
-#include <stdarg.h>	/* XXX */
 #include <limits.h>
 
 #include <seekdef.h>
@@ -104,11 +103,6 @@ int	fprintf(FILE *f, const char *format, ...);
 int	sprintf(char *str, const char *format, ...);
 int	snprintf(char *str, size_t n, const char *format, ...);
 int	asprintf(char **str, const char *format, ...);
-
-int	vprintf(const char *format, va_list ap);
-int	vfprintf(FILE *f, const char *format, va_list ap);
-int	vsprintf(char *str, const char *format, va_list ap);
-int	vsnprintf(char *str, size_t size, const char *format, va_list ap);
 
 int	rename(const char *name1, const char *name2);
 

@@ -26,9 +26,11 @@
 
 #include <priv/wingui_theme.h>
 #include <priv/libc.h>
+#include <wingui_cgadget.h>
 #include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
+#include <wingui_menu.h>
 #include <wingui.h>
 #include <timer.h>
 #include <sys/time.h>

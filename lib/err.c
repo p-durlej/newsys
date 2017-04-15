@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <os386.h>
 #include <stdio.h>
 #include <errno.h>
 #include <err.h>
@@ -245,7 +246,6 @@ void warnx(const char *fmt, ...)
 	const char *p;
 	FILE *stderr;
 	va_list ap;
-	int err;
 	
 	stderr = _get_stderr();
 	

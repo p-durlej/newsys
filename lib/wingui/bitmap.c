@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <ctype.h>
 
 struct sbmp_head
 {
@@ -314,7 +315,6 @@ static struct bitmap *load_pgm(int fd)
 	int cnt;
 	int ox = -1, oy = -1;
 	int w, h;
-	int pb;
 	int i;
 	
 	lseek(fd, 0L, SEEK_SET);

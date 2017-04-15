@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdarg.h>
 #include <errno.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -121,7 +122,6 @@ int _newtaskv(const char *path, char *const *argv)
 
 int _newtaskl(const char *path, ...)
 {
-	char buf[256];
 	va_list ap;
 	int cnt;
 	int i;
@@ -144,7 +144,6 @@ int _newtaskl(const char *path, ...)
 
 int _newtaskle(const char *path, ...)
 {
-	char buf[256];
 	va_list ap;
 	void *envp;
 	int cnt;
@@ -181,7 +180,6 @@ int _newtaskvp(const char *path, char *const *argv)
 
 int _newtasklp(const char *path, ...)
 {
-	char buf[256];
 	va_list ap;
 	int cnt;
 	int i;

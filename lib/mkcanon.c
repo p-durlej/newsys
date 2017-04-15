@@ -25,6 +25,7 @@
  */
 
 #include <mkcanon.h>
+#include <unistd.h>
 #include <string.h>
 #include <limits.h>
 #include <errno.h>

@@ -78,9 +78,6 @@ static int d_button(int wd, int x, int y, int w, int h, const char *label, int f
 static int d_titlebtn(int wd, int x, int y, int w, int h, int flags)
 {
 	win_color bg;
-	int split;
-	int size;
-	int i;
 	
 	if (flags & DB_DEPSD)
 		bg = wc_get(WC_SEL_BG);
@@ -99,7 +96,7 @@ static int d_closebtn(int wd, int x, int y, int w, int h, int flags)
 	int th = tl * 2;
 	win_color fg;
 	int size;
-	int i, n;
+	int i;
 	
 	if (w < h)
 		size = w;
@@ -129,7 +126,6 @@ static int d_zoombtn(int wd, int x, int y, int w, int h, int flags)
 	int tl = wm_get(WM_THIN_LINE);
 	win_color fg;
 	int size;
-	int i;
 	
 	if (w < h)
 		size = w;
@@ -155,7 +151,6 @@ static int d_minibtn(int wd, int x, int y, int w, int h, int flags)
 	int spc;
 	win_color fg;
 	int size;
-	int i;
 	
 	if (w < h)
 		size = w;
@@ -183,7 +178,6 @@ static int d_menubtn(int wd, int x, int y, int w, int h, int flags)
 	int tl = wm_get(WM_THIN_LINE);
 	win_color fg;
 	int size;
-	int i;
 	
 	if (w < h)
 		size = w;

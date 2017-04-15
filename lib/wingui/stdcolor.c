@@ -266,7 +266,6 @@ static void wc_default(struct win_rgba *rgba)
 
 static void wc_load_rgba(struct win_rgba *buf)
 {
-	struct win_rgba rgba[WC_COUNT];
 	char lbuf[256];
 	
 	char pathname1[PATH_MAX];

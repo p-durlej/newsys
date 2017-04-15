@@ -25,10 +25,11 @@
  */
 
 #include <fmthuman.h>
+#include <stdio.h>
 
 const char *fmthumanoffs(off_t sz, int frac)
 {
-	static const char buf[64];
+	static char buf[64];
 	const char *suf;
 	uintmax_t v;
 	
@@ -62,7 +63,7 @@ const char *fmthumanoffs(off_t sz, int frac)
 
 const char *fmthumanoff(off_t sz, int frac)
 {
-	static const char buf[64];
+	static char buf[64];
 	const char *suf;
 	uintmax_t v;
 	

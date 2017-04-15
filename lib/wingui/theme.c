@@ -28,6 +28,7 @@
 #include <config/defaults.h>
 #include <limits.h>
 #include <string.h>
+#include <confdb.h>
 #include <stdio.h>
 
 static const struct form_theme *form_th_cur;

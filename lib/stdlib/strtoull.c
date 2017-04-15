@@ -29,9 +29,8 @@
 
 unsigned long long strtoull(const char *nptr, char **endptr, int base)
 {
-	const unsigned char *ptr = nptr;
+	const unsigned char *ptr = (unsigned char *)nptr;
 	unsigned long long v = 0;
-	int neg = 0;
 	
 	while (isspace(*ptr))
 		ptr++;
@@ -93,6 +92,6 @@ unsigned long long strtoull(const char *nptr, char **endptr, int base)
 	}
 	
 	if (endptr)
-		*endptr = ptr;
+		*endptr = (char *)ptr;
 	return v;
 }

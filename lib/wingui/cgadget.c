@@ -46,12 +46,12 @@ void gadget_set_redraw_cb(struct gadget *g, gadget_redraw_cb *cb)
 	g->redraw = cb;
 }
 
-void gadget_set_resize_cb(struct gadget *g, gadget_redraw_cb *cb)
+void gadget_set_resize_cb(struct gadget *g, gadget_resize_cb *cb)
 {
 	g->resize = cb;
 }
 
-void gadget_set_move_cb(struct gadget *g, gadget_redraw_cb *cb)
+void gadget_set_move_cb(struct gadget *g, gadget_move_cb *cb)
 {
 	g->move = cb;
 }

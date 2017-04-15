@@ -30,6 +30,7 @@
 #include <wingui.h>
 #include <sys/utsname.h>
 #include <sys/stat.h>
+#include <newtask.h>
 #include <mkcanon.h>
 #include <dirent.h>
 #include <string.h>
@@ -386,7 +387,6 @@ void dlg_about7(struct form *pf,
 	{
 		char pathname1[PATH_MAX];
 		char pathname2[PATH_MAX];
-		const char *icd = "/lib/icons";
 		
 		if (*icon != '/')
 		{

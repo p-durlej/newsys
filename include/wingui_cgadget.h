@@ -51,8 +51,8 @@ void gadget_set_blink_cb(struct gadget *g, gadget_blink_cb *cb);
 void gadget_set_focus_cb(struct gadget *g, gadget_focus_cb *cb);
 void gadget_set_remove_cb(struct gadget *g, gadget_remove_cb *cb);
 void gadget_set_redraw_cb(struct gadget *g, gadget_redraw_cb *cb);
-void gadget_set_resize_cb(struct gadget *g, gadget_redraw_cb *cb);
-void gadget_set_move_cb(struct gadget *g, gadget_redraw_cb *cb);
+void gadget_set_resize_cb(struct gadget *g, gadget_resize_cb *cb);
+void gadget_set_move_cb(struct gadget *g, gadget_move_cb *cb);
 void gadget_set_do_defops_cb(struct gadget *g, gadget_do_defops_cb *cb);
 void gadget_set_set_font_cb(struct gadget *g, gadget_set_font_cb *cb);
 

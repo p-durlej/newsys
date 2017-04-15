@@ -72,7 +72,7 @@ int __cxa_atexit(void (*func)(void *), void *arg, void *dso)
 		return -1;
 	
 	ax->next = atexit_list;
-	ax->func = func;
+	ax->func = (void *)func; // XXX
 	ax->arg	 = arg;
 	ax->dso  = dso;
 	atexit_list = ax;

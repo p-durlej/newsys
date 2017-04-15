@@ -24,9 +24,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_cgadget.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>
+#include <stdio.h>
 
 static void bargraph_redraw(struct gadget *g, int wd)
 {

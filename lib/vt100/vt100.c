@@ -415,13 +415,15 @@ static void do_move_left_cmd(struct vt100 *vt)
 	vt->x -= n;
 	if (vt->x < 0)
 		vt->x = 0;
-	vt->line_dirty[vt->y] = 1;	
+	vt->line_dirty[vt->y] = 1;
 }
 
+#if 0
 static void do_nop_cmd(struct vt100 *vt)
 {
 	/* nop */
 }
+#endif
 
 static void do_set_cmd(struct vt100 *vt)
 {
@@ -581,6 +583,7 @@ static void do_delete_chr_cmd(struct vt100 *vt)
 	}
 }
 
+#if 0
 static void do_test_cmd(struct vt100 *vt)
 {
 	int i;
@@ -589,6 +592,7 @@ static void do_test_cmd(struct vt100 *vt)
 		printf("[%i] = %i\n", i, vt->args[i]);
 	sleep(5);
 }
+#endif
 
 static struct CSI_cmd
 {

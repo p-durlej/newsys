@@ -25,6 +25,7 @@
  */
 
 #include <priv/wingui_form.h>
+#include <wingui_cgadget.h>
 #include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
@@ -34,6 +35,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <timer.h>
+#include <ctype.h>
 
 static const struct timeval input_ctv = { 0, 333333L };
 

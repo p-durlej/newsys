@@ -132,24 +132,6 @@ static int fmtputs(FILE *f, struct format *fmt, const char *str)
 	return 0;
 }
 
-static int fmtpad(FILE *f, int sgn, int pad, int cnt)
-{
-	if (pad != '0')
-		while (cnt--)
-			if (fputc(pad, f) == EOF)
-				return -1;
-	
-	if (sgn)
-		if (fputc(sgn, f) == EOF)
-			return -1;
-	
-	if (pad == '0')
-		while (cnt--)
-			if (fputc(pad, f) == EOF)
-				return -1;
-	return 0;
-}
-
 static int fmtputn(FILE *f, struct format *fmt, uintmax_t v, int neg)
 {
 	char sgn = 0;
@@ -376,10 +358,10 @@ convert:
 					switch (fmt._size)
 					{
 					case SIZE_HH:
-						arg = va_arg(ap, char); /* XXX */
+						arg = va_arg(ap, int);
 						break;
 					case SIZE_H:
-						arg = va_arg(ap, short);
+						arg = va_arg(ap, int);
 						break;
 					case SIZE_DEFAULT:
 						arg = va_arg(ap, int);
@@ -415,10 +397,10 @@ convert:
 					switch (fmt._size)
 					{
 					case SIZE_HH:
-						val = va_arg(ap, unsigned char);
+						val = va_arg(ap, unsigned int);
 						break;
 					case SIZE_H:
-						val = va_arg(ap, unsigned short);
+						val = va_arg(ap, unsigned int);
 						break;
 					case SIZE_DEFAULT:
 						val = va_arg(ap, unsigned int);

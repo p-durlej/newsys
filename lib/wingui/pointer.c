@@ -28,6 +28,7 @@
 #include <wingui_bitmap.h>
 #include <priv/pointer.h>
 #include <priv/wingui.h>
+#include <string.h>
 #include <stdlib.h>
 #include <confdb.h>
 
@@ -79,7 +80,6 @@ clean:
 
 void wp_load(void)
 {
-	char pathname[PATH_MAX];
 	struct ptr_conf pc;
 	const char *defpath = DEFAULT_PATH;
 	

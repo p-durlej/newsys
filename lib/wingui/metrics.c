@@ -26,6 +26,7 @@
 
 #include <config/defaults.h>
 #include <wingui_metrics.h>
+#include <wingui.h>
 #include <confdb.h>
 #include <string.h>
 #include <errno.h>
@@ -73,8 +74,9 @@ int wm_get(int sel)
 int wm_load(void)
 {
 	if (wm_loaded)
-		return;
+		return 0;
 	if (c_load("metrics", &wm_tab, sizeof wm_tab))
 		wm_default();
 	wm_loaded = 1;
+	return 0;
 }
