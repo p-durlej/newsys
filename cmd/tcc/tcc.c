@@ -50,9 +50,11 @@ static const char help[] =
     "  -Ldir       add library path 'dir'\n"
     "  -llib       link with dynamic or static library 'lib'\n"
     "  -r          generate (relocatable) object file\n"
+#if 0
     "  -shared     generate a shared library/dll\n"
     "  -rdynamic   export all global symbols to dynamic linker\n"
     "  -soname     set name for shared library to be used at runtime\n"
+#endif
     "  -Wl,-opt[=val]  set linker option (see tcc -hh)\n"
     "Debugger options:\n"
     "  -g          generate runtime debug info\n"
@@ -87,7 +89,9 @@ static const char help2[] =
     "  -include file                 include 'file' above each input file\n"
     "  -isystem dir                  add 'dir' to system include path\n"
     "  -iwithprefix dir              set tcc's private include/library subdir\n"
+#if 0
     "  -static                       link to static libraries (not recommended)\n"
+#endif
     "  -dumpversion                  print version\n"
     "  -print-search-dirs            print search paths\n"
     "Ignored options:\n"
@@ -116,7 +120,9 @@ static const char help2[] =
     "-Wl,... linker options:\n"
     "  -nostdlib                     do not link with standard crt/libs\n"
     "  -[no-]whole-archive           load lib(s) fully/only as needed\n"
+#if 0
     "  -export-all-symbols           same as -rdynamic\n"
+#endif
     "  -image-base= -Ttext=          set base address of executable\n"
     "  -section-alignment=           set section alignment in executable\n"
 #ifdef TCC_TARGET_PE
@@ -128,10 +134,12 @@ static const char help2[] =
     "Predefined macros:\n"
     "  tcc -E -dM - < nul\n"
 #else
+#if 0
     "  -rpath=                       set dynamic library seach path\n"
     "  -enable-new-dtags             set DT_RUNPATH instead of DT_RPATH\n"
     "  -soname=                      set DT_SONAME elf tag\n"
     "  -Bsymbolic                    set DT_SYMBOLIC elf tag\n"
+#endif
     "  -oformat=[elf32/64-* binary]  set executable output format\n"
     "  -init= -fini= -as-needed -O   (ignored)\n"
     "Predefined macros:\n"
