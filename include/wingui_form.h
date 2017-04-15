@@ -345,6 +345,9 @@ struct form
 	long		l_data;	/* free to change this member */
 	int		wd;
 	
+	struct win_rect workspace_rect;
+	struct win_rect win_rect;
+	
 	/* private members; do not access */
 	
 	struct list_item list_item;
