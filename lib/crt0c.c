@@ -74,7 +74,8 @@ void __libc_panic(char *desc)
 	_sysmesg(__libc_panic_msg);
 	_sysmesg(desc);
 	_sysmesg("\n");
-	_exit(255);
+	
+	abort();
 }
 
 void __libc_initargenv(struct arg_buf *arg, int arg_size)
