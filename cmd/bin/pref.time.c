@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_cgadget.h>
 #include <wingui_msgbox.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
@@ -300,13 +301,14 @@ struct gadget *cal_creat(struct form *f, int x, int y)
 		free(cd);
 		return NULL;
 	}
-	g->p_data     = cd;
-	g->want_focus = 1;
-	g->focus      = cal_focus;
-	g->remove     = cal_remove;
-	g->redraw     = cal_redraw;
-	g->ptr_down   = cal_ptr_down;
-	g->key_down   = cal_key_down;
+	g->p_data = cd;
+	
+	gadget_set_want_focus(g, 1);
+	gadget_set_focus_cb(g, cal_focus);
+	gadget_set_remove_cb(g, cal_remove);
+	gadget_set_redraw_cb(g, cal_redraw);
+	gadget_set_ptr_down_cb(g, cal_ptr_down);
+	gadget_set_key_down_cb(g, cal_key_down);
 	return g;
 }
 

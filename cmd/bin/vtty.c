@@ -26,6 +26,7 @@
 
 #include <priv/copyright.h>
 #include <wingui_metrics.h>
+#include <wingui_cgadget.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
@@ -932,11 +933,11 @@ int main(int argc, char **argv)
 	form_on_close(main_form, on_close);
 	
 	screen = gadget_creat(main_form, 0, 0, 160, 100);
-	screen->want_focus = 1;
-	screen->ptr	   = WIN_PTR_TEXT;
-	screen->key_down   = key_down;
-	screen->redraw	   = redraw;
-	screen->drop	   = drop;
+	gadget_setptr(screen, WIN_PTR_TEXT);
+	gadget_set_want_focus(screen, 1);
+	gadget_set_key_down_cb(screen, key_down);
+	gadget_set_redraw_cb(screen, redraw);
+	gadget_set_drop_cb(screen, drop);
 	gadget_focus(screen);
 	
 	if (c_loaded && form_x < 0 && form_y < 0)
