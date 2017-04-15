@@ -115,7 +115,7 @@ static const char help2[] =
     "  float-abi                     hard/softfp on arm\n"
 #endif
 #ifdef TCC_TARGET_X86_64
-    "  no-sse                        disable floats on x86_64\n"
+    "  no-sse                        disable floats on amd64\n"
 #endif
     "-Wl,... linker options:\n"
     "  -nostdlib                     do not link with standard crt/libs\n"
@@ -153,7 +153,7 @@ static const char version[] =
 #ifdef TCC_TARGET_I386
         "i386"
 #elif defined TCC_TARGET_X86_64
-        "x86_64"
+        "amd64"
 #endif
 	" nameless"
     ")\n"
