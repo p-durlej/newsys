@@ -469,7 +469,9 @@ void form_putref(struct form *form);
 void form_min_size(struct form *form, int w, int h);
 void form_max_size(struct form *form, int w, int h);
 
-struct gadget *gadget_creat(struct form *form, int x, int y, int w, int h);
+struct gadget *gadget_first(struct form *form);
+struct gadget *gadget_next(struct gadget *gadget);
+
 int gadget_remove(struct gadget *gadget);
 void gadget_hide(struct gadget *g);
 void gadget_show(struct gadget *g);

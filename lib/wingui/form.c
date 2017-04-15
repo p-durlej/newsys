@@ -2945,6 +2945,16 @@ void gadget_on_drag(struct gadget *gadget, gadget_drag_cb *on_drag)
 	gadget->udrag = on_drag;
 }
 
+struct gadget *gadget_first(struct form *form)
+{
+	return form->gadget;
+}
+
+struct gadget *gadget_next(struct gadget *gadget)
+{
+	return gadget->next;
+}
+
 void form_reload_config(void)
 {
 	if (c_load("form", &form_cfg, sizeof form_cfg))
