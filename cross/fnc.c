@@ -47,6 +47,7 @@ static FILE *outfile;
 static FILE *infile;
 
 static int		tspc, bspc;
+static int		fwidth;
 
 static int		height, totw;
 
@@ -102,6 +103,7 @@ static void pset(int x, int y)
 
 static int conv_chr(unsigned nr)
 {
+	static int fw;
 	struct font_chr hdr;
 	int width = -1;
 	unsigned code;
@@ -124,6 +126,13 @@ static int conv_chr(unsigned nr)
 		for (x = 0; x < width; x++)
 			if (buf[x] != '.')
 				pset(pos + x, y + tspc);
+	}
+	
+	if (fwidth)
+	{
+		if (fw && fw != width)
+			errx(1, "%i: character width is %i, expected %i", line_nr, width, fw);
+		fw = width;
 	}
 	
 	hdr.nr	   = code;
@@ -189,6 +198,11 @@ int main(int argc, char **argv)
 	
 	for (i = 1; i < argc - 2; i++)
 	{
+		if (!strcmp(argv[i], "-fixed"))
+		{
+			fwidth = 1;
+			continue;
+		}
 		if (!strncmp(argv[i], "-ts=", 4))
 		{
 			tspc = atoi(argv[i] + 4);
