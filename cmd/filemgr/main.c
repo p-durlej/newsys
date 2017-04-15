@@ -43,6 +43,7 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <fmthuman.h>
 #include <confdb.h>
 #include <newtask.h>
 #include <stdlib.h>
@@ -50,6 +51,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <event.h>
 #include <timer.h>
 #include <fcntl.h>
 #include <errno.h>
