@@ -83,7 +83,7 @@ static const char help2[] =
     "Special options:\n"
     "  -P -P1                        with -E: no/alternative #line output\n"
     "  -dD -dM                       with -E: output #define directives\n"
-    "  -pthread                      same as -D_REENTRANT and -lpthread\n"
+    /* "  -pthread                      same as -D_REENTRANT and -lpthread\n" */
     "  -On                           same as -D__OPTIMIZE__ for n > 0\n"
     "  -Wp,-opt                      same as -opt\n"
     "  -include file                 include 'file' above each input file\n"
