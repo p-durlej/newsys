@@ -72,6 +72,7 @@ int main(int argc, char **argv)
 	int btn_w;
 	int btn_h;
 	int x, y;
+	int fw;
 	int fh;
 	int tl;
 	int i;
@@ -103,8 +104,10 @@ int main(int argc, char **argv)
 	fh *= btn_h + 2 * tl;
 	fh += 2 * tl;
 	
+	fw = COLUMNS * (btn_w + 2 * tl) + 2 * tl;
+	
 	f = form_creat(FORM_TITLE | FORM_FRAME | FORM_ALLOW_CLOSE | FORM_ALLOW_MINIMIZE, 1,
-			-1, -1, COLUMNS * (btn_w + 2 * tl) + 2 * tl, fh, "Character map");
+			-1, -1, fw, fh, "Character map");
 	form_on_close(f, f_close);
 	form_set_menu(f, mm);
 	
@@ -120,7 +123,7 @@ int main(int argc, char **argv)
 		button_creat(f, x, y, btn_w, btn_h, txt, b_click);
 		
 		x += btn_w + 2 * tl;
-		if (x >= f->workspace_rect.w)
+		if (x >= fw)
 		{
 			y += btn_h + 2 * tl;
 			x  = 2 * tl;
