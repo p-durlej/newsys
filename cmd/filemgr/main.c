@@ -942,7 +942,7 @@ static void restart_sess(void)
 
 void restart_click(struct menu_item *m)
 {
-	if (msgbox_ask(main_form, "Desktop", "Are you sure you want to restart the session?") == MSGBOX_YES)
+	if (msgbox_ask(main_form, "Session restart", "Are you sure you want to restart the session?") == MSGBOX_YES)
 		restart_sess();
 }
 
@@ -950,7 +950,7 @@ void logout_click(struct menu_item *m)
 {
 	int result;
 	
-	result = msgbox_ask(main_form, "Desktop", "Are you sure you want to end the session?");
+	result = msgbox_ask(main_form, "Logout", "Are you sure you want to end the session?");
 	win_idle();
 	
 	if (result == MSGBOX_YES)
@@ -969,7 +969,7 @@ void shutdown_click(struct menu_item *m)
 	
 	if (geteuid())
 	{
-		if (msgbox_ask(main_form, "Desktop", "Are you sure you want to shut down this machine?") == MSGBOX_YES)
+		if (msgbox_ask(main_form, "Shutdown", "Are you sure you want to shut down this machine?") == MSGBOX_YES)
 		{
 			prepare_logout();
 			exit(254);
