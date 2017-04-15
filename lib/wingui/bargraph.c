@@ -41,8 +41,8 @@ static void bargraph_redraw(struct gadget *g, int wd)
 	int tw1, th1;
 	int w = 0;
 	
-	bg  = wc_get(WC_WIN_BG);
-	fg  = wc_get(WC_WIN_FG);
+	bg  = wc_get(WC_BG);
+	fg  = wc_get(WC_FG);
 	hi1 = wc_get(WC_HIGHLIGHT1);
 	sh1 = wc_get(WC_SHADOW1);
 	hi2 = wc_get(WC_HIGHLIGHT2);
