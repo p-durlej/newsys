@@ -118,7 +118,13 @@ static void update_title(void)
 	char *p;
 	
 	if (desktop)
+	{
+		if (full_screen)
+			form_set_title(main_form, "Desktop");
+		else
+			form_set_title(main_form, "Session Manager");
 		return;
+	}
 	
 	if (listfd >= 0)
 	{
@@ -909,6 +915,9 @@ void about(struct menu_item *m)
 {
 	const char *name = desktop ? "Desktop v1.3" : "File Manager v1.3";
 	const char *icon = desktop ? "desktop.pnm"  : "filemgr.pnm";
+	
+	if (desktop && !full_screen)
+		name = "Session Manager v1.3";
 	
 	dlg_about7(main_form, NULL, name, SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, icon);
 }
