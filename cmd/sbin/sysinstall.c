@@ -980,7 +980,7 @@ static void cancel_click(struct gadget *g, int x, int y)
 	*(int *)g->p_data = 1;
 }
 
-void copy_files(const char *list)
+void copy_files(const char *list, const char *title)
 {
 	struct gadget *prgbar;
 	struct gadget *cncbtn;
@@ -995,6 +995,9 @@ void copy_files(const char *list)
 	form   = form_load("/lib/forms/filecopy.frm");
 	prgbar = gadget_find(form, "prgbar");
 	cncbtn = gadget_find(form, "cncbtn");
+	
+	if (title)
+		form_set_title(form, title);
 	
 	button_on_click(cncbtn, cancel_click);
 	cncbtn->p_data = &do_cancel;
@@ -1681,12 +1684,12 @@ void stage0(void)
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: copying files\n");
-	copy_files(NULL);
+	copy_files(NULL, NULL);
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: installing SDK\n");
 	create_dirs("/etc/sdk.mkdir");
-	copy_files("/etc/sdk.copy");
+	copy_files("/etc/sdk.copy", "Installing SDK...");
 	link_files("/etc/sdk.link");
 	
 	if (access(MOUNT "/etc/devices", 0))
