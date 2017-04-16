@@ -910,9 +910,9 @@ void getinfo_click(struct menu_item *m)
 	get_info(main_form, name);
 }
 
-static void df_click(struct menu_item *m)
+static void progitem_click(struct menu_item *m)
 {
-	_newtaskl("/sbin/diskfree", "/sbin/diskfree", (void *)NULL);
+	_newtaskl(m->p_data, m->p_data, (void *)NULL);
 }
 
 void about(struct menu_item *m)
@@ -1530,8 +1530,14 @@ static void create_main_form(void)
 	options = menu_creat();
 	if (desktop && !geteuid())
 	{
-		menu_newitem(options, "Disk space ...", df_click);
-		menu_newitem(options, "-", NULL);
+		menu_newitem4(options, "Available resources ...", 'R',	progitem_click)->p_data = "/bin/avail";
+		menu_newitem4(options, "System load ...",	  'S',	progitem_click)->p_data = "/sbin/showload";
+		menu_newitem (options, "-", NULL);
+		menu_newitem (options, "Format diskette ...",		progitem_click)->p_data = "/sbin/wfdfmt";
+		menu_newitem (options, "-", NULL);
+		menu_newitem (options, "Disk performance ...",		progitem_click)->p_data = "/sbin/diskperf";
+		menu_newitem4(options, "Disk space ...",	  'D',	progitem_click)->p_data = "/sbin/diskfree";
+		menu_newitem (options, "-", NULL);
 	}
 	menu_newitem(options, "About ...", about);
 	
