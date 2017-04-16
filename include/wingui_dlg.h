@@ -32,6 +32,11 @@
 
 #define DLG_INPUT_ALLOW_CANCEL	1
 
+#define DLG_DISK_ANY		1
+#define DLG_DISK_FLOPPY		2
+#define DLG_DISK_HARD		4
+#define DLG_DISK_PARTITION	8
+
 struct form;
 
 int  dlg_file(struct form *pf, const char *title, const char *button, char *pathname, int maxlen);
@@ -57,5 +62,7 @@ int dlg_input(struct form *pf, const char *title, char *buf, int maxlen);
 
 void dlg_reboot(struct form *pf, const char *title);
 void dlg_newsess(struct form *pf, const char *title);
+
+const char *dlg_disk(struct form *pf, const char *title, const char *pathname, int flags);
 
 #endif
