@@ -354,6 +354,48 @@ static void edit_field(struct field *f)
 	}
 }
 
+static int confirm(const char *title, const char *msg)
+{
+	int x, y, b;
+	int len;
+	
+	con_status("Press RETURN to confirm or press ESC to cancel.", "");
+	
+	con_setattr(0, 7, 0);
+	con_rect(25, 9, 28, 7);
+	
+	con_setattr(4, 7, BOLD);
+	con_rect(24, 8, 28, 7);
+	con_frame(24, 8, 28, 7);
+	
+	if (title)
+	{
+		len = strlen(title) + 2;
+		
+		con_gotoxy(25 + (28 - len) / 2, 8);
+		con_putc(' ');
+		con_puts(title);
+		con_putc(' ');
+	}
+	
+	con_putsxy(27, 10, msg);
+	con_setattr(4, 7, BOLD);
+	con_putsxy(27, 12, "Are you sure? ");
+	
+	for (;;)
+		switch (con_getch())
+		{
+		case '\n':
+		case 'y':
+			return 1;
+		case 27:
+		case 'n':
+			return 0;
+		default:
+			;
+		}
+}
+
 static void setmode(void)
 {
 	int x, y, b;
@@ -499,6 +541,17 @@ fini:
 		boot_params.boot_flags |= BOOT_DETECT;
 	if (verbose_flag)
 		boot_params.boot_flags |= BOOT_VERBOSE;
+	
+	if (ch != '\n')
+	{
+		if (confirm("Exit", "The system will reboot."))
+		{
+			con_setattr(1, 7, 0);
+			con_rect(2, 3, 76, 20);
+			return 0;
+		}
+		goto redraw;
+	}
 	
 	con_setattr(1, 7, 0);
 	con_rect(2, 3, 76, 20);
@@ -1248,8 +1301,12 @@ int main()
 	autoconf();
 	con_status("", "");
 	
-	if (!need_conf && !bootmsg())
-		return 0;
+	if (!need_conf)
+	{
+		while (!bootmsg())
+			if (confirm("Exit", "The system will reboot."))
+				return 0;
+	}
 	con_setattr(0, 7, BOLD);
 	con_clear();
 	copyright();
