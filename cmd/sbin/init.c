@@ -318,6 +318,10 @@ static void do_mount(char *s)
 		default:
 			goto bad;
 		}
+	
+	if (!strcmp(prefix, "/"))
+		flags |= MF_READ_ONLY;
+	
 	if (_umount(REALPREFIX(prefix)) && errno != ENOENT)
 	{
 		se = errno;
@@ -550,7 +554,7 @@ static void fsck(void)
 	int status;
 	pid_t pid;
 	
-	pid = _newtaskl(_PATH_B_FSCK, _PATH_B_FSCK, "-qF", NULL);
+	pid = _newtaskl(_PATH_B_FSCK, _PATH_B_FSCK, "-sqwF", NULL);
 	if (pid < 0)
 		perror(_PATH_B_FSCK);
 	
@@ -788,6 +792,7 @@ int main()
 	}
 	
 	init_environ();
+	fsck();
 	
 	if (!access(_PATH_E_SS, 0))
 		sysinstall();
@@ -809,7 +814,6 @@ int main()
 	init_modules();
 	init_clock();
 	init_fonts();
-	fsck();
 	
 	if (_boot_flags() & BOOT_TEXT)
 	{
