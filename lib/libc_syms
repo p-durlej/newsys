@@ -628,3 +628,4 @@ gadget_set_drag_cb
 gadget_set_want_focus
 gadget_first
 gadget_next
+bargraph_set_labels
