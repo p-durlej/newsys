@@ -29,6 +29,7 @@
 #include <wingui_form.h>
 #include <sys/signal.h>
 #include <sys/time.h>
+#include <fmthuman.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -74,12 +75,15 @@ static void sig_alrm(void *junk)
 	else
 		red = 0;
 	
+	bargraph_set_labels(cpu_bar, "", NULL);
 	bargraph_set_limit(csw_bar, csw_max);
 	bargraph_set_value(csw_bar, st.sw_freq);
 	
+	bargraph_set_labels(cpu_bar, "", "100%");
 	bargraph_set_limit(cpu_bar, st.cpu_max);
 	bargraph_set_value(cpu_bar, st.cpu);
 	
+	bargraph_set_labels(mem_bar, "", fmthumansz(st.core_max, 0));
 	bargraph_set_limit(mem_bar, st.core_max);
 	bargraph_set_value(mem_bar, st.core_max - st.core_avail);
 	
