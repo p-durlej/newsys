@@ -280,7 +280,7 @@ int mkfs(struct part *pi)
 	sprintf(size_str, "%i", pi->size);
 	
 	signal(SIGCHLD, SIG_DFL);
-	if (_newtaskl(_PATH_B_MKFS, _PATH_B_MKFS, pi->dev, size_str, FS_RSVD_STR, (void *)NULL) < 0)
+	if (_newtaskl(_PATH_B_MKFS, _PATH_B_MKFS, "-q", pi->dev, size_str, FS_RSVD_STR, (void *)NULL) < 0)
 	{
 		sprintf(msg, "Cannot run \"" _PATH_B_MKFS "\":\n\n%m");
 		msgbox(NULL, TITLE, msg);
@@ -1278,7 +1278,7 @@ void init_rd(void)
 	close(d);
 	
 	signal(SIGCHLD, SIG_DFL);
-	pid = _newtaskl("/sbin/mkfs", "/sbin/mkfs", "/dev/" RD, RD_SIZE_STR, NULL);
+	pid = _newtaskl("/sbin/mkfs", "/sbin/mkfs", "-q", "/dev/" RD, RD_SIZE_STR, NULL);
 	if (pid < 0)
 	{
 		perror("/sbin/mkfs");
