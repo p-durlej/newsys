@@ -16,6 +16,7 @@
 600 /lib/drv/fd.drv
 600 /lib/drv/pciide.drv
 
+600 /lib/sys/noboot.bin
 600 /lib/sys/fdboot.bin
 600 /lib/sys/hdboot.bin
 600 /lib/sys/hdipl.bin

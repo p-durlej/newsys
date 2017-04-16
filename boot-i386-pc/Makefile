@@ -25,7 +25,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-all: fdboot.bin hdboot.bin hdflat.bin hdipl.bin cdboot.bin
+all: fdboot.bin hdboot.bin hdflat.bin hdipl.bin cdboot.bin noboot.bin
+
+noboot.bin: noboot.S boot.h
+	$(CC) -c noboot.S
+	$(LD) noboot.o -o noboot.bin --oformat binary -Ttext 0
 
 fdboot.bin: fdboot.S boot.h
 	$(CC) -c fdboot.S
