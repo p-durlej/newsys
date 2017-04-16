@@ -1491,6 +1491,25 @@ static void hwclock(void)
 	signal(SIGCHLD, sig_chld);
 }
 
+static void fsck(const char *device)
+{
+	struct form *f;
+	int st;
+	
+	f = form_load("/lib/forms/sysinstall.fsck.frm");
+	form_show(f);
+	evt_idle();
+	
+	signal(SIGCHLD, SIG_DFL);
+	if (_newtaskl(_PATH_B_FSCK, _PATH_B_FSCK, "-qF", device, (void *)NULL) < 0)
+		perror(_PATH_B_FSCK);
+	while (wait(&st) <= 1)
+		evt_idle();
+	signal(SIGCHLD, sig_chld);
+	
+	form_close(f);
+}
+
 static void sig_shutdown(int nr)
 {
 	win_killdesktop(SIGKILL);
@@ -1656,6 +1675,10 @@ void stage0(void)
 				    "Do you wish to continue?") != MSGBOX_YES)
 		shutdown();
 	win_idle();
+	
+	if (_boot_flags() & BOOT_VERBOSE)
+		_sysmesg("sysinstall: checking target fs\n");
+	fsck(root_dev);
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: mounting target\n");
