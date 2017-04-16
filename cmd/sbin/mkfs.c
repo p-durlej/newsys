@@ -199,7 +199,7 @@ int main(int argc, char **argv)
 	dev_path    = argv[0];
 	block_count = strtoul(argv[1], NULL, 0);
 	
-	if (argc >= 4)
+	if (argc >= 3)
 		reserved_count = strtoul(argv[2], NULL, 0);
 	else
 		reserved_count = 2;
