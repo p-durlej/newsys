@@ -63,6 +63,7 @@ static int		icheck_cnt;
 static int		enable_write;
 static int		show_names;
 static int		qflag;
+static int		sflag;
 static int		fix;
 
 static uint8_t *	rbam;
@@ -171,6 +172,20 @@ static void load_super(void)
 		rbam[bdai] =   255 >> (8 - (sb.data_block & 7));
 	if (edata & 7)
 		rbam[edai] = ~(255 >> (8 - (edata	  & 7)));
+}
+
+static void mark_clean(void)
+{
+	sb.dirty = 0;
+	
+	lseek(dev_fd, BLK_SIZE, SEEK_SET);
+	if (write(dev_fd, &sb, sizeof sb) != sizeof sb)
+	{
+		warn("writing superblock");
+		exit_fsck(errno);
+	}
+	
+	warnx("filesystem marked clean");
 }
 
 static struct file *load_hdr(uint32_t first_block)
@@ -688,6 +703,16 @@ static void find_root(void)
 	for (i = 0; i < MOUNT_MAX; i++)
 		if (m[i].mounted && !*m[i].prefix)
 		{
+			if (!strcmp(m[i].fstype, "boot"))
+			{
+				if (!qflag)
+					errx(0, "not checking");
+				exit(0);
+			}
+			
+			if (strcmp(m[i].fstype, "native"))
+				errx(1, "not a native fs");
+			
 			dev_name = m[i].device;
 			mount = &m[i];
 			return;
@@ -706,7 +731,7 @@ static void procopt(int argc, char **argv)
 {
 	int opt;
 	
-	while (opt = getopt(argc, argv, "Fvwqr"), opt > 0)
+	while (opt = getopt(argc, argv, "Fvwqrs"), opt > 0)
 		switch (opt)
 		{
 		case 'F':
@@ -720,6 +745,9 @@ static void procopt(int argc, char **argv)
 			break;
 		case 'w':
 			enable_write = 1;
+			break;
+		case 's':
+			sflag = 1;
 			break;
 		default:
 			exit(255);
@@ -787,6 +815,18 @@ int main(int argc, char **argv)
 		warnx("loading superblock");
 	load_super();
 	
+	if (sflag)
+	{
+		if (sb.dirty)
+			warnx("filesystem is not clean -- checking");
+		else
+		{
+			if (!qflag)
+				warnx("filesystem is clean -- not checking");
+			goto fini;
+		}
+	}
+	
 	if (!qflag)
 		warnx("checking files and directories");
 	check_file(sb.root_block, 0, "/");
@@ -802,6 +842,9 @@ int main(int argc, char **argv)
 	if (!qflag)
 		warnx("%i files checked", file_count);
 	
+	if (fix && sb.dirty)
+		mark_clean();
+fini:
 	if (mount && enable_write)
 		mount->flags &= ~MF_READ_ONLY;
 	if (mount)
