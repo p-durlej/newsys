@@ -61,16 +61,16 @@ asm_irq_ ## nr ## :			\
 	movl	$0x00000000, %ebp;	\
 	LOAD_SEGS;			\
 1:					\
+	IRQENTER;			\
 	movq	%rsp, %rdi;		\
 	movq	$nr, %rsi;		\
 	call	intr_enter;		\
-	IRQENTER;			\
 	movq	$nr, %rdi;		\
 	call	intr_irq;		\
-	IRQLEAVE;			\
 	movq	%rsp, %rdi;		\
 	movq	$nr, %rsi;		\
 	call	intr_leave;		\
+	IRQLEAVE;			\
 	RESTORE_REGS;			\
 	iretq
 
