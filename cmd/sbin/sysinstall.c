@@ -993,6 +993,8 @@ void copy_files(void)
 	prgbar = gadget_find(form, "prgbar");
 	cncbtn = gadget_find(form, "cncbtn");
 	
+	bargraph_set_labels(prgbar, "", "");
+	
 	button_on_click(cncbtn, cancel_click);
 	cncbtn->p_data = &do_cancel;
 	
