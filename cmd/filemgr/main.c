@@ -1629,8 +1629,6 @@ static void create_main_form(void)
 	
 	main_icbox->menu = file;
 	gadget_focus(main_icbox);
-	if (!desktop)
-		form_show(main_form);
 	win_idle();
 }
 
