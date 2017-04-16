@@ -83,6 +83,7 @@
 700 /sbin/fdctl
 700 /sbin/pcidevs
 700 /sbin/filemgr.mkfsi
+700 /sbin/wfdfmt
 
 600 /etc/environ
 600 /etc/shells
@@ -330,6 +331,7 @@
 644 /lib/forms/filemgr.cpmv.frm
 644 /lib/forms/filemgr.rm.frm
 644 /lib/forms/pref.sound.frm
+600 /lib/forms/wfdfmt.frm
 
 644 /media/icons/.dirinfo
 

@@ -32,7 +32,8 @@ CMD := init init.desktop init.profile mkfs shutdown mount umount \
        check_devs fdisk mode list_devs \
        secure wdmesg showload pref.filesys \
        vtty-con wlogin daemon dmesg stress fxstat rdconfig tunefs \
-       fdfmt fdctl diskperf pcidevs addblk bstat systat sysmesg panic kdebug
+       fdfmt fdctl diskperf pcidevs addblk bstat systat sysmesg panic kdebug \
+       wfdfmt
 
 include cmd.mk
 
