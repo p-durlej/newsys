@@ -287,6 +287,7 @@ struct gadget
 		
 		struct
 		{
+			char *min_label, *max_label;
 			int limit;
 			int value;
 		} bargraph;
@@ -605,6 +606,7 @@ void colorsel_set(struct gadget *g, const struct win_rgba *buf);
 void colorsel_get(struct gadget *g, struct win_rgba *buf);
 
 struct gadget *bargraph_creat(struct form *f, int x, int y, int w, int h);
+void bargraph_set_labels(struct gadget *g, const char *min, const char *max);
 void bargraph_set_limit(struct gadget *g, int limit);
 void bargraph_set_value(struct gadget *g, int value);
 
