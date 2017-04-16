@@ -901,7 +901,7 @@ int main(int argc, char **argv)
 	int pci = 0;
 	int c;
 	
-	while (c = getopt(argc, argv, "d:"), c > 0)
+	while (c = getopt(argc, argv, "d:p"), c > 0)
 		switch (c)
 		{
 		case 'd':
