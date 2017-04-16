@@ -1451,7 +1451,7 @@ static void edit_devs(void)
 	
 	msgbox(NULL, TITLE, "In the following window you can investigate\n"
 			    "detected devices and install device drivers\n"
-			    "required to continue the installer.");
+			    "required to continue the installation.");
 	
 	clh = signal(SIGCHLD, SIG_DFL);
 	pid = _newtaskl(_PATH_B_EDIT_DEVS, _PATH_B_EDIT_DEVS, "-i",
