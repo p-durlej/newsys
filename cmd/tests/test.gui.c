@@ -30,7 +30,18 @@
 #include <stdio.h>
 #include <err.h>
 
-struct form *f;
+static struct gadget *bg1, *bg2, *bg3;
+static struct gadget *g;
+static struct form *f;
+
+static void hsbar_move(struct gadget *g, int pos)
+{
+	warnx("pos = %i", pos);
+	
+	bargraph_set_value(bg1, pos);
+	bargraph_set_value(bg2, pos);
+	bargraph_set_value(bg3, pos);
+}
 
 static void hide_click(struct gadget *g, int x, int y)
 {
@@ -42,14 +53,27 @@ int main()
 	if (win_attach())
 		err(255, NULL);
 	
-	f = form_creat(FORM_APPFLAGS, 1, -1, -1, 320, 240, "gui_test");
+	f = form_creat(FORM_APPFLAGS, 1, -1, -1, 320, 170, "gui_test");
 	if (!f)
 	{
 		perror("form_creat");
 		return 127;
 	}
 	colorsel_creat(f, 10, 10, 20, 20);
-	button_creat(f, 10, 40, 60, 20, "Hide", hide_click);
+	button_creat(f,  40, 10, 60, 20, "Hide form", hide_click);
+	button_creat(f, 250, 10, 60, 20, "A button", NULL);
+	
+	bg1 = bargraph_creat(f, 10,  80, 300, 20);
+	bg2 = bargraph_creat(f, 10, 110, 300, 20);
+	bg3 = bargraph_creat(f, 10, 140, 300, 20);
+	
+	bargraph_set_labels(bg2, "min", "max");
+	bargraph_set_labels(bg3, "", "");
+	
+	g = hsbar_creat(f, 10, 40, 300, 20);
+	hsbar_on_move(g, hsbar_move);
+	hsbar_set_limit(g, 101);
+	
 	form_show(f);
 	form_wait(f);
 	return 0;
