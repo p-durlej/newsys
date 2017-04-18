@@ -630,3 +630,4 @@ gadget_first
 gadget_next
 bargraph_set_labels
 dlg_disk
+dlg_file6

@@ -32,6 +32,13 @@
 
 #define DLG_INPUT_ALLOW_CANCEL	1
 
+#define DLG_FILE_WANT_ANY		1
+#define DLG_FILE_WANT_REG		2
+#define DLG_FILE_WANT_DIR		4
+#define DLG_FILE_WANT_CHR		8
+#define DLG_FILE_WANT_BLK		16
+#define DLG_FILE_CONFIRM_OVERWRITE	(0x80000000)
+
 #define DLG_DISK_ANY		1
 #define DLG_DISK_FLOPPY		2
 #define DLG_DISK_HARD		4
@@ -39,6 +46,7 @@
 
 struct form;
 
+int  dlg_file6(struct form *pf, const char *title, const char *button, char *pathname, int maxlen, int flags);
 int  dlg_file(struct form *pf, const char *title, const char *button, char *pathname, int maxlen);
 int  dlg_open(struct form *pf, const char *title, char *pathname, int maxlen);
 int  dlg_save(struct form *pf, const char *title, char *pathname, int maxlen);
