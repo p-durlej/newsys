@@ -82,7 +82,7 @@ static void browse_click(struct gadget *btn, int x, int y)
 	strncpy(buf, root_input->text, sizeof buf);
 	buf[sizeof buf - 1] = 0;
 	
-	if (dlg_open(main_form, "Search in", buf, sizeof buf))
+	if (dlg_file6(main_form, "Search in", "Select", buf, sizeof buf, DLG_FILE_WANT_DIR))
 		input_set_text(root_input, buf);
 }
 
