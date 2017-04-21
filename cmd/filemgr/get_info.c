@@ -45,7 +45,7 @@
 #define PERM_FORM	"/lib/forms/perm_info.frm"
 #define STAT_FORM	"/lib/forms/file_info.frm"
 
-static void perm_info(struct form *lf, char *name)
+static void perm_info(struct form *lf, const char *name)
 {
 	struct form *form;
 	

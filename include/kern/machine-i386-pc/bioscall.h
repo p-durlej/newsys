@@ -51,7 +51,6 @@ struct real_regs
 } __attribute__((packed));
 
 void v86_call(void);
-void apm_off(void);
 
 struct real_regs *	get_bios_regs(void);
 unsigned	  	get_bios_buf_size(void);

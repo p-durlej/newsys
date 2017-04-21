@@ -154,7 +154,7 @@ void wcre_click(struct gadget *g, int x, int y)
 
 void pgal_click(struct gadget *g, int x, int y)
 {
-	char *p = (void *)(PAGE_STACK * PAGE_SIZE);
+	char *p = (void *)((uintptr_t)PAGE_STACK * PAGE_SIZE);
 	
 	while (!_pg_alloc(PAGE_STACK, PAGE_STACK + 1))
 		*p = 123;
@@ -204,7 +204,7 @@ void wldr_click(struct gadget *g, int x, int y)
 	if (fd < 0)
 		warn("open: /sbin/init");
 	
-	if (read(fd, 0x7fc00000, 4096) < 0)
+	if (read(fd, (void *)0x7fc00000, 4096) < 0)
 		warn("read: /sbin/init");
 }
 

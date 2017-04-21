@@ -32,9 +32,9 @@ set -e
 
 : ${ARCH:=amd64}
 
-gmake symlinks
-gmake clean
-gmake
+gmake -s symlinks
+gmake -s clean
+gmake -s
 
 rm -rf	 release
 mkdir -p release/release/pxe/tftpboot/m

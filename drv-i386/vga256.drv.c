@@ -39,7 +39,7 @@
 static int modeinfo(void *dd, int mode, struct win_modeinfo *buf);
 static int setmode(void *dd, int mode, int refresh);
 
-static void setptr(void *dd, win_color *shape, unsigned *mask);
+static void setptr(void *dd, const win_color *shape, const unsigned *mask);
 static void moveptr(void *dd, int x, int y);
 static void showptr(void *dd);
 static void hideptr(void *dd);
@@ -156,7 +156,7 @@ static int modeinfo(void *dd, int mode, struct win_modeinfo *buf)
 	return 0;
 }
 
-static void setptr(void *dd, win_color *shape, unsigned *mask)
+static void setptr(void *dd, const win_color *shape, const unsigned *mask)
 {
 	hideptr(NULL);
 	memcpy(ptr_shape, shape, sizeof ptr_shape);

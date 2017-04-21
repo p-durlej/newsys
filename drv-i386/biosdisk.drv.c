@@ -365,7 +365,7 @@ static int bd_read_edd(int u, blk_t blk, void *buf)
 	return 0;
 }
 
-static int bd_write_edd(int u, blk_t blk, void *buf)
+static int bd_write_edd(int u, blk_t blk, const void *buf)
 {
 	struct real_regs *regs = get_bios_regs();
 	struct edd_dap *dap = get_bios_buf();

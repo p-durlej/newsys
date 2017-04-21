@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <stdio.h>
 
 #define MAX_WIDTH	128

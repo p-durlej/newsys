@@ -159,7 +159,7 @@ void mem_adjmap(void)
 			mem_map[i].size -= 0x20000;
 			mem_map[i].base  = 0x20000;
 			
-			conv_mem_hbrk = --mem_map;
+			conv_mem_hbrk = (uintptr_t)--mem_map;
 			mem_cnt++;
 			i++;
 			
@@ -184,7 +184,7 @@ void mem_adjmap(void)
 		mem_map[i].size -= adj;
 		mem_map[i].base  = mem_lbrk;
 		
-		if (conv_mem_hbrk != mem_map)
+		if (conv_mem_hbrk != (uintptr_t)mem_map)
 			continue;
 		
 		mem_map--;
@@ -195,6 +195,6 @@ void mem_adjmap(void)
 		mem_map[0].size = adj;
 		mem_map[0].type = KMAPENT_SYSTEM;
 		
-		conv_mem_hbrk = mem_map;
+		conv_mem_hbrk = (uintptr_t)mem_map;
 	}
 }

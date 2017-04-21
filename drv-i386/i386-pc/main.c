@@ -33,6 +33,7 @@
 void bios_init(void);
 void con_init(void);
 int  gc_init(void);
+int  apm_off(void);
 
 static int suspend(void)
 {

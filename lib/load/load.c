@@ -253,15 +253,15 @@ void load_exec(void)
 		fail("Seek failed on program image", _get_errno());
 	
 	_set_errno(0);
-	if (read(__libc_progfd, (void *)xhdr.base, st.st_size) != st.st_size)
+	if (read(__libc_progfd, (void *)(uintptr_t)xhdr.base, st.st_size) != st.st_size)
 		fail("Unable to read program image", _get_errno());
 	
-	ck_exec((void *)xhdr.base, st.st_size);
-	_csync((void *)xhdr.base, st.st_size);
+	ck_exec((void *)(uintptr_t)xhdr.base, st.st_size);
+	_csync((void *)(uintptr_t)xhdr.base, st.st_size);
 	
-	p_environ = (void *)xhdr.environ;
-	p_errno	  = (void *)xhdr.errno;
-	p_main	  = (void *)xhdr.entry;
+	p_environ = (void *)(uintptr_t)xhdr.environ;
+	p_errno	  = (void *)(uintptr_t)xhdr.errno;
+	p_main	  = (void *)(uintptr_t)xhdr.entry;
 	v_end	  = xhdr.end;
 }
 
@@ -306,7 +306,7 @@ void import_sym(char *code_ptr)
 	unsigned delta;
 	char *p = code_ptr - 7;
 	
-	delta = (unsigned)get_sym(code_ptr) - (unsigned)p - 5;
+	delta = (uintptr_t)get_sym(code_ptr) - (uintptr_t)p - 5;
 	
 	*(p++) = 0xe9;
 	*(p++) = delta;
@@ -532,7 +532,7 @@ void load_main(char *arg, int arg_len, char *progname, int progfd)
 	form_init();
 	
 	if (arg)
-		__libc_initargenv(arg, arg_len);
+		__libc_initargenv((void *)arg, arg_len);
 	else
 		noargs();
 	

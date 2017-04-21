@@ -164,7 +164,7 @@ struct kfb *vga_init(void)
 	vga_fb.base    = 0xb8000;
 	vga_fb.io_base = 0x3c0;
 fini:
-	vga_fb.modes	= &kfbmodes;
+	vga_fb.modes	= kfbmodes;
 	vga_fb.mode_cnt	= vesa_mcnt;
 	
 	return &vga_fb;

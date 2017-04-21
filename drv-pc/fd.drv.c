@@ -29,6 +29,8 @@
 #include <kern/config.h>
 #include <kern/errno.h>
 #include <kern/block.h>
+#include <kern/page.h>
+#include <kern/lib.h>
 #include <kern/hw.h>
 #include <bioctl.h>
 #include <dev/cmos.h>
