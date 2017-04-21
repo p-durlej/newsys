@@ -33,6 +33,8 @@ all:
 	cd bin		&& $(MAKE) all
 	cd sbin		&& $(MAKE) all
 	cd tests	&& $(MAKE) all
+	cd tcc		&& $(MAKE) all
+	cd tcc.lib	&& $(MAKE) all
 	cd acex-bin	&& $(MAKE) all
 	cd acex-sbin	&& $(MAKE) all
 
@@ -42,5 +44,7 @@ clean:
 	cd bin		&& $(MAKE) clean
 	cd sbin		&& $(MAKE) clean
 	cd tests	&& $(MAKE) clean
+	cd tcc		&& $(MAKE) clean
+	cd tcc.lib	&& $(MAKE) clean
 	cd acex-bin	&& $(MAKE) clean
 	cd acex-sbin	&& $(MAKE) clean

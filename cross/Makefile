@@ -31,7 +31,9 @@ CC := cc
 
 all: $(BIN)
 	cd mgen && $(MAKE)
+	cd tcc  && $(MAKE)
 
 clean:
 	cd mgen && $(MAKE) clean
+	cd tcc  && $(MAKE) clean
 	rm -f $(BIN)

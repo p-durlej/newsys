@@ -152,6 +152,8 @@
 /cmd/sh/glob
 /cmd/sh/if
 /cmd/sh/sh
+/cmd/tcc/tcc
+/cmd/tcc.lib/libtcc1.a
 /cmd/tests/test.alarm
 /cmd/tests/test.color
 /cmd/tests/test.float
@@ -186,6 +188,7 @@
 /cross/psysload
 /cross/sysver
 /cross/wc2c
+/cross/tcc/ctcc
 /disks/
 /drv-arch
 /fonts/mono

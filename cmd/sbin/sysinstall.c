@@ -927,13 +927,16 @@ static void eyecandy(void)
 		bmp_conv(backdrop);
 }
 
-void create_dirs(void)
+void create_dirs(const char *list)
 {
 	char buf[1024];
 	char msg[256];
 	FILE *f;
 	
-	f = fopen(_PATH_E_SS_MKDIR, "r");
+	if (!list)
+		list = _PATH_E_SS_MKDIR;
+	
+	f = fopen(list, "r");
 	if (!f)
 	{
 		sprintf(msg, "Unable to open " _PATH_E_SS_MKDIR ":\n\n%m");
@@ -977,7 +980,7 @@ static void cancel_click(struct gadget *g, int x, int y)
 	*(int *)g->p_data = 1;
 }
 
-void copy_files(void)
+void copy_files(const char *list, const char *title)
 {
 	struct gadget *prgbar;
 	struct gadget *cncbtn;
@@ -993,12 +996,18 @@ void copy_files(void)
 	prgbar = gadget_find(form, "prgbar");
 	cncbtn = gadget_find(form, "cncbtn");
 	
+	if (title)
+		form_set_title(form, title);
+	
 	bargraph_set_labels(prgbar, "", "");
 	
 	button_on_click(cncbtn, cancel_click);
 	cncbtn->p_data = &do_cancel;
 	
-	f = fopen(_PATH_E_SS_COPY, "r");
+	if (!list)
+		list = _PATH_E_SS_COPY;
+	
+	f = fopen(list, "r");
 	if (!f)
 	{
 		sprintf(msg, "Unable to open " _PATH_E_SS_COPY ":\n\n%m");
@@ -1098,13 +1107,16 @@ retry:
 	fail();
 }
 
-void link_files(void)
+void link_files(const char *list)
 {
 	char buf[1024];
 	char msg[256];
 	FILE *f;
 
-	f = fopen(_PATH_E_SS_LINK, "r");
+	if (!list)
+		list = _PATH_E_SS_LINK;
+
+	f = fopen(list, "r");
 	if (!f)
 	{
 		sprintf(msg, "Unable to open " _PATH_E_SS_LINK ":\n\n%m");
@@ -1693,11 +1705,17 @@ void stage0(void)
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: creating directories\n");
-	create_dirs();
+	create_dirs(NULL);
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: copying files\n");
-	copy_files();
+	copy_files(NULL, NULL);
+	
+	if (_boot_flags() & BOOT_VERBOSE)
+		_sysmesg("sysinstall: installing SDK\n");
+	create_dirs("/etc/sdk.mkdir");
+	copy_files("/etc/sdk.copy", "Installing SDK...");
+	link_files("/etc/sdk.link");
 	
 	if (access(MOUNT "/etc/devices", 0))
 		copy_devices = 1;
@@ -1710,7 +1728,7 @@ void stage0(void)
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: creating file links\n");
-	link_files();
+	link_files(NULL);
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: installing boot records\n");
