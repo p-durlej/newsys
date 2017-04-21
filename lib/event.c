@@ -26,6 +26,7 @@
 
 #include <priv/wingui_wbeep.h>
 #include <priv/wingui_form.h>
+#include <priv/sys.h>
 #include <wingui_color.h>
 #include <wingui.h>
 #include <event.h>

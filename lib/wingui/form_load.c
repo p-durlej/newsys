@@ -772,7 +772,7 @@ static int do_sizebox(FILE *f, struct form *frm, struct scale *sc)
 {
 	struct gadget *g;
 	char *name = NULL;
-	int x, y, w, h;
+	int w, h;
 	
 	if (get_nstring(f, 0, &name))	return -1;
 	if (get_number(f, 1, &w))	goto fail;

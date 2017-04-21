@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_cgadget.h>
 #include <wingui_form.h>
 #include <wingui.h>
 #include <stdlib.h>
@@ -76,7 +77,7 @@ int main()
 	form_on_resize(f, f_resize);
 	form_on_close(f, f_close);
 	g = gadget_creat(f, 0, 0, win_w, win_h);
-	g->redraw = g_redraw;
+	gadget_set_redraw_cb(g, g_redraw);
 	
 	for (;;)
 	{

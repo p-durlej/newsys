@@ -26,6 +26,7 @@
 
 #include <priv/copyright.h>
 #include <wingui_metrics.h>
+#include <wingui_cgadget.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
@@ -455,6 +456,7 @@ static void scroll(void)
 }
 
 static int cs_arg[4];
+static int cs_argc;
 
 static int print_cs(char ch)
 {
@@ -463,6 +465,8 @@ static int print_cs(char ch)
 	
 	if (isdigit(ch))
 	{
+		if (!cs_argc)
+			cs_argc++;
 		cs_arg[0] *= 10;
 		cs_arg[0] += ch - '0';
 		return 1;
@@ -475,6 +479,8 @@ static int print_cs(char ch)
 		cs_arg[2] = cs_arg[1];
 		cs_arg[1] = cs_arg[0];
 		cs_arg[0] = 0;
+		if (cs_argc < sizeof cs_arg / sizeof *cs_arg)
+			cs_argc++;
 		return 1;
 	case 'H':
 		px = cur_x;
@@ -494,18 +500,21 @@ static int print_cs(char ch)
 		full_redraw = 1;
 		return 0;
 	case 'm':
-		switch (cs_arg[0])
+		for (i = 0; i < cs_argc; i++)
 		{
+			switch (cs_arg[i])
+			{
 			case 0:
 				cur_fg = FG_DEFAULT;
 				cur_bg = BG_DEFAULT;
 				break;
 			case 30 ... 37:
-				cur_fg = cs_arg[0] - 30;
+				cur_fg = cs_arg[i] - 30;
 				break;
 			case 40 ... 47:
-				cur_bg = cs_arg[0] - 40;
+				cur_bg = cs_arg[i] - 40;
 				break;
+			}
 		}
 		return 0;
 	default:
@@ -549,6 +558,7 @@ static void print(const char *str, int len)
 				cs_arg[1] = 0;
 				cs_arg[2] = 0;
 				cs_arg[3] = 0;
+				cs_argc = 0;
 				cs_mode = 1;
 			}
 			esc_mode = 0;
@@ -932,11 +942,11 @@ int main(int argc, char **argv)
 	form_on_close(main_form, on_close);
 	
 	screen = gadget_creat(main_form, 0, 0, 160, 100);
-	screen->want_focus = 1;
-	screen->ptr	   = WIN_PTR_TEXT;
-	screen->key_down   = key_down;
-	screen->redraw	   = redraw;
-	screen->drop	   = drop;
+	gadget_setptr(screen, WIN_PTR_TEXT);
+	gadget_set_want_focus(screen, 1);
+	gadget_set_key_down_cb(screen, key_down);
+	gadget_set_redraw_cb(screen, redraw);
+	gadget_set_drop_cb(screen, drop);
 	gadget_focus(screen);
 	
 	if (c_loaded && form_x < 0 && form_y < 0)

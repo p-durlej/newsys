@@ -25,6 +25,7 @@
  */
 
 #include <priv/wingui_form.h>
+#include <wingui_cgadget.h>
 #include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
@@ -38,7 +39,6 @@
 static void list_xyitem(struct gadget *g, int *index, int x, int y);
 static void list_ptr_down(struct gadget *g, int x, int y, int button);
 static void list_ptr_up(struct gadget *g, int x, int y, int button);
-static void list_ptr_move(struct gadget *g, int x, int y);
 static void list_key_down(struct gadget *g, unsigned ch, unsigned shift);
 static void list_remove(struct gadget *g);
 static void list_draw_item_text(struct gadget *g, int index, int wd, int x, int y, int w, int h);
@@ -144,7 +144,6 @@ static void list_remove(struct gadget *g)
 
 static void list_draw_item_text(struct gadget *g, int index, int wd, int x, int y, int w, int h)
 {
-	int sbw = wm_get(WM_SCROLLBAR);
 	win_color fg;
 	win_color bg;
 	

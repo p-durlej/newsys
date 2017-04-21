@@ -25,8 +25,10 @@
  */
 
 #include <wingui_metrics.h>
+#include <wingui.h>
 #include <config/defaults.h>
 #include <prefs/filemgr.h>
+#include <string.h>
 #include <confdb.h>
 
 static struct pref_filemgr pref_filemgr;

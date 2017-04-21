@@ -25,6 +25,7 @@
  */
 
 #include <priv/copyright.h>
+#include <wingui_cgadget.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <sys/signal.h>
@@ -311,7 +312,7 @@ int main()
 	form_min_size(main_form, 80, 80);
 	
 	clock_gadget = gadget_creat(main_form, 0, 0, config.w, config.h);
-	clock_gadget->redraw = clock_redraw;
+	gadget_set_redraw_cb(clock_gadget, clock_redraw);
 	
 	tmr_creat(&tv, &tv, timer_proc, NULL, 1);
 	

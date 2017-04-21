@@ -145,6 +145,7 @@ fail:
 			close(tar->fd);
 		free(tar);
 	}
+	return NULL;
 }
 
 struct tar *tar_open(const char *pathname)

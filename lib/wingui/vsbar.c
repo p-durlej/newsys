@@ -25,6 +25,7 @@
  */
 
 #include <priv/wingui_form.h>
+#include <wingui_cgadget.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui.h>

@@ -260,7 +260,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		for (g = f->gadget; g; g = g->next)
+		for (g = gadget_first(f); g; g = gadget_next(g))
 			g->rect.x += (wsr.w - form_width) / 2;
 		form_move(f, wsr.x, wsr.h - f->win_rect.h);
 		form_resize(f, wsr.w, btn_y);

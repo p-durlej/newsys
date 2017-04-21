@@ -24,47 +24,55 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdlib.h>
-#include <limits.h>
-#include <errno.h>
-#include <ctype.h>
+#include "boot.h"
 
-long long strtoll(const char *nptr, char **endptr, int base)
-{
-	unsigned long long uv;
-	const char *ptr = nptr;
-	char *ep;
-	int neg = 0;
+	.globl	_start
+
+	.code16
+	.org 0
+
+_start:
+	movw	$LDR_SEG,%ax
+	movw	%ax,%ds
+	movw	%ax,%es
+	cli
+	movw	$0,%ax
+	movw	%ax,%ss
+	movw	$LDR_BASE,%sp
+	sti
+	pushw	%ds
+	pushw	$boot
+	lret
+
+boot:
+	movw	$msg, %si
+	call	bios_puts
+1:	hlt
+	jmp	1b
 	
-	while (isspace(*ptr))
-		ptr++;
+bios_putc:
+	pushw	%ax
+	pushw	%bx
+	movb	$0x0e,%ah
+	movw	$0x0007,%bx
+	int	$0x10
+	popw	%bx
+	popw	%ax
+	ret
 	
-	if (*ptr == '-')
-	{
-		neg = 1;
-		ptr++;
-	}
-	else if (*ptr == '+')
-		ptr++;
-	
-	uv = strtoull(ptr, &ep, base);
-	if (neg)
-	{
-		if (uv > (unsigned long long)LLONG_MAX + 1)
-		{
-			_set_errno(ERANGE);
-			return LLONG_MIN;
-		}
-		if (endptr)
-			*endptr = ep;
-		return -uv;
-	}
-	if (uv > LLONG_MAX)
-	{
-		_set_errno(ERANGE);
-		return LLONG_MAX;
-	}
-	if (endptr)
-		*endptr = ep;
-	return uv;
-}
+bios_puts:
+	movw	$0x0007, %bx
+bios_puts_loop:
+	lodsb
+	cmpb	$0x00,%al
+	jz	bios_puts_end
+	movb	$0x0e, %ah
+	int	$0x10
+	jmp	bios_puts_loop
+bios_puts_end:
+	ret
+
+msg:	.ascii	"\r\nNot a boot disk.\r\nSystem halted.\r\n"
+
+	.org	0x1fe
+	.word	0xaa55

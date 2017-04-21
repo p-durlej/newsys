@@ -26,6 +26,7 @@
 
 #include <config/defaults.h>
 #include <prefs/wbeep.h>
+#include <string.h>
 #include <confdb.h>
 
 static struct pref_wbeep pref_wbeep;

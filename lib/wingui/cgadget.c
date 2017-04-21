@@ -25,49 +25,83 @@
  */
 
 #include <wingui_cgadget.h>
-#include <wingui_form.h>
-#include <wingui_dlg.h>
-#include <wingui.h>
-#include <stdlib.h>
-#include <err.h>
 
-struct win_rgba wc = { 255, 255, 0, 255 };
-
-void g_redraw(struct gadget *g, int wd)
+void gadget_set_blink_cb(struct gadget *g, gadget_blink_cb *cb)
 {
-	win_color c;
-	
-	win_rgb2color(&c, wc.r, wc.g, wc.b);
-	win_rect(wd, c, 0, 0, 160, 160);
+	g->blink = cb;
 }
 
-void g_ptr_down(struct gadget *g, int x, int y, int button)
+void gadget_set_focus_cb(struct gadget *g, gadget_focus_cb *cb)
 {
-	dlg_color(g->form, "Choose color", &wc);
-	gadget_redraw(g);
+	g->focus = cb;
 }
 
-int f_close(struct form *f)
+void gadget_set_remove_cb(struct gadget *g, gadget_remove_cb *cb)
 {
-	exit(0);
+	g->remove = cb;
 }
 
-int main()
+void gadget_set_redraw_cb(struct gadget *g, gadget_redraw_cb *cb)
 {
-	struct gadget *g;
-	struct form *f;
-	
-	if (win_attach())
-		err(255, NULL);
-	
-	f = form_creat(FORM_TITLE | FORM_FRAME | FORM_ALLOW_CLOSE | FORM_ALLOW_MINIMIZE, 1,
-			-1, -1, 160, 100, "color_test");
-	form_on_close(f, f_close);
-	
-	g = gadget_creat(f, 5, 5, 150, 90);
-	gadget_set_redraw_cb(g, g_redraw);
-	gadget_set_ptr_down_cb(g, g_ptr_down);
-	
-	for (;;)
-		win_wait();
+	g->redraw = cb;
+}
+
+void gadget_set_resize_cb(struct gadget *g, gadget_resize_cb *cb)
+{
+	g->resize = cb;
+}
+
+void gadget_set_move_cb(struct gadget *g, gadget_move_cb *cb)
+{
+	g->move = cb;
+}
+
+void gadget_set_do_defops_cb(struct gadget *g, gadget_do_defops_cb *cb)
+{
+	g->do_defops = cb;
+}
+
+void gadget_set_set_font_cb(struct gadget *g, gadget_set_font_cb *cb)
+{
+	g->set_font = cb;
+}
+
+void gadget_set_ptr_move_cb(struct gadget *g, gadget_ptr_move_cb *cb)
+{
+	g->ptr_move = cb;
+}
+
+void gadget_set_ptr_down_cb(struct gadget *g, gadget_ptr_down_cb *cb)
+{
+	g->ptr_down = cb;
+}
+
+void gadget_set_ptr_up_cb(struct gadget *g, gadget_ptr_up_cb *cb)
+{
+	g->ptr_up = cb;
+}
+
+void gadget_set_key_down_cb(struct gadget *g, gadget_key_down_cb *cb)
+{
+	g->key_down = cb;
+}
+
+void gadget_set_key_up_cb(struct gadget *g, gadget_key_up_cb *cb)
+{
+	g->key_up = cb;
+}
+
+void gadget_set_drop_cb(struct gadget *g, gadget_drop_cb *cb)
+{
+	g->drop = cb;
+}
+
+void gadget_set_drag_cb(struct gadget *g, gadget_drag_cb *cb)
+{
+	g->drag = cb;
+}
+
+void gadget_set_want_focus(struct gadget *g, int flag)
+{
+	g->want_focus = flag;
 }

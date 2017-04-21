@@ -142,6 +142,8 @@ void fail(char *msg, int err)
 		_sysmesg("\n");
 	}
 	
+	fprintf(_get_stderr(), "user.bin: %s: %s", __libc_progname, strerror(err));
+	
 	if (win_attach())
 		goto fini;
 	

@@ -26,6 +26,7 @@
 
 #include <sys/signal.h>
 #include <string.h>
+#include <stdio.h>
 
 const char *const sys_siglist[] = 
 {
@@ -59,8 +60,6 @@ const char *const sys_siglist[] =
 const char *strsignal(int sig)
 {
 	static char buf[64];
-	
-	char *p;
 	
 	if (sig < 1 || sig > sizeof sys_siglist / sizeof *sys_siglist)
 		goto bad_sig;

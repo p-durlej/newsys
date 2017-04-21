@@ -144,6 +144,7 @@
 /cmd/sbin/usermgr
 /cmd/sbin/vtty-con
 /cmd/sbin/wdmesg
+/cmd/sbin/wfdfmt
 /cmd/sbin/wlogin
 /cmd/sbin/wmount
 /cmd/sbin/wsync

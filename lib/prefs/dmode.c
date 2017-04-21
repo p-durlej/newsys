@@ -26,6 +26,7 @@
 
 #include <config/defaults.h>
 #include <prefs/dmode.h>
+#include <string.h>
 #include <confdb.h>
 
 static struct dmode dm_mode;

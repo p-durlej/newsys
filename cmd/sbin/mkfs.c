@@ -39,6 +39,7 @@
 static blk_t	reserved_count;
 static blk_t	block_count;
 static char *	dev_path;
+static int	qflag;
 static int	fd;
 
 static void mkroot(struct nat_super *sb)
@@ -129,7 +130,8 @@ static int mkfs(void)
 {
 	struct nat_super sb;
 	
-	warnx("opening %s", dev_path);
+	if (!qflag)
+		warnx("opening %s", dev_path);
 	fd = open(dev_path, O_RDWR);
 	if (fd < 0)
 		err(errno, "mkfs: %s: open", dev_path);
@@ -144,42 +146,61 @@ static int mkfs(void)
 	sb.ndirblks	= 110;
 	sb.nindirlev	= 3;
 	
-	warnx("writing superblock");
+	if (!qflag)
+		warnx("writing superblock");
 	
 	lseek(fd, BLK_SIZE, SEEK_SET);
 	if (write(fd, &sb, sizeof sb) != sizeof sb)
 		err(errno, "%s: write", dev_path);
 	
-	warnx("creating root dir");
+	if (!qflag)
+		warnx("creating root dir");
 	mkroot(&sb);
 	
-	warnx("initializing BAM");
+	if (!qflag)
+		warnx("initializing BAM");
 	newbam(&sb);
 	
-	warnx("closing device");
+	if (!qflag)
+		warnx("closing device");
 	close(fd);
 	
-	warnx("command completed");
+	if (!qflag)
+		warnx("command completed");
 	return 0;
 }
 
 static void usage(void)
 {
 	fprintf(stderr, "usage:\n\n"
-			" mkfs DEVICE NBLOCKS [RESERVED]\n");
+			" mkfs [-q] DEVICE NBLOCKS [RESERVED]\n");
 	exit(255);
 }
 
 int main(int argc, char **argv)
 {
-	if (argc > 4 || argc < 3)
+	int c;
+	
+	while (c = getopt(argc, argv, "q"), c > 0)
+		switch (c)
+		{
+		case 'q':
+			qflag = 1;
+			break;
+		default:
+			return 1;
+		}
+	argc -= optind;
+	argv += optind;
+	
+	if (argc > 3 || argc < 2)
 		usage();
 	
-	dev_path = argv[1];
-	block_count = strtoul(argv[2], NULL, 0);
+	dev_path    = argv[0];
+	block_count = strtoul(argv[1], NULL, 0);
 	
-	if (argc >= 4)
-		reserved_count = strtoul(argv[3], NULL, 0);
+	if (argc >= 3)
+		reserved_count = strtoul(argv[2], NULL, 0);
 	else
 		reserved_count = 2;
 	

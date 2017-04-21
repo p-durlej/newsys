@@ -80,12 +80,44 @@ int nat_mount(struct fs *fs)
 	fs->nat.ndirblks   = sb->ndirblks;
 	fs->nat.nindirlev  = sb->nindirlev;
 	
+	if (!fs->read_only)
+	{
+		sb->dirty  = 1;
+		sbb->dirty = 1;
+		
+		blk_write(sbb);
+	}
+	
 	blk_put(sbb);
 	return 0;
 }
 
 int nat_umount(struct fs *fs)
 {
-	nat_sync_bam(fs);
+	struct nat_super *sb;
+	struct block *sbb;
+	int err;
+	
+	if (!fs->read_only)
+	{
+		nat_sync_bam(fs);
+		
+		err = blk_read(&sbb, fs->dev, 1);
+		if (err)
+		{
+#if VERBOSE
+			perror("nat_umount: blk_read", err);
+#endif
+			return 0;
+		}
+		
+		sb = (void *)sbb->data;
+		
+		sb->dirty  = 0;
+		sbb->dirty = 1;
+		
+		blk_write(sbb);
+		blk_put(sbb);
+	}
 	return 0;
 }

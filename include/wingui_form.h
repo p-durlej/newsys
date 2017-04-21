@@ -113,6 +113,7 @@ struct gadget
 	
 	/* private members; do not access */
 	
+#ifdef _LIB_INTERNALS
 	struct list_item deferred_item;
 	struct gadget *next;
 	int delayed_redraw;
@@ -286,6 +287,7 @@ struct gadget
 		
 		struct
 		{
+			char *min_label, *max_label;
 			int limit;
 			int value;
 		} bargraph;
@@ -312,6 +314,7 @@ struct gadget
 	
 	void (*drag)(struct gadget *g);
 	void (*udrag)(struct gadget *g);
+#endif
 };
 
 struct form_defop
@@ -345,8 +348,12 @@ struct form
 	long		l_data;	/* free to change this member */
 	int		wd;
 	
+	struct win_rect workspace_rect;
+	struct win_rect win_rect;
+	
 	/* private members; do not access */
 	
+#ifdef _LIB_INTERNALS
 	struct list_item list_item;
 	
 	struct form *	child_dialog;
@@ -370,11 +377,9 @@ struct form
 	int		min_w, min_h;
 	int		max_w, max_h;
 	
-	struct win_rect workspace_rect;
 	struct win_rect closebtn_rect;
 	struct win_rect title_rect;
 	struct win_rect menu_rect;
-	struct win_rect win_rect;
 	struct win_rect zoombtn_rect;
 	struct win_rect minibtn_rect;
 	struct win_rect saved_rect;
@@ -425,6 +430,7 @@ struct form
 	form_resize_cb *resize;
 	form_move_cb *	move;
 	form_raise_cb *	raise;
+#endif
 };
 
 struct form *form_creat(int flags, int visible, int x, int y, int w, int h, const char *title);
@@ -469,7 +475,9 @@ void form_putref(struct form *form);
 void form_min_size(struct form *form, int w, int h);
 void form_max_size(struct form *form, int w, int h);
 
-struct gadget *gadget_creat(struct form *form, int x, int y, int w, int h);
+struct gadget *gadget_first(struct form *form);
+struct gadget *gadget_next(struct gadget *gadget);
+
 int gadget_remove(struct gadget *gadget);
 void gadget_hide(struct gadget *g);
 void gadget_show(struct gadget *g);
@@ -598,6 +606,7 @@ void colorsel_set(struct gadget *g, const struct win_rgba *buf);
 void colorsel_get(struct gadget *g, struct win_rgba *buf);
 
 struct gadget *bargraph_creat(struct form *f, int x, int y, int w, int h);
+void bargraph_set_labels(struct gadget *g, const char *min, const char *max);
 void bargraph_set_limit(struct gadget *g, int limit);
 void bargraph_set_value(struct gadget *g, int value);
 

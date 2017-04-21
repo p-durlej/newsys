@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define _LIB_INTERNALS
+
 #include <config/defaults.h>
 
 #include <priv/copyright.h>
@@ -43,6 +45,7 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <fmthuman.h>
 #include <confdb.h>
 #include <newtask.h>
 #include <stdlib.h>
@@ -50,6 +53,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <event.h>
 #include <timer.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -67,6 +71,8 @@ struct timer *	refresh_timer;
 struct gadget *	main_icbox;
 struct gadget *	main_sbar;
 struct form *	main_form;
+struct form *	bg_form;
+struct gadget *	bg;
 int		backdrop_tile;
 void *		backdrop;
 
@@ -82,6 +88,7 @@ int		list_mode;
 int		show_menu = 1;
 int		do_refresh;
 int		logout;
+int		do_save_pos;
 
 #define MAX_SLAVES	1024
 
@@ -106,12 +113,22 @@ static void icbox_size_list_item(struct gadget *g, int i, int *w, int *h);
 
 static void on_resize(void);
 
+static void save_pos(int complain);
+static void autosave_pos(void);
+static void load_pos(void);
+
 static void update_title(void)
 {
 	char *p;
 	
 	if (desktop)
+	{
+		if (full_screen)
+			form_set_title(main_form, "Desktop");
+		else
+			form_set_title(main_form, "Session Manager");
 		return;
+	}
 	
 	if (listfd >= 0)
 	{
@@ -327,6 +344,7 @@ static int enter_dir(const char *pathname)
 		load_dir();
 	}
 	
+	do_save_pos = 0;
 	return 0;
 }
 
@@ -892,15 +910,18 @@ void getinfo_click(struct menu_item *m)
 	get_info(main_form, name);
 }
 
-static void df_click(struct menu_item *m)
+static void progitem_click(struct menu_item *m)
 {
-	_newtaskl("/sbin/diskfree", "/sbin/diskfree", (void *)NULL);
+	_newtaskl(m->p_data, m->p_data, (void *)NULL);
 }
 
 void about(struct menu_item *m)
 {
 	const char *name = desktop ? "Desktop v1.3" : "File Manager v1.3";
 	const char *icon = desktop ? "desktop.pnm"  : "filemgr.pnm";
+	
+	if (desktop && !full_screen)
+		name = "Session Manager v1.3";
 	
 	dlg_about7(main_form, NULL, name, SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, icon);
 }
@@ -919,12 +940,13 @@ static void prepare_logout(void)
 static void restart_sess(void)
 {
 	prepare_logout();
+	autosave_pos();
 	exit(253);
 }
 
 void restart_click(struct menu_item *m)
 {
-	if (msgbox_ask(main_form, "Desktop", "Are you sure you want to restart the session?") == MSGBOX_YES)
+	if (msgbox_ask(main_form, "Session restart", "Are you sure you want to restart the session?") == MSGBOX_YES)
 		restart_sess();
 }
 
@@ -932,7 +954,7 @@ void logout_click(struct menu_item *m)
 {
 	int result;
 	
-	result = msgbox_ask(main_form, "Desktop", "Are you sure you want to end the session?");
+	result = msgbox_ask(main_form, "Logout", "Are you sure you want to end the session?");
 	win_idle();
 	
 	if (result == MSGBOX_YES)
@@ -951,7 +973,7 @@ void shutdown_click(struct menu_item *m)
 	
 	if (geteuid())
 	{
-		if (msgbox_ask(main_form, "Desktop", "Are you sure you want to shut down this machine?") == MSGBOX_YES)
+		if (msgbox_ask(main_form, "Shutdown", "Are you sure you want to shut down this machine?") == MSGBOX_YES)
 		{
 			prepare_logout();
 			exit(254);
@@ -1014,6 +1036,101 @@ void save_click(struct menu_item *m)
 	
 	if (pref_filemgr_save())
 		msgbox_perror(main_form, "File Manager", "Cannot save configuration", errno);
+}
+
+static void save_pos(int complain)
+{
+	struct form_state ost;
+	struct form_state fst;
+	int fd = -1;
+	
+	bzero(&fst, sizeof fst);
+	form_get_state(main_form, &fst);
+	
+	if (unlink(WINPOS) && errno != ENOENT)
+		goto fail;
+	
+	fd = open(WINPOS, O_CREAT | O_TRUNC | O_EXCL | O_RDWR, 0600);
+	if (fd < 0)
+		goto fail;
+	
+	if (read(fd, &ost, sizeof fst) != sizeof ost || memcmp(&fst, &ost, sizeof fst))
+	{
+		errno = EINVAL;
+		if (write(fd, &fst, sizeof fst) != sizeof fst)
+			goto fail;
+	}
+	
+	if (close(fd))
+		goto fail;
+	return;
+
+fail:
+	if (complain)
+		msgbox_perror(main_form, "File Manager", "Cannot save window state", errno);
+	if (fd >= 0)
+		close(fd);
+}
+
+static void autosave_pos(void)
+{
+	char cwd[PATH_MAX];
+	size_t hlen;
+	char *h;
+	
+	if (!do_save_pos)
+		return;
+	
+	if (!getcwd(cwd, sizeof cwd))
+		return;
+	
+	h = getenv("HOME");
+	if (!h)
+		return;
+	hlen = strlen(h);
+	
+	if (strncmp(cwd, h, hlen))
+		return;
+	
+	if (cwd[hlen] && cwd[hlen] != '/')
+		return;
+	
+	save_pos(0);
+}
+
+static void load_pos(void)
+{
+	struct form_state fst;
+	struct stat st;
+	int fd = -1;
+	
+	fd = open(WINPOS, O_RDONLY);
+	if (fd < 0)
+		return;
+	
+	if (fstat(fd, &st))
+		goto clean;
+	
+	if (st.st_uid != getuid())
+		goto clean;
+	if (!S_ISREG(st.st_mode))
+		goto clean;
+	
+	if (read(fd, &fst, sizeof fst) != sizeof fst)
+		goto clean;
+	
+	close(fd);
+	
+	form_set_state(main_form, &fst);
+	return;
+
+clean:
+	close(fd);
+}
+
+static void save_pos_click(struct menu_item *m)
+{
+	save_pos(1);
 }
 
 void passwd_click(struct menu_item *m)
@@ -1205,7 +1322,7 @@ static void icbox_size_list_item(struct gadget *g, int i, int *w, int *h)
 	*h = th + 2;
 }
 
-static void icbox_redraw_bg(struct gadget *g, int wd, int x, int y, int w, int h)
+static void redraw_bg(int wd, int x, int y, int w, int h, int yoff)
 {
 	int x0, y0, x1, y1;
 	int cx, cy;
@@ -1234,10 +1351,15 @@ static void icbox_redraw_bg(struct gadget *g, int wd, int x, int y, int w, int h
 		
 		x0  = (dw - bw) >> 1;
 		y0  = (dh - bh) >> 1;
-		y0 -= g->rect.y;
+		y0 -= yoff;
 		
 		bmp_draw(wd, backdrop, x0, y0);
 	}
+}
+
+static void icbox_redraw_bg(struct gadget *g, int wd, int x, int y, int w, int h)
+{
+	redraw_bg(wd, x, y, w, h, g->rect.y);
 }
 
 static void v_icons_click(struct menu_item *m)
@@ -1333,6 +1455,8 @@ static void on_drag(struct gadget *g)
 
 int main_form_close(struct form *form)
 {
+	autosave_pos();
+	
 	if (desktop)
 	{
 		logout_click(NULL);
@@ -1342,7 +1466,7 @@ int main_form_close(struct form *form)
 	exit(0);
 }
 
-void create_form(void)
+static void create_main_form(void)
 {
 	int sbw = wm_get(WM_SCROLLBAR);
 	struct win_rect wsr;
@@ -1399,14 +1523,21 @@ void create_form(void)
 		menu_newitem (view, "-", NULL);
 		menu_newitem4(view, "Refresh", 'R', refresh_click);
 		menu_newitem (view, "-", NULL);
+		menu_newitem4(view, "Save window position", 'W', save_pos_click);
 		menu_newitem4(view, "Save settings", 'S', save_click);
 	}
 	
 	options = menu_creat();
 	if (desktop && !geteuid())
 	{
-		menu_newitem(options, "Disk space ...", df_click);
-		menu_newitem(options, "-", NULL);
+		menu_newitem4(options, "Available resources ...", 'R',	progitem_click)->p_data = "/bin/avail";
+		menu_newitem4(options, "System load ...",	  'S',	progitem_click)->p_data = "/sbin/showload";
+		menu_newitem (options, "-", NULL);
+		menu_newitem (options, "Format diskette ...",		progitem_click)->p_data = "/sbin/wfdfmt";
+		menu_newitem (options, "-", NULL);
+		menu_newitem (options, "Disk performance ...",		progitem_click)->p_data = "/sbin/diskperf";
+		menu_newitem4(options, "Disk space ...",	  'D',	progitem_click)->p_data = "/sbin/diskfree";
+		menu_newitem (options, "-", NULL);
 	}
 	menu_newitem(options, "About ...", about);
 	
@@ -1504,22 +1635,53 @@ void create_form(void)
 	
 	main_icbox->menu = file;
 	gadget_focus(main_icbox);
-	if (!desktop)
-		form_show(main_form);
 	win_idle();
+}
+
+static void bg_redraw(struct gadget *g, int wd)
+{
+	redraw_bg(wd, 0, 0, g->rect.w, g->rect.h, 0);
+}
+
+static void create_bg_form(void)
+{
+	struct win_rect wsr;
+	
+	if (!desktop || full_screen)
+		return;
+	
+	win_ws_getrect(&wsr);
+	
+	bg_form = form_creat(FORM_BACKDROP, 1, wsr.x, wsr.y, wsr.w, wsr.h, "bg");
+	bg = gadget_creat(bg_form, 0, 0, wsr.w, wsr.h);
+	
+	bg->redraw = bg_redraw;
+}
+
+static void create_forms(void)
+{
+	create_bg_form();
+	create_main_form();
 }
 
 static void on_resize(void)
 {
 	struct win_rect ws;
 	
+	win_ws_getrect(&ws);
+	
 	if (full_screen)
 	{
-		win_ws_getrect(&ws);
-		
 		gadget_resize(main_icbox, ws.w, ws.h - main_form->menu_rect.h);
 		form_resize(main_form, ws.w, ws.h - main_form->menu_rect.h);
 		form_move(main_form, ws.x, ws.y);
+	}
+	
+	if (bg_form)
+	{
+		gadget_resize(bg, ws.w, ws.h);
+		form_resize(bg_form, ws.w, ws.h);
+		form_move(bg_form, ws.x, ws.y);
 	}
 }
 
@@ -1550,6 +1712,9 @@ void on_update(void)
 	}
 	else
 		load_dir();
+	
+	if (bg)
+		gadget_redraw(bg);
 }
 
 void startup(void)
@@ -1710,12 +1875,18 @@ int main(int argc, char **argv)
 		full_screen = 1;
 	
 	getcwd(cwd, sizeof cwd);
-	create_form();
+	create_forms();
 	enter_dir(".");
 	
 	win_on_setmode(on_setmode);
 	win_on_resize(on_resize);
 	win_on_update(on_update);
+	
+	if (!full_screen)
+	{
+		do_save_pos = 1;
+		load_pos();
+	}
 	
 	tv.tv_sec   = 1;
 	tv.tv_usec  = 0;

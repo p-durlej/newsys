@@ -28,5 +28,11 @@
 #define _STDARG_H
 
 #include <arch/stdarg.h>
+#include <stdio.h>
+
+int vprintf(const char *format, va_list ap);
+int vfprintf(FILE *f, const char *format, va_list ap);
+int vsprintf(char *str, const char *format, va_list ap);
+int vsnprintf(char *str, size_t size, const char *format, va_list ap);
 
 #endif

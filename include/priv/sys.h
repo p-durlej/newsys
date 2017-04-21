@@ -28,6 +28,7 @@
 #define _PRIV_SYS_H
 
 #include <sys/types.h>
+#include <sys/poll.h>
 
 /* event handling */
 
@@ -41,6 +42,8 @@ int _newtask(const char *name, const void *arg, int arg_size);
 int _exec(const char *name, const void *arg, int arg_size);
 
 /* filesystem */
+
+int _poll(struct pollfd *pfd, int cnt, int ndelay);
 
 int _mknod(const char *path, mode_t mode, dev_t dev);
 int _mkdir(const char *path, mode_t mode);

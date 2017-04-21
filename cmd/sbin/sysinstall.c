@@ -280,7 +280,7 @@ int mkfs(struct part *pi)
 	sprintf(size_str, "%i", pi->size);
 	
 	signal(SIGCHLD, SIG_DFL);
-	if (_newtaskl(_PATH_B_MKFS, _PATH_B_MKFS, pi->dev, size_str, FS_RSVD_STR, (void *)NULL) < 0)
+	if (_newtaskl(_PATH_B_MKFS, _PATH_B_MKFS, "-q", pi->dev, size_str, FS_RSVD_STR, (void *)NULL) < 0)
 	{
 		sprintf(msg, "Cannot run \"" _PATH_B_MKFS "\":\n\n%m");
 		msgbox(NULL, TITLE, msg);
@@ -999,6 +999,8 @@ void copy_files(const char *list, const char *title)
 	if (title)
 		form_set_title(form, title);
 	
+	bargraph_set_labels(prgbar, "", "");
+	
 	button_on_click(cncbtn, cancel_click);
 	cncbtn->p_data = &do_cancel;
 	
@@ -1288,7 +1290,7 @@ void init_rd(void)
 	close(d);
 	
 	signal(SIGCHLD, SIG_DFL);
-	pid = _newtaskl("/sbin/mkfs", "/sbin/mkfs", "/dev/" RD, RD_SIZE_STR, NULL);
+	pid = _newtaskl("/sbin/mkfs", "/sbin/mkfs", "-q", "/dev/" RD, RD_SIZE_STR, NULL);
 	if (pid < 0)
 	{
 		perror("/sbin/mkfs");
@@ -1461,7 +1463,7 @@ static void edit_devs(void)
 	
 	msgbox(NULL, TITLE, "In the following window you can investigate\n"
 			    "detected devices and install device drivers\n"
-			    "required to continue the installer.");
+			    "required to continue the installation.");
 	
 	clh = signal(SIGCHLD, SIG_DFL);
 	pid = _newtaskl(_PATH_B_EDIT_DEVS, _PATH_B_EDIT_DEVS, "-i",
@@ -1499,6 +1501,25 @@ static void hwclock(void)
 	while (wait(&st) <= 1)
 		evt_idle();
 	signal(SIGCHLD, sig_chld);
+}
+
+static void fsck(const char *device)
+{
+	struct form *f;
+	int st;
+	
+	f = form_load("/lib/forms/sysinstall.fsck.frm");
+	form_show(f);
+	evt_idle();
+	
+	signal(SIGCHLD, SIG_DFL);
+	if (_newtaskl(_PATH_B_FSCK, _PATH_B_FSCK, "-qF", device, (void *)NULL) < 0)
+		perror(_PATH_B_FSCK);
+	while (wait(&st) <= 1)
+		evt_idle();
+	signal(SIGCHLD, sig_chld);
+	
+	form_close(f);
 }
 
 static void sig_shutdown(int nr)
@@ -1666,6 +1687,10 @@ void stage0(void)
 				    "Do you wish to continue?") != MSGBOX_YES)
 		shutdown();
 	win_idle();
+	
+	if (_boot_flags() & BOOT_VERBOSE)
+		_sysmesg("sysinstall: checking target fs\n");
+	fsck(root_dev);
 	
 	if (_boot_flags() & BOOT_VERBOSE)
 		_sysmesg("sysinstall: mounting target\n");

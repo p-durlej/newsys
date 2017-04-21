@@ -64,7 +64,6 @@ int execv(const char *path, char *const argv[])
 
 int execl(const char *path, ...)
 {
-	char buf[256];
 	va_list ap;
 	int cnt;
 	int i;
@@ -87,7 +86,6 @@ int execl(const char *path, ...)
 
 int execle(const char *path, ...)
 {
-	char buf[256];
 	va_list ap;
 	void *envp;
 	int cnt;
@@ -124,7 +122,6 @@ int execvp(const char *path, char *const argv[])
 
 int execlp(const char *path, ...)
 {
-	char buf[256];
 	va_list ap;
 	int cnt;
 	int i;

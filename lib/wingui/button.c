@@ -26,6 +26,7 @@
 
 #include <priv/wingui_theme.h>
 #include <priv/wingui_form.h>
+#include <wingui_cgadget.h>
 #include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
@@ -45,7 +46,7 @@ static void button_remove(struct gadget *g)
 
 static void button_redraw(struct gadget *g, int wd)
 {
-	struct form_theme *th;
+	const struct form_theme *th;
 	win_color hl1;
 	win_color hl2;
 	win_color sh1;

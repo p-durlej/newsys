@@ -326,8 +326,8 @@ fail:
 	return -1;
 }
 
-#define USER_MOD_FUNC(func_name, field_type, field)				\
-	int func_name(const char *name, field_type param)			\
+#define USER_MOD_FUNC(func_name, param_type, field_type, field)			\
+	int func_name(const char *name, param_type param)			\
 	{									\
 		char buf[PASSWD_BUF];						\
 		struct passwd pw;						\
@@ -355,7 +355,7 @@ fail:
 				goto fail;					\
 			if (!strcmp(pw.pw_name, name))				\
 			{							\
-				pw.field = param;				\
+				pw.field = (field_type)param;			\
 				found = 1;					\
 			}							\
 										\
@@ -389,8 +389,8 @@ fail:
 		return -1;							\
 	}
 
-USER_MOD_FUNC(_sethome, const char *, pw_dir)
-USER_MOD_FUNC(_setshell, const char *, pw_shell)
+USER_MOD_FUNC(_sethome, const char *, char *, pw_dir)
+USER_MOD_FUNC(_setshell, const char *, char *, pw_shell)
 
 static const char *hash_pass(const char *name, const char *pass)
 {
@@ -405,7 +405,7 @@ static const char *hash_pass(const char *name, const char *pass)
 		_set_errno(EINVAL);
 		return NULL;
 	}
-	sprintf(ibuf, "%s/%s", name, pass);
+	sprintf((char *)ibuf, "%s/%s", name, pass);
 	
 	sha = sha256_creat(); /* XXX */
 	if (!sha)
@@ -516,4 +516,4 @@ int _chkpass(const char *name, const char *pass)
 	return -1;
 }
 
-USER_MOD_FUNC(_setgroup, gid_t, pw_gid)
+USER_MOD_FUNC(_setgroup, gid_t, gid_t, pw_gid)

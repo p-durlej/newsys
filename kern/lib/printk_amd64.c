@@ -27,7 +27,7 @@
 #include <kern/console.h>
 #include <kern/printk.h>
 
-#include <stdarg.h>
+#include <arch/stdarg.h>
 
 #define ULONG_DIGITS	20
 #define ULONG_BITS	64

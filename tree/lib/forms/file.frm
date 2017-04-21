@@ -25,19 +25,17 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-form(-1,-1,320,208,		"File");
+form(-1, -1, 320, 208,		"File");
 flag(FORM_ALLOW_CLOSE);
 flag(FORM_TITLE);
 flag(FORM_FRAME);
 
-label(NULL,6,4,			"Directories:");
-label(NULL,162,4,		"Regular files:");
+label("path_label", 6, 4,	"Directory: /");
+label("name_label", 6, 188,	"File name:");
 
-list("dir_list",4,20,152,160,5);
-list("file_list",160,20,156,160,5);
+list("file_list", 4, 20, 312, 160, 5);
 
-label(NULL,6,188,		"File name:");
-input("name_input",60,184,128,20,1);
+input("name_input", 60, 184, 128, 20, 1);
 
-button(NULL,192,184,60,20,	"OK",1);
-button(NULL,256,184,60,20,	"Cancel",2);
+button(NULL, 192, 184, 60, 20,	"OK", 1);
+button(NULL, 256, 184, 60, 20,	"Cancel", 2);

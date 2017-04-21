@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -232,15 +233,6 @@ int stime(const time_t *t)
 	tv.tv_sec  = *t;
 	tv.tv_usec = 0;
 	return settimeofday(&tv, NULL);
-}
-
-static int clamp(int v, int min, int max)
-{
-	if (v < min)
-		return min;
-	if (v > max)
-		return max;
-	return v;
 }
 
 void cltime(struct tm *tm)
@@ -626,6 +618,9 @@ alt:
 	}
 	
 	*p = 0;
+	if (cnt < max)
+		return cnt;
+	return 0;
 #undef PUTC
 #undef PUTS
 }

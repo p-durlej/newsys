@@ -75,7 +75,8 @@ WINGUI_O = wingui/wait.o wingui/form.o wingui/button.o wingui/label.o	      \
            wingui/hsbar.o wingui/form_load.o wingui/bell.o		      \
            wingui/buf.o wingui/break.o wingui/util.o wingui/metrics.o	      \
            wingui/colorsel.o wingui/pointer.o wingui/bargraph.o		      \
-           wingui/theme.o wingui/theme-flat.o wingui/draw.o wingui/sizebox.o
+           wingui/theme.o wingui/theme-flat.o wingui/draw.o wingui/sizebox.o  \
+           wingui/cgadget.o wingui/dlg_disk.o
 
 PASSWD_O = passwd/passwd.o passwd/group.o
 
@@ -97,6 +98,8 @@ LIB_O = crt0c.o perror.o dirent.o time.o confdb.o cprintf.o		\
         $(ARCH_O) $(CRYPTO_O) $(MATH_O) $(LOCALE_O) $(DEV_O) $(PREFS_O)
 
 CRT0D_O = crt0d/getopt.o
+
+CFLAGS += -Wall -Werror -D_LIB_INTERNALS
 
 include arch/arch.mk
 

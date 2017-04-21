@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_cgadget.h>
 #include <wingui_metrics.h>
 #include <wingui_msgbox.h>
 #include <wingui_color.h>
@@ -161,7 +162,7 @@ static struct gadget *chart_creat(struct form *f, int x, int y, int w, int h)
 		return NULL;
 	}
 	
-	g->redraw = chart_redraw;
+	gadget_set_redraw_cb(g, chart_redraw);
 	g->p_data = cd; // XXX
 	return g;
 }

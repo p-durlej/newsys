@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define _LIB_INTERNALS
+
 #include <priv/copyright.h>
 #include <wingui_msgbox.h>
 #include <wingui_menu.h>

@@ -53,6 +53,7 @@ struct nat_super
 	uint32_t root_block;
 	uint8_t	 ndirblks;
 	uint8_t	 nindirlev;
+	int	 dirty;
 };
 
 struct nat_dirent

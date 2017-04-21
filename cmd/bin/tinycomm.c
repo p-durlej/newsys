@@ -25,6 +25,7 @@
  */
 
 #include <priv/copyright.h>
+#include <wingui_cgadget.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
@@ -845,9 +846,9 @@ void init_gui(void)
 	menu_submenu(menu, "Options", opt_menu);
 	form_set_menu(main_form, menu);
 	display = gadget_creat(main_form, 0, 0, nr_columns * cell_width, nr_lines * cell_height);
-	display->want_focus = 1;
-	display->redraw = display_redraw;
-	display->key_down = key_down;
+	gadget_set_want_focus(display, 1);
+	gadget_set_redraw_cb(display, display_redraw);
+	gadget_set_key_down_cb(display, key_down);
 	gadget_focus(display);
 	form_show(main_form);
 	

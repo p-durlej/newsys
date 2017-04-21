@@ -31,7 +31,9 @@
 #include <wingui_bell.h>
 #include <wingui.h>
 #include <dev/speaker.h>
+#include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <errno.h>
 
 int msgbox(struct form *form, const char *title, const char *text)

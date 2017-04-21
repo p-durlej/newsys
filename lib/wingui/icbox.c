@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <wingui_cgadget.h>
 #include <wingui_metrics.h>
 #include <wingui_bitmap.h>
 #include <wingui_color.h>
@@ -55,6 +56,7 @@ static void icbox_ptr_move(struct gadget *g, int x, int y);
 static void icbox_ptr_down(struct gadget *g, int x, int y, int button);
 static void icbox_ptr_up(struct gadget *g, int x, int y, int button);
 static void icbox_do_defops(struct gadget *g);
+static int  icbox_scroll_now(struct gadget *g, int x, int y);
 
 static void icbox_remove(struct gadget *g)
 {
@@ -71,13 +73,7 @@ static void icbox_remove(struct gadget *g)
 
 static int icbox_defsizes(struct gadget *g)
 {
-	int tw, th;
-	int resid;
-	int ncol;
-	int w, h;
-	int mw;
 	int icw, ich;
-	int iw, ih;
 	
 	icw = g->icbox.icon_width;
 	ich = g->icbox.icon_height;
@@ -92,7 +88,6 @@ static int icbox_usizes(struct gadget *g)
 	int iw, ih;
 	int ncol;
 	int w, h;
-	int mw;
 	
 	w  = g->rect.w;
 	h  = g->rect.h;
@@ -201,7 +196,6 @@ static void icbox_redraw_item_cb(struct gadget *g, int i, int wd, int x, int y, 
 
 static void icbox_redraw_item(struct gadget *g, int wd, int i, int text_only, int setclip)
 {
-	struct icbox_item *im = &g->icbox.items[i];
 	struct win_rect r;
 	
 	if (g->delayed_redraw || g->form->redraw_expected)
@@ -467,7 +461,6 @@ int icbox_newitem(struct gadget *g, const char *text, const char *icname)
 	struct icbox_item *ni;
 	struct bitmap *nicon;
 	struct bitmap *icon;
-	int i;
 	
 	ni = realloc(g->icbox.items, (g->icbox.item_count + 1) * sizeof *ni);
 	if (!ni)
@@ -626,7 +619,7 @@ int icbox_get_scroll_range(struct gadget *g, int *x, int *y)
 	return 0;
 }
 
-int icbox_scroll_now(struct gadget *g, int x, int y)
+static int icbox_scroll_now(struct gadget *g, int x, int y)
 {
 	int dx, dy;
 	int w, h;
