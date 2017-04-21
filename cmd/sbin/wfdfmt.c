@@ -261,7 +261,7 @@ int main(int argc, char **argv)
 			form_unbusy(main_form);
 			break;
 		case 2:
-			p = dlg_disk(main_form, "Format Diskette", pathname, DLG_DISK_FLOPPY);
+			p = dlg_disk(main_form, NULL, pathname, DLG_DISK_FLOPPY);
 			if (p)
 			{
 				pathname = p;
