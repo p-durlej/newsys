@@ -42,3 +42,13 @@ gcc-core-$GCCVER.tar.bz2	ftp://fricco.durlej.net/gnu/gcc-core-4.3.2.tar.bz2
 binutils-$BINVER.tar.bz2	http://ftp.gnu.org/gnu/binutils/binutils-2.19.1a.tar.bz2
 gcc-core-$GCCVER.tar.bz2	http://ftp.gnu.org/gnu/gcc/gcc-4.3.2/gcc-core-4.3.2.tar.bz2
 EOF
+
+dir=$(pwd)
+
+which sha256sum > /dev/null 2>&1 && sha256=sha256sum
+which sha256	> /dev/null 2>&1 && sha256=sha256
+
+if ! (cd "$DISTDIR" && $sha256 -c "$dir/SHA256" ); then
+	echo "$0: bad gcc/binutils distfile" >&2
+	exit 1
+fi
