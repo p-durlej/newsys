@@ -287,6 +287,7 @@
 
 644 /lib/forms/about.frm
 600 /lib/forms/autologin.frm
+600 /lib/forms/blockdev.frm
 644 /lib/forms/file_info.frm
 644 /lib/forms/perm_info.frm
 644 /lib/forms/avail.frm

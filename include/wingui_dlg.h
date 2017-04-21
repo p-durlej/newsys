@@ -43,6 +43,8 @@
 #define DLG_DISK_FLOPPY		2
 #define DLG_DISK_HARD		4
 #define DLG_DISK_PARTITION	8
+#define DLG_DISK_CD		16
+#define DLG_DISK_SSD		32
 
 struct form;
 

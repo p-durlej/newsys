@@ -27,6 +27,7 @@
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
+#include <wingui_dlg.h>
 #include <stdio.h>
 #include <err.h>
 
@@ -48,6 +49,11 @@ static void hide_click(struct gadget *g, int x, int y)
 	form_hide(f);
 }
 
+static void disk_click(struct gadget *g, int x, int y)
+{
+	dlg_disk(NULL, NULL, NULL, DLG_DISK_ANY);
+}
+
 int main()
 {
 	if (win_attach())
@@ -61,6 +67,7 @@ int main()
 	}
 	colorsel_creat(f, 10, 10, 20, 20);
 	button_creat(f,  40, 10, 60, 20, "Hide form", hide_click);
+	button_creat(f, 180, 10, 60, 20, "Disk", disk_click);
 	button_creat(f, 250, 10, 60, 20, "A button", NULL);
 	
 	bg1 = bargraph_creat(f, 10,  80, 300, 20);
