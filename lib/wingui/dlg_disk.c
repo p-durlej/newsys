@@ -226,6 +226,7 @@ const char *dlg_disk(struct form *pf, const char *title, const char *pathname, i
 	d.list = gadget_find(d.form, "list");
 	list_set_draw_cb(d.list, dlg_disk_draw_item);
 	list_set_flags(d.list, LIST_FRAME | LIST_VSBAR);
+	form_set_title(d.form, title);
 	
 	dlg_disk_load(&d);
 	
