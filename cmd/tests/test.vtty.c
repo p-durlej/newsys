@@ -28,13 +28,21 @@
 
 int main()
 {
-	int i;
+	int i, n;
 	
 	for (i = 0; i < 8; i++)
-		printf("\e[4%im                                   \e[0m\n", i);
+		printf("\033[4%im                                   \e[0m\n", i);
 	
 	for (i = 0; i < 8; i++)
-		printf("\e[3%im TEST TEST TEST TEST TEST TEST     \e[0m\n", i);
+		printf("\033[3%im TEST TEST TEST TEST TEST TEST     \e[0m\n", i);
 	
+	for (i = 0; i < 8; i++)
+	{
+		for (n = 0; n < 8; n++)
+			printf("\033[3%i;4%im*", n, i);
+		puts("\033[0m");
+	}
+	
+	puts("\033[1;2;3T");
 	return 0;
 }
