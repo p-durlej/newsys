@@ -31,5 +31,5 @@ cpu_shutdown:
 	cli
 	lidt	1f
 	lgdt	1f
-	ljmp	(1f)
+	ljmp	*(1f)
 1:	.space	10

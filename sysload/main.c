@@ -883,7 +883,7 @@ static void show_splash(struct kparam *kp)
 	
 	for (y = 0; y < fb->yres; y++)
 	{
-		pp = (char *)fb->base + fb->bytes_per_line * y;
+		pp = (uint32_t *)((char *)(uintptr_t)fb->base + fb->bytes_per_line * y);
 		
 		for (x = 0; x < fb->xres; x++)
 			*pp++ = c;
@@ -896,7 +896,7 @@ static void show_splash(struct kparam *kp)
 	y0 = (fb->yres - h) / 2;
 	for (y = 0; y < h; y++)
 	{
-		pp = (char *)fb->base + fb->bytes_per_line * (y0 + y) + x0 * 4;
+		pp = (uint32_t *)((char *)(uintptr_t)fb->base + fb->bytes_per_line * (y0 + y) + x0 * 4);
 		
 		for (x = 0; x < w; x++)
 		{
@@ -1236,7 +1236,7 @@ void diskview(void)
 	con_clear();
 	copyright();
 	
-	dk = disk_find(*bdev);
+	dk = disk_find(bdev);
 	if (dk == NULL)
 	{
 		dk = disk_list;

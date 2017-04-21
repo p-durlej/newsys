@@ -65,7 +65,7 @@ static int pxe_get_addrs(void)
 	if (fcp.eax & 0xffff)
 		return EIO;
 	
-	cpak = *(uint16_t *)(bounce + 6) + (*(uint16_t *)(bounce + 8) << 4);
+	cpak = (char *)(uintptr_t)*(uint16_t *)(bounce + 6) + (*(uint16_t *)(bounce + 8) << 4);
 	
 	pxe_yip = *(uint32_t *)(cpak + 16);
 	pxe_sip = *(uint32_t *)(cpak + 20);
@@ -84,7 +84,7 @@ static int pxe_file_size(const char *name, long *sz)
 	strcpy(bounce + 10, name);
 	
 	fcp.stack[0]	= 0x25;
-	fcp.stack[1]	= bounce;
+	fcp.stack[1]	= (uintptr_t)bounce;
 	fcp.stack[2]	= 0;
 	fcp.addr	= pxe_entry;
 	farcall();
@@ -125,7 +125,7 @@ static int pxe_tftp_close(void)
 	memset(bounce, 0, sizeof bounce);
 	
 	fcp.stack[0]	= 0x21;
-	fcp.stack[1]	= bounce;
+	fcp.stack[1]	= (uintptr_t)bounce;
 	fcp.stack[2]	= 0;
 	fcp.addr	= pxe_entry;
 	farcall();
@@ -141,7 +141,7 @@ static size_t pxe_tftp_read(void *buf, size_t *sz)
 	
 	memset(bounce, 0, sizeof bounce);
 	
-	*(uint16_t *)(bounce + 6) = bounce + 16;
+	*(uint16_t *)(bounce + 6) = (uintptr_t)bounce + 16;
 	
 	fcp.stack[0]	= 0x22;
 	fcp.stack[1]	= (intptr_t)bounce;
@@ -153,8 +153,8 @@ static size_t pxe_tftp_read(void *buf, size_t *sz)
 		return EIO;
 	
 	cnt = *(uint16_t *)(bounce + 4);
-	if (cnt > sz)
-		cnt = sz;
+	if (cnt > *sz)
+		cnt = *sz;
 	memcpy(buf, bounce + 16, cnt);
 	*sz = cnt;
 	return 0;
@@ -240,7 +240,7 @@ void pxe_init(void)
 	
 	if (!bangpxe)
 		return;
-	pxe_bang  =   bangpxe	     & 0xffff;
+	pxe_bang  = (char *)((uintptr_t)bangpxe & 0xffff);
 	pxe_bang += ((bangpxe >> 12) & 0xffff0);
 	pxe_entry = *(uint32_t *)(pxe_bang + 16);
 	

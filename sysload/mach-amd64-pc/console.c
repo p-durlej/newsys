@@ -43,7 +43,7 @@ static void con_scroll(void)
 {
 	uint16_t *p, *e;
 	
-	memmove(CON_BASE, CON_BASE + con_w * 2, con_w * (con_h - 1) * 2);
+	memmove((void *)CON_BASE, (char *)CON_BASE + con_w * 2, con_w * (con_h - 1) * 2);
 	con_gotoxy(con_x, con_y - 1);
 	
 	p = (uint16_t *)CON_BASE + (con_h - 1) * con_w;

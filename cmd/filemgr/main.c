@@ -32,6 +32,7 @@
 #include <priv/filemgr.h>
 #include <priv/wingui.h>
 
+#include <wingui_cgadget.h>
 #include <wingui_metrics.h>
 #include <wingui_msgbox.h>
 #include <wingui_bitmap.h>

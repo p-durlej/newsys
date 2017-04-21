@@ -30,7 +30,7 @@
 #define ELO_PAGE_SIZE	4096
 #define ELO_PAGE_SHIFT	12
 
-typedef uint32_t elo_caddr_t;
+typedef uintptr_t elo_caddr_t;
 
 struct elo_data
 {

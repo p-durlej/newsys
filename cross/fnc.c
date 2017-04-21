@@ -30,6 +30,7 @@
 #include <stdint.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <ctype.h>
 #include <errno.h>
 #include <err.h>
 
