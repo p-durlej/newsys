@@ -257,7 +257,7 @@ retry:
 		}
 		break;
 	case 3:
-		sprintf(pathname, "/dev/%s", g_device);
+		sprintf(pathname, "/dev/%s", g_device->text);
 		cp = dlg_disk(f, NULL, pathname, DLG_DISK_ANY);
 		if (cp)
 		{
