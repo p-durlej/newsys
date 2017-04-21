@@ -172,7 +172,7 @@ static int bootmsg(void)
 	
 	for (;;)
 	{
-		con_setattr(0, 7, BOLD);
+		con_setattr(1, 7, 0);
 		con_gotoxy(0, 0);
 		
 		for (y = 0; y < con_h - 1; y++)
