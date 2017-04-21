@@ -34,6 +34,12 @@
 
 #define CON_TRACE	do { con_trace(__FILE__, __func__, __LINE__); } while(0)
 
+#define CON_K_UP	256
+#define CON_K_DOWN	257
+#define CON_K_HOME	258
+#define CON_K_PGUP	259
+#define CON_K_PGDN	260
+
 extern int con_w, con_h;
 
 void con_init(void);

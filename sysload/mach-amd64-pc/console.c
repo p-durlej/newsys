@@ -277,6 +277,7 @@ int con_kbhit(void)
 
 int con_getch(void)
 {
+	int sc;
 	int ch;
 	
 	con_upxy();
@@ -285,8 +286,27 @@ int con_getch(void)
 	bcp.intr = 0x16;
 	bioscall();
 	
-	ch = bcp.eax & 255;
+	sc = (bcp.eax >> 8) & 255;
+	ch =  bcp.eax & 255;
+	
+	switch (sc)
+	{
+	case 0x48:
+		return CON_K_UP;
+	case 0x50:
+		return CON_K_DOWN;
+	case 0x47:
+		return CON_K_HOME;
+	case 0x49:
+		return CON_K_PGUP;
+	case 0x51:
+		return CON_K_PGDN;
+	default:
+		;
+	}
+	
 	if (ch == '\r')
 		return '\n';
+	
 	return ch;
 }

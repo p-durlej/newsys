@@ -131,31 +131,104 @@ static void copyright(void)
 
 static int bootmsg(void)
 {
+	static const char **lines;
+	static int line_cnt;
+	static char *msg;
+	static int off;
+	
 	struct file f;
-	char *msg;
+	int moff;
 	int c;
-	int i;
+	int i, y;
 	
-	if (fs_lookup(&f, &fs, "/etc/bootmsg"))
-		return 1;
+	if (!msg)
+	{
+		if (fs_lookup(&f, &fs, "/etc/bootmsg"))
+			return 1;
+		
+		msg = mem_alloc(f.size + 1, MA_SYSLOAD);
+		if (msg == NULL)
+			fail("Memory allocation failed.", "");
+		msg[f.size] = 0;
+		
+		if (fs_load(&f, msg))
+			fail("Cannot load /etc/bootmsg", "");
+		
+		for (line_cnt = i = 0; i < f.size; i++)
+			if (msg[i] == '\n')
+				line_cnt++;
+		
+		lines = mem_alloc((line_cnt + 1) * sizeof *lines, MA_SYSLOAD);
+		lines[0] = msg;
+		
+		for (line_cnt = 1, i = 0; i < f.size; i++)
+			if (msg[i] == '\n')
+				lines[line_cnt++] = msg + i + 1;
+	}
 	
-	msg = mem_alloc(f.size, MA_SYSLOAD);
-	if (msg == NULL)
-		fail("Memory allocation failed.", "");
+	moff = line_cnt - con_h + 1;
+	if (moff < 0)
+		moff = 0;
 	
-	if (fs_load(&f, msg))
-		fail("Cannot load /etc/bootmsg", "");
-	
-	con_setattr(0, 7, BOLD);
-	con_gotoxy(0, 0);
-	con_clear();
-	for (i = 0; i < f.size; i++)
-		con_putc(msg[i]);
-	
-	con_status("Press RETURN to continue or press ESC to cancel.", "");
-	while (c = con_getch(), c != '\n' && c != 27)
-		;
-	return c == '\n';
+	for (;;)
+	{
+		con_setattr(0, 7, BOLD);
+		con_gotoxy(0, 0);
+		
+		for (y = 0; y < con_h - 1; y++)
+		{
+			con_gotoxy(0, y);
+			
+			if (y + off >= line_cnt)
+				continue;
+			
+			for (i = 0; c = lines[y + off][i], i < con_w && c && c != '\n'; i++)
+				con_putc(lines[y + off][i]);
+			for (; i < con_w; i++)
+				con_putc(' ');
+		}
+		
+		if (off >= moff)
+			con_status("Press C to accept or press ESC to cancel.", "");
+		else
+			con_status("Press SPACE for next page or press ESC to cancel.", "");
+		
+		c = con_getch();
+		switch (c)
+		{
+		case CON_K_HOME:
+			off = 0;
+			break;
+		case CON_K_UP:
+			if (off)
+				off--;
+			break;
+		case CON_K_DOWN:
+			if (off < moff)
+				off++;
+			break;
+		case CON_K_PGUP:
+			off -= con_h - 1;
+			if (off < 0)
+				off = 0;
+			break;
+		case 'C':
+		case 'c':
+			if (off >= moff)
+				return 1;
+			break;
+		case CON_K_PGDN:
+		case ' ':
+			off += con_h - 1;
+			if (off > moff)
+				off = moff;
+			break;
+		case 27:
+			return 0;
+		default:
+			;
+		}
+	}
 }
 
 static void draw_field(struct field *f)
