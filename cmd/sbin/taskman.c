@@ -179,7 +179,7 @@ static void sig_click(struct menu_item *m)
 
 static void about_click(struct menu_item *m)
 {
-	dlg_about7(main_form, "Task Manager", "Task Manager v1", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "warning.pnm");
+	dlg_about7(main_form, "Task Manager", "Task Manager v1.3", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "warning.pnm");
 }
 
 static void draw_item(struct gadget *g, int i, int wd, int x, int y, int w, int h)

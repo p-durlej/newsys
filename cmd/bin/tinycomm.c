@@ -816,7 +816,7 @@ int on_close(struct form *f)
 
 void about(struct menu_item *mi)
 {
-	dlg_about7(main_form, NULL, "TinyComm v1", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "cdev.pnm");
+	dlg_about7(main_form, NULL, "TinyComm v1.3", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "cdev.pnm");
 }
 
 void init_gui(void)

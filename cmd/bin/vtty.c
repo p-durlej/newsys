@@ -850,7 +850,7 @@ static void font_click(struct menu_item *mi)
 
 static void about_click(struct menu_item *mi)
 {
-	dlg_about7(main_form, NULL, "Virtual TTY v1.2", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "cdev.pnm");
+	dlg_about7(main_form, NULL, "Virtual TTY v1.3", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "cdev.pnm");
 }
 
 static void nullio(void)
