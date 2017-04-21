@@ -33,7 +33,8 @@ label(NULL,6,32,		"Device:");
 label(NULL,6,56,		"FS Type:");
 
 input("prefix",50,4,206,20,1);
-input("device",50,28,206,20,1);
+input("device",50,28,150,20,1);
+button(NULL,200,28,56,20,	"Browse...",3);
 input("fstype",50,52,206,20,1);
 
 frame(NULL,0,76,260,62,		"Flags");

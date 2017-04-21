@@ -27,6 +27,7 @@
 #include <wingui_msgbox.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
+#include <wingui_dlg.h>
 #include <wingui.h>
 #include <sys/wait.h>
 #include <newtask.h>
@@ -160,7 +161,9 @@ static int edit_fs(struct _mtab *m, int n)
 	struct gadget *g_removable;
 	struct gadget *g_insecure;
 	struct gadget *g_mkfs;
+	char pathname[PATH_MAX];
 	struct form *f;
+	const char *cp;
 	char *p;
 	int r;
 	
@@ -194,8 +197,10 @@ static int edit_fs(struct _mtab *m, int n)
 		gadget_hide(g_mkfs);
 	form_set_dialog(main_form, f);
 retry:
-	if (r = 0, form_wait(f) == 1)
+	r = 0;
+	switch (form_wait(f))
 	{
+	case 1:
 		if (!*g_prefix->text || !*g_device->text || !*g_fstype->text)
 		{
 			msgbox(main_form, "File Systems", "All text fields must be filled in.");
@@ -250,6 +255,17 @@ retry:
 			
 			strcpy(m->fstype, "native");
 		}
+		break;
+	case 3:
+		sprintf(pathname, "/dev/%s", g_device);
+		cp = dlg_disk(f, NULL, pathname, DLG_DISK_ANY);
+		if (cp)
+		{
+			cp = strrchr(cp, '/');
+			if (cp)
+				input_set_text(g_device, cp + 1);
+		}
+		goto retry;
 	}
 	form_set_dialog(main_form, NULL);
 	form_close(f);
