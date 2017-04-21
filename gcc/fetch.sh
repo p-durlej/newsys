@@ -35,7 +35,7 @@ while read file url; do
 		continue
 	fi
 	
-	wget -O "$DISTDIR/$file" "$url"
+	wget -qO "$DISTDIR/$file" --show-progress "$url"
 done << EOF
 binutils-$BINVER.tar.bz2	ftp://fricco.durlej.net/gnu/binutils-2.19.1a.tar.bz2
 gcc-core-$GCCVER.tar.bz2	ftp://fricco.durlej.net/gnu/gcc-core-4.3.2.tar.bz2
