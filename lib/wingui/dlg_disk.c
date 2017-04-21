@@ -207,6 +207,9 @@ const char *dlg_disk(struct form *pf, const char *title, const char *pathname, i
 	if (flags & DLG_DISK_ANY)
 		flags = -1U;
 	
+	if (!title)
+		title = "Select Block Device";
+	
 	if (!pathname)
 		pathname = "/dev/fd0,0";
 	
