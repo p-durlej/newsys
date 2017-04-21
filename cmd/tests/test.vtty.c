@@ -35,6 +35,7 @@ int main()
 	
 	for (i = 0; i < 8; i++)
 		printf("\033[3%im TEST TEST TEST TEST TEST TEST     \e[0m\n", i);
+	putchar('\n');
 	
 	for (i = 0; i < 8; i++)
 	{
@@ -42,7 +43,7 @@ int main()
 			printf("\033[3%i;4%im*", n, i);
 		puts("\033[0m");
 	}
+	putchar('\n');
 	
-	puts("\033[1;2;3T");
 	return 0;
 }
