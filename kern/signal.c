@@ -142,7 +142,8 @@ static void signal_default(int i)
 	case SIGSEGV:
 	case SIGSTK:
 	case SIGOOM:
-		dump_core(i | 0x80);
+		if (dump_core(i | 0x80))
+			task_exit(i);
 		task_exit(i | 0x80);
 		break;
 	default:

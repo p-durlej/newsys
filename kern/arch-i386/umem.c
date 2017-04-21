@@ -35,7 +35,7 @@
 #include <sys/stat.h>
 #include <os386.h>
 
-void dump_core(int status)
+int dump_core(int status)
 {
 	struct core_page_head phd;
 	struct core_head hd;
@@ -43,9 +43,11 @@ void dump_core(int status)
 	struct fso *fso;
 	unsigned i;
 	uoff_t off;
+	int err;
 	
-	if (fs_creat(&fso, "core", S_IFREG | S_IRUSR | S_IWUSR, 0))
-		return;
+	err = fs_creat(&fso, "core", S_IFREG | S_IRUSR | S_IWUSR, 0);
+	if (err)
+		return err;
 	memset(&phd, 0, sizeof phd);
 	memset(&hd, 0, sizeof phd);
 	
@@ -61,7 +63,8 @@ void dump_core(int status)
 	rw.offset = 0;
 	rw.count = sizeof hd;
 	rw.buf = &hd;
-	if (fso->fs->type->write(&rw))
+	err = fso->fs->type->write(&rw);
+	if (err)
 		goto fail;
 	
 	off = sizeof hd;
@@ -82,20 +85,23 @@ void dump_core(int status)
 		rw.buf = &phd;
 		rw.offset = off;
 		rw.count = sizeof phd;
-		if (fso->fs->type->write(&rw))
+		err = fso->fs->type->write(&rw);
+		if (err)
 			goto fail;
 		off += sizeof phd;
 		
 		rw.buf = (void *)(i << 12);
 		rw.offset = off;
 		rw.count = PAGE_SIZE;
-		if (fso->fs->type->write(&rw))
+		err = fso->fs->type->write(&rw);
+		if (err)
 			goto fail;
 		off += PAGE_SIZE;
 	}
 	
 fail:
 	fs_putfso(fso);
+	return err;
 }
 
 void uclean(void)

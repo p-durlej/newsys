@@ -40,7 +40,7 @@ struct task;
 int	u_alloc(vpage start, vpage end);
 int	u_free(vpage start, vpage end);
 
-void	dump_core(int status);
+int	dump_core(int status);
 void	uclean(void);
 
 #define UA_INIT		1
