@@ -240,7 +240,11 @@ void pxe_init(void)
 	
 	if (!bangpxe)
 		return;
+<<<<<<< HEAD
 	pxe_bang  = (char *)(uintptr_t)(bangpxe & 0xffff);
+=======
+	pxe_bang  = (char *)((uintptr_t)bangpxe & 0xffff);
+>>>>>>> 09171619990e81ccb80c01c3868690d962c66d4a
 	pxe_bang += ((bangpxe >> 12) & 0xffff0);
 	pxe_entry = *(uint32_t *)(pxe_bang + 16);
 	
