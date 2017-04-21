@@ -150,7 +150,6 @@ static void vt100_do_putc(struct vt100 *vt, char ch)
 		vt->x = 0;
 		break;
 	case '\n':
-		/* vt->x = 0; */
 		vt->line_dirty[vt->y] = 1;
 		vt->y++;
 		while (vt->y >= vt->scroll_bottom /* vt->h */)
@@ -418,13 +417,6 @@ static void do_move_left_cmd(struct vt100 *vt)
 	vt->line_dirty[vt->y] = 1;
 }
 
-#if 0
-static void do_nop_cmd(struct vt100 *vt)
-{
-	/* nop */
-}
-#endif
-
 static void do_set_cmd(struct vt100 *vt)
 {
 }
@@ -583,17 +575,6 @@ static void do_delete_chr_cmd(struct vt100 *vt)
 	}
 }
 
-#if 0
-static void do_test_cmd(struct vt100 *vt)
-{
-	int i;
-	
-	for (i = 0; i < vt->argc; i++)
-		printf("[%i] = %i\n", i, vt->args[i]);
-	sleep(5);
-}
-#endif
-
 static struct CSI_cmd
 {
 	void (*proc)(struct vt100 *vt);
@@ -687,16 +668,9 @@ void vt100_putc(struct vt100 *vt, char ch)
 			for (i = 0; i < ESM_CNT; i++)
 				if (ch == esm_cmd[i].code)
 				{
-					/* if (vt->argc < sizeof(vt->args) / sizeof(*vt->args) && vt->args[vt->argc])
-						vt->argc++; */
 					esm_cmd[i].proc(vt);
 					break;
 				}
-				/* if (i == ESM_CNT)
-				{
-					printf("unknown ESM command: '%c'\n", ch);
-					exit(1);
-				} */
 				vt->st = VST_CHARACTER;
 			}
 			break;
@@ -727,11 +701,6 @@ void vt100_putc(struct vt100 *vt, char ch)
 						CSI_cmd[i].proc(vt);
 						break;
 					}
-				/* if (i == CSI_CNT)
-				{
-					printf("unknown CSI command: '%c'\n", ch);
-					exit(1);
-				} */
 				vt->st = VST_CHARACTER;
 			}
 			break;
