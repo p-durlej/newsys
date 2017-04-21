@@ -57,7 +57,7 @@ int dump_core(int status)
 	vpage i;
 	int err;
 	
-	err = fs_creat(&fso, "core", S_IFREG | S_IRUSR | S_IWUSR, 0));
+	err = fs_creat(&fso, "core", S_IFREG | S_IRUSR | S_IWUSR, 0);
 	if (err)
 		return err;
 	memset(&phd, 0, sizeof phd);
