@@ -225,6 +225,8 @@ static int bootmsg(void)
 			break;
 		case 27:
 			return 0;
+		case 3:
+			return 1;
 		default:
 			;
 		}
