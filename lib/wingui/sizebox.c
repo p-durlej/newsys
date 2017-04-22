@@ -39,8 +39,16 @@ static void sizebox_redraw(struct gadget *g, int wd)
 	int m, s;
 	
 	tl = wm_get(WM_THIN_LINE);
-	fg = wc_get(WC_WIN_FG);
-	bg = wc_get(WC_WIN_BG);
+	
+	if (g->sizebox.custom_fg)
+		fg = g->sizebox.fg;
+	else
+		fg = wc_get(WC_WIN_FG);
+	
+	if (g->sizebox.custom_bg)
+		bg = g->sizebox.bg;
+	else
+		bg = wc_get(WC_WIN_BG);
 	
 	m = 2 * tl;
 	s = 3 * tl;
@@ -60,6 +68,20 @@ static void sizebox_redraw(struct gadget *g, int wd)
 static void sizebox_remove(struct gadget *g)
 {
 	g->form->sizebox = NULL;
+}
+
+void sizebox_set_bg(struct gadget *g, win_color bg)
+{
+	g->sizebox.custom_bg = 1;
+	g->sizebox.bg = bg;
+	gadget_redraw(g);
+}
+
+void sizebox_set_fg(struct gadget *g, win_color fg)
+{
+	g->sizebox.custom_fg = 1;
+	g->sizebox.fg = fg;
+	gadget_redraw(g);
 }
 
 struct gadget *sizebox_creat(struct form *f, int w, int h)

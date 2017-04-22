@@ -291,6 +291,12 @@ struct gadget
 			int limit;
 			int value;
 		} bargraph;
+		
+		struct
+		{
+			int custom_bg, custom_fg;
+			win_color bg, fg;
+		} sizebox;
 	};
 	
 	void (*blink)(struct gadget *g);
@@ -614,6 +620,8 @@ struct gadget *frame_creat(struct form *f, int x, int y, int w, int h, const cha
 void frame_set_text(struct gadget *g, const char *text);
 
 struct gadget *sizebox_creat(struct form *f, int w, int h);
+void sizebox_set_bg(struct gadget *g, win_color bg);
+void sizebox_set_fg(struct gadget *g, win_color fg);
 
 /* loadable form support */
 

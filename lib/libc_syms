@@ -631,3 +631,5 @@ gadget_next
 bargraph_set_labels
 dlg_disk
 dlg_file6
+sizebox_set_bg
+sizebox_set_fg
