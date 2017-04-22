@@ -3,7 +3,6 @@
 755 /sbin
 755 /dev
 755 /dev/pty
-755 /dev/net
 755 /etc
 700 /etc/skel
 700 /etc/skel/.desktop
@@ -40,7 +39,6 @@
 700 /lib/drv_list/keyboard
 700 /lib/drv_list/serial
 700 /lib/drv_list/disk
-700 /lib/drv_list/net
 700 /lib/drv_list/machine
 700 /lib/drv_list/audio
 700 /lib/bg
