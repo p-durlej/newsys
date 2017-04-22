@@ -1522,7 +1522,7 @@ static void form_key_down(struct form *f, unsigned ch, unsigned shift)
 		}
 	}
 	
-	if (ch == WIN_KEY_F9 && f->menu)
+	if (ch == WIN_KEY_F9 && !(shift & (WIN_SHIFT_SHIFT | WIN_SHIFT_CTRL | WIN_SHIFT_ALT)) && f->menu)
 	{
 		if (!f->menu_active)
 		{
