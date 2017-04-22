@@ -702,6 +702,24 @@ void dlg_about(struct form *pf, const char *title, const char *desc)
 	dlg_about6(pf, title, desc, NULL, NULL, NULL);
 }
 
+static int dlg_input_key_down(struct form *f, unsigned ch, unsigned shift)
+{
+	switch (ch)
+	{
+	case '\n':
+		form_set_result(f, 1);
+		return 0;
+	case '\033':
+		if (f->l_data & DLG_INPUT_ALLOW_CANCEL)
+		{
+			form_set_result(f, 2);
+			return 0;
+		}
+		break;
+	}
+	return 1;
+}
+
 int dlg_input5(struct form *pf, const char *title, char *buf, int maxlen, int flags)
 {
 	struct gadget *label;
@@ -713,6 +731,9 @@ int dlg_input5(struct form *pf, const char *title, char *buf, int maxlen, int fl
 	form = form_load("/lib/forms/input.frm");
 	if (form == NULL)
 		return 0;
+	
+	form_on_key_down(form, dlg_input_key_down);
+	form->l_data = flags;
 	
 	label = gadget_find(form, "label");
 	input = gadget_find(form, "in");
