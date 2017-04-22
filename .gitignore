@@ -63,6 +63,7 @@
 /cmd/bin/clear
 /cmd/bin/clock
 /cmd/bin/colors
+/cmd/bin/detach
 /cmd/bin/df
 /cmd/bin/edit
 /cmd/bin/formview

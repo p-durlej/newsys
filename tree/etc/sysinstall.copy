@@ -6,6 +6,7 @@
 755 /bin/charmap
 755 /bin/clear
 755 /bin/clock
+755 /bin/detach
 755 /bin/edit
 755 /bin/filemgr
 755 /bin/filemgr.slave
