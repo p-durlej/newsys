@@ -125,6 +125,8 @@ make_sdk_lists()
 644 /lib/icons64/code.pnm
 644 /etc/filetype/ext-c
 644 /etc/filetype/ext-h
+644 /etc/skel/.desktop/Apps/Code Editor
+644 /root/.desktop/Apps/Code Editor
 EOF
 }
 
