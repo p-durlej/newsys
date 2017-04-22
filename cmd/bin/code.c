@@ -618,7 +618,7 @@ static void on_resize(struct form *f, int w, int h)
 static void editor_redraw_line(struct gadget *g, int i, int clip)
 {
 	int wd = g->form->wd;
-	struct cell *p;
+	struct cell *p, *p1;
 	win_color lfg;
 	win_color sbg;
 	win_color sfg;
@@ -644,10 +644,22 @@ static void editor_redraw_line(struct gadget *g, int i, int clip)
 	p = lineptr(cur_buf, i);
 	if (p)
 	{
-		ci = p - cur_buf->text + cur_buf->scroll_x;
-		p += cur_buf->scroll_x;
+		struct cell *e = cur_buf->text + cur_buf->length;
+		struct cell *v = p + cur_buf->scroll_x;
+		
+		for (p1 = p; p1 < v; p1++)
+			if (p1 >= e || p1->ch == '\n')
+			{
+				p = NULL;
+				break;
+			}
+		if (p1 == v)
+		{
+			ci = p - cur_buf->text + cur_buf->scroll_x;
+			p += cur_buf->scroll_x;
+		}
 	}
-	else if (!i)
+	if (!p && !i)
 		ci = 0;
 	
 	win_rgb2color(&sbg,   0, 255, 255);
