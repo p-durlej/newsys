@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define _LIB_INTERNALS
-
 #include <priv/copyright.h>
 #include <wingui_cgadget.h>
 #include <wingui_msgbox.h>
@@ -1198,7 +1196,7 @@ static struct gadget *editor_creat(struct form *f, int x, int y, int w, int h)
 	gadget_set_redraw_cb(g, editor_redraw);
 	gadget_set_key_down_cb(g, editor_key_down);
 	gadget_set_want_focus(g, 1);
-	g->want_tab = 1;
+	gadget_set_want_tab(g, 1);
 	return g;
 }
 
