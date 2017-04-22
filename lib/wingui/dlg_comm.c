@@ -194,7 +194,7 @@ static void dlg_file_load(struct dlg_file *d)
 		list_newitem(d->file_list, (void *)it);
 		
 		if (!strcmp(d->name_input->text, it->name))
-			list_set_index(d->file_list, i);
+			list_set_index(d->file_list, d->file_list->list.item_count - 1);
 	}
 	form_unlock(d->form);
 	form_unbusy(NULL);
