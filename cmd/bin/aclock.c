@@ -26,6 +26,7 @@
 
 #include <priv/copyright.h>
 #include <wingui_cgadget.h>
+#include <wingui_metrics.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
 #include <sys/signal.h>
@@ -67,25 +68,7 @@ struct
 
 struct form *	main_form;
 struct gadget *	clock_gadget;
-
-void old_clock_redraw(struct gadget *g, int wd)
-{
-	win_color bg;
-	win_color fg;
-	time_t t;
-	char *s;
-	int w, h;
-	
-	time(&t);
-	s = ctime(&t);
-	
-	win_rgb2color(&bg, 255, 255, 255);
-	win_rgb2color(&fg, 0, 0, 0);
-	
-	win_text_size(WIN_FONT_DEFAULT, &w, &h, s);
-	win_rect(wd, bg, 0, 0, config.w, config.h);
-	win_text(wd, fg, (config.w-w) >> 1, (config.h-h) >> 1, s);
-}
+struct gadget *	sizebox;
 
 void win_line(int wd, win_color c, int x0, int y0, int x1, int y1)
 {
@@ -204,7 +187,10 @@ void clock_redraw(struct gadget *g, int wd)
 	win_color bg;
 	win_color fg;
 	struct tm *tm;
+	int sbw;
 	time_t t;
+	
+	sbw = wm_get(WM_SCROLLBAR);
 	
 	time(&t);
 	tm = localtime(&t);
@@ -214,7 +200,8 @@ void clock_redraw(struct gadget *g, int wd)
 	bg = wc_get(WC_BG);
 	fg = wc_get(WC_FG);
 	
-	win_rect(wd, bg, 0, 0, config.w, config.h);
+	win_rect(wd, bg, 0, 0, config.w, config.h - sbw);
+	win_rect(wd, bg, 0, config.h - sbw, config.w - sbw, sbw);
 	draw_marks(wd);
 	
 	win_rect(wd, fg, (config.w >> 1) - 3, (config.h >> 1) - 3, 6, 6);
@@ -275,14 +262,25 @@ static void about_click(struct menu_item *mi)
 	dlg_about7(main_form, NULL, "Clock v1.3", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "clock.pnm");
 }
 
+static void update_colors(void)
+{
+	win_color c;
+	
+	win_rgb2color(&c, 255, 255, 255);
+	sizebox_set_bg(sizebox, c);
+}
+
 int main()
 {
 	struct timeval tv = { .tv_sec = 1, .tv_usec = 0 };
 	struct menu *mm, *m;
 	struct win_rect wsr;
+	int sbw;
 	
 	if (win_attach())
 		err(255, NULL);
+	
+	sbw = wm_get(WM_SCROLLBAR);
 	
 	win_ws_getrect(&wsr);
 	
@@ -314,7 +312,12 @@ int main()
 	clock_gadget = gadget_creat(main_form, 0, 0, config.w, config.h);
 	gadget_set_redraw_cb(clock_gadget, clock_redraw);
 	
+	sizebox = sizebox_creat(main_form, sbw, sbw);
+	update_colors();
+	
 	tmr_creat(&tv, &tv, timer_proc, NULL, 1);
+	
+	win_on_setmode(update_colors);
 	
 	for (;;)
 		win_wait();
