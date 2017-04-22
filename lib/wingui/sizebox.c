@@ -46,6 +46,9 @@ static void sizebox_redraw(struct gadget *g, int wd)
 	s = 3 * tl;
 	
 	win_rect(wd, bg, 0, 0, g->rect.w, g->rect.h);
+	if (g->form->zoomed)
+		return;
+	
 	win_rect(wd, fg, m, m, g->rect.w - 2 * m, g->rect.h - 2 * m);
 	
 	w = g->rect.w;
@@ -70,7 +73,6 @@ struct gadget *sizebox_creat(struct form *f, int w, int h)
 	g->remove = sizebox_remove;
 	g->redraw = sizebox_redraw;
 	gadget_redraw(g);
-	gadget_setptr(g, WIN_PTR_NW_SE);
 	
 	f->sizebox = g;
 	return g;

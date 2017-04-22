@@ -1610,7 +1610,7 @@ static void form_update_ptr_now(struct form *f)
 		return;
 	}
 	
-	if (f->flags & FORM_ALLOW_RESIZE)
+	if ((f->flags & FORM_ALLOW_RESIZE) && !f->zoomed)
 	{
 		int sbx = f->workspace_rect.x + f->workspace_rect.w;
 		int sby = f->workspace_rect.y + f->workspace_rect.h;
