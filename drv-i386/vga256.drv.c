@@ -27,6 +27,7 @@
 #include <kern/machine-i386-pc/bioscall.h>
 #include <kern/wingui.h>
 #include <kern/lib.h>
+#include <dev/framebuf.h>
 #include <devices.h>
 #include <errno.h>
 
@@ -39,37 +40,20 @@
 static int modeinfo(void *dd, int mode, struct win_modeinfo *buf);
 static int setmode(void *dd, int mode, int refresh);
 
-static void setptr(void *dd, const win_color *shape, const unsigned *mask);
-static void moveptr(void *dd, int x, int y);
-static void showptr(void *dd);
-static void hideptr(void *dd);
-
-static void putpix(void *dd, int x, int y, win_color c);
-static void getpix(void *dd, int x, int y, win_color *c);
-static void hline(void *dd, int x, int y, int len, win_color c);
-static void vline(void *dd, int x, int y, int len, win_color c);
-static void rect(void *dd, int x, int y, int w, int h, win_color c);
-static void copy(void *dd, int x0, int y0, int x1, int y1, int w, int h);
-
 static void rgba2color(void *dd, int r, int g, int b, int a, win_color *c);
 static void color2rgba(void *dd, int *r, int *g, int *b, int *a, win_color c);
 static void invert(void *dd, win_color *c);
 
 static void setcte(void *dd, win_color c, int r, int g, int b);
 
-static volatile unsigned char *fbuf = (void *)VGA_MEM;
+static void no_op(void *dd);
 
-static int ptr_x = VGA_XRES / 2;
-static int ptr_y = VGA_YRES / 2;
-static win_color ptr_back[PTR_WIDTH * PTR_HEIGHT];
-static win_color ptr_shape[PTR_WIDTH * PTR_HEIGHT];
-static unsigned ptr_mask[PTR_WIDTH * PTR_HEIGHT];
-static unsigned ptr_hide_count = 0;
 static int disp_installed = 0;
 
 static struct win_rgba color_table[256];
 
 static struct win_desktop *desktop;
+static struct framebuf *fb;
 
 static struct win_display disp =
 {
@@ -84,17 +68,17 @@ static struct win_display disp =
 	modeinfo:	modeinfo,
 	setmode:	setmode,
 	
-	setptr:		setptr,
-	moveptr:	moveptr,
-	showptr:	showptr,
-	hideptr:	hideptr,
+	setptr:		fb_setptr_8,
+	moveptr:	fb_moveptr_8,
+	showptr:	no_op,
+	hideptr:	no_op,
 	
-	putpix:		putpix,
-	getpix:		getpix,
-	hline:		hline,
-	vline:		vline,
-	rect:		rect,
-	copy:		copy,
+	putpix:		fb_putpix_8,
+	getpix:		fb_getpix_8,
+	hline:		fb_hline_8,
+	vline:		fb_vline_8,
+	rect:		fb_rect_8,
+	copy:		fb_copy_8,
 	
 	rgba2color:	rgba2color,
 	color2rgba:	color2rgba,
@@ -128,6 +112,8 @@ static int vga_init(int md)
 			for (r = 0; r < 6; r++, i++)
 				setcte(NULL, i, r * 51, g * 51, b * 51);
 	
+	disp.data = fb = fb_creat(&disp, (void *)VGA_MEM, VGA_XRES, VGA_YRES);
+	
 	err = win_display(md, &disp);
 	if (err)
 		return err;
@@ -156,145 +142,6 @@ static int modeinfo(void *dd, int mode, struct win_modeinfo *buf)
 	return 0;
 }
 
-static void setptr(void *dd, const win_color *shape, const unsigned *mask)
-{
-	hideptr(NULL);
-	memcpy(ptr_shape, shape, sizeof ptr_shape);
-	memcpy(ptr_mask, mask, sizeof ptr_mask);
-	showptr(NULL);
-}
-
-static void moveptr(void *dd, int x, int y)
-{
-	hideptr(NULL);
-	ptr_x = x;
-	ptr_y = y;
-	showptr(NULL);
-}
-
-static void p_putpix(void *dd, int x, int y, win_color c)
-{
-	if (x < 0 || x >= disp.width)
-		return;
-	if (y < 0 || y >= disp.height)
-		return;
-	putpix(NULL, x, y, c);
-}
-
-static void p_getpix(void *dd, int x, int y, win_color *c)
-{
-	if (x < 0 || x >= disp.width)
-		return;
-	if (y < 0 || y >= disp.height)
-		return;
-	getpix(NULL, x, y, c);
-}
-
-static void showptr(void *dd)
-{
-	int x, y;
-	int i;
-	
-	if (!ptr_hide_count)
-		return;
-	
-	ptr_hide_count--;
-	if (ptr_hide_count)
-		return;
-	
-	if (!ptr_hide_count)
-	{
-		i = 0;
-		for (y = 0; y < PTR_HEIGHT; y++)
-			for (x = 0; x < PTR_WIDTH; x++)
-			{
-				p_getpix(NULL, x + ptr_x, y + ptr_y, &ptr_back[i]);
-				if (ptr_mask[i])
-					p_putpix(NULL, x + ptr_x, y + ptr_y, ptr_shape[i]);
-				i++;
-			}
-	}
-}
-
-static void hideptr(void *dd)
-{
-	int x, y;
-	int i;
-	
-	ptr_hide_count++;
-	
-	if (ptr_hide_count > 1)
-		return;
-	
-	i = 0;
-	for (y = 0; y < PTR_HEIGHT; y++)
-		for (x = 0; x < PTR_WIDTH; x++)
-		{
-			if (ptr_mask[i])
-				p_putpix(NULL, x + ptr_x, y + ptr_y, ptr_back[i]);
-			i++;
-		}
-}
-
-static void putpix(void *dd, int x, int y, win_color c)
-{
-	fbuf[x + y * VGA_XRES] = c;
-}
-
-static void getpix(void *dd, int x, int y, win_color *c)
-{
-	*c = fbuf[x + y * VGA_XRES];
-}
-
-static void hline(void *dd, int x, int y, int len, win_color c)
-{
-	memset(&fbuf[x + y * VGA_XRES], c, len);
-}
-
-static void vline(void *dd, int x, int y, int len, win_color c)
-{
-	int i;
-	
-	for (i = y; i < y + len; i++)
-		putpix(NULL, x, i, c);
-}
-
-static void rect(void *dd, int x0, int y0, int w, int h, win_color c)
-{
-	int y1 = y0 + h;
-	int y;
-	
-	for (y = y0; y < y1; y++)
-		hline(NULL, x0, y, w, c);
-}
-
-static void copy_rev(int x0, int y0, int x1, int y1, int w, int h)
-{
-	win_color c;
-	int x, y;
-	
-	for (y = h - 1; y >= 0; y--)
-		memmove(&fbuf[x0 + (y + y0) * VGA_XRES],
-			&fbuf[x1 + (y + y1) * VGA_XRES],
-			w);
-}
-
-static void copy(void *dd, int x0, int y0, int x1, int y1, int w, int h)
-{
-	static win_color c;
-	static int y;
-	
-	if (y0 > y1 || (y0 == y1 && x0 > x1))
-		copy_rev(x0, y0, x1, y1, w, h);
-	else
-	{
-		for (y = 0; y < h; y++)
-			memmove(&fbuf[x0 + (y + y0) * VGA_XRES],
-				&fbuf[x1 + (y + y1) * VGA_XRES],
-				w);
-	}
-}
-
 static void rgba2color(void *dd, int r, int g, int b, int a, win_color *c)
 {
 	*c  = (r / 51) + (g / 51) * 6 + (b / 51) * 36;
@@ -317,6 +164,10 @@ static void invert(void *dd, win_color *c)
 		*c = 63 - *c;
 		return;
 	}
+}
+
+static void no_op(void *dd)
+{
 }
 
 static void setcte(void *dd, win_color c, int r, int g, int b)
