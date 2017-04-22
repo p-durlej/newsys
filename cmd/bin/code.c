@@ -50,7 +50,7 @@
 #include <paths.h>
 #include <err.h>
 
-#define EDITOR_FONT	WIN_FONT_MONO
+#define DEFAULT_FONT	WIN_FONT_MONO_N
 #define COMPILER	"/usr/bin/tcc"
 
 #define min(a, b)	((a) < (b) ? (a) : (b))
@@ -61,6 +61,7 @@ typedef char echar;
 static struct
 {
 	int run_mode;
+	int font;
 } config;
 
 struct buffer
@@ -642,7 +643,7 @@ static void editor_redraw_line(struct gadget *g, int i, int clip)
 		win_clip(wd, g->rect.x, g->rect.y, g->rect.w, g->rect.h,
 			     g->rect.x, g->rect.y);
 	
-	win_chr_size(EDITOR_FONT, &font_w, &font_h, 'X');
+	win_chr_size(config.font, &font_w, &font_h, 'X');
 	if (i - cur_buf->top_y > g->rect.h / font_h)
 		return;
 	
@@ -678,7 +679,7 @@ static void editor_redraw_line(struct gadget *g, int i, int clip)
 	win_paint();
 	if (p)
 	{
-		win_set_font(wd, EDITOR_FONT);
+		win_set_font(wd, config.font);
 		while (ci < cur_buf->length && p->ch != '\n')
 		{
 			if (ci == cur_buf->cur_index)
@@ -714,7 +715,7 @@ static void editor_redraw(struct gadget *g, int wd)
 	int cnt;
 	int i;
 	
-	win_chr_size(EDITOR_FONT, &font_w, &font_h, 'X');
+	win_chr_size(config.font, &font_w, &font_h, 'X');
 	cnt = (g->rect.h + font_h - 1) / font_h;
 	for (i = 0; i < cnt; i++)
 		editor_redraw_line(g, i + cur_buf->top_y, 0);
@@ -857,7 +858,7 @@ static void editor_adjpos(struct gadget *g)
 	int vc, vl;
 	int x, y;
 	
-	win_chr_size(EDITOR_FONT, &font_w, &font_h, 'X');
+	win_chr_size(config.font, &font_w, &font_h, 'X');
 	vc = g->rect.w / font_w;
 	vl = g->rect.h / font_h;
 	
@@ -970,7 +971,7 @@ static void editor_pgup(struct gadget *g)
 	int x, y;
 	int vl;
 	
-	win_chr_size(EDITOR_FONT, &font_w, &font_h, 'X');
+	win_chr_size(config.font, &font_w, &font_h, 'X');
 	vl = g->rect.h / font_h;
 	
 	ptrxy(cur_buf, cur_buf->text + cur_buf->cur_index, &x, &y);
@@ -995,7 +996,7 @@ static void editor_pgdn(struct gadget *g)
 	int x, y;
 	int vl;
 	
-	win_chr_size(EDITOR_FONT, &font_w, &font_h, 'X');
+	win_chr_size(config.font, &font_w, &font_h, 'X');
 	vl = g->rect.h / font_h;
 	
 	ptrxy(cur_buf, cur_buf->text + cur_buf->cur_index, &x, &y);
@@ -1315,6 +1316,12 @@ static void help_click(struct menu_item *mi)
 	help();
 }
 
+static void font_click(struct menu_item *mi)
+{
+	config.font = mi->l_data;
+	gadget_redraw(editor);
+}
+
 static void create_form(void)
 {
 	struct form_state fst;
@@ -1342,6 +1349,14 @@ static void create_form(void)
 	menu_newitem (m, "-",		NULL);
 	menu_newitem4(m, "Select All",	'A', all_click);
 	menu_submenu(main_menu, "Edit", m);
+	
+	m = menu_creat();
+	menu_newitem4(m, "Normal",		'1', font_click)->l_data = WIN_FONT_MONO;
+	menu_newitem4(m, "Narrow",		'2', font_click)->l_data = WIN_FONT_MONO_N;
+	menu_newitem (m, "-", NULL);
+	menu_newitem4(m, "Large",		'3', font_click)->l_data = WIN_FONT_MONO_L;
+	menu_newitem4(m, "Large Narrow",	'4', font_click)->l_data = WIN_FONT_MONO_LN;
+	menu_submenu(main_menu, "Font", m);
 	
 	m = menu_creat();
 	menu_newitem5(m, "Run on Desktop", WIN_KEY_F12,	0,		run_click)->l_data = 1;
@@ -1382,7 +1397,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	
-	c_load("code", &config, sizeof config);
+	if (c_load("code", &config, sizeof config))
+		config.font = DEFAULT_FONT;
 	
 	for (i = 0; i < sizeof buffers / sizeof *buffers; i++)
 		if (new_buffer(&buffers[i]))
