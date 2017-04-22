@@ -76,20 +76,34 @@ void *		p_errno;
 char *		image;
 unsigned	v_end;	/* XXX */
 
-void redraw_msgwin(struct event *e, int win_w, int win_h, char *msg)
+void redraw_msgwin(struct event *e, int win_w, int win_h, const char *msg, int bdown)
 {
+	static const char *bt = "Terminate";
+	
+	win_color hi1, hi2, sh1, sh2;
+	win_color button;
 	win_color frame1;
 	win_color frame2;
 	win_color fg;
 	win_color bg;
+	int bx, by, bw, bh;
 	int w, h;
 	
 	win_rgb2color(&fg,	  0,   0,   0);
 	win_rgb2color(&bg,	255, 255, 255);
 	win_rgb2color(&frame1,	  0,   0,   0);
 	win_rgb2color(&frame2,	  0,   0, 128);
+	win_rgb2color(&button,  203, 200, 192);
 	
-	win_clip(e->win.wd, e->win.redraw_x, e->win.redraw_y, e->win.redraw_w, e->win.redraw_h, 0, 0);
+	win_rgb2color(&hi1, 255, 255, 255);
+	win_rgb2color(&hi2, 224, 224, 224);
+	win_rgb2color(&sh1,  64,  64,  64);
+	win_rgb2color(&sh2, 128, 128, 128);
+	
+	if (e->win.type == WIN_E_REDRAW)
+		win_clip(e->win.wd, e->win.redraw_x, e->win.redraw_y, e->win.redraw_w, e->win.redraw_h, 0, 0);
+	else
+		win_clip(e->win.wd, 0, 0, win_w, win_h, 0, 0);
 	win_paint();
 	
 	win_rect(e->win.wd, frame1, 0, 0, win_w, win_h);
@@ -97,10 +111,25 @@ void redraw_msgwin(struct event *e, int win_w, int win_h, char *msg)
 	win_rect(e->win.wd, bg, 7, 7, win_w - 14, win_h - 14);
 	
 	win_text_size(WIN_FONT_DEFAULT, &w, &h, __libc_progname);
-	win_text(e->win.wd, fg, (win_w - w) / 2, 27, __libc_progname);
+	win_text(e->win.wd, fg, (win_w - w) / 2, win_h * 3 / 12, __libc_progname);
 	
 	win_text_size(WIN_FONT_DEFAULT, &w, &h, msg);
-	win_text(e->win.wd, fg, (win_w - w) / 2, 60, msg);
+	win_text(e->win.wd, fg, (win_w - w) / 2, win_h * 5 / 12, msg);
+	
+	win_text_size(WIN_FONT_DEFAULT, &w, &h, bt);
+	
+	bw = w + h * 2;
+	bh = h * 3;
+	bx = (win_w - bw) >> 1;
+	by =  win_h * 7 / 12;
+	
+	win_rect(e->win.wd, fg, bx - 1, by - 1, bw + 2, bh + 2);
+	if (bdown)
+		form_draw_rect3d(e->win.wd, bx, by, bw, bh, sh1, sh2, hi1, hi2, button);
+	else
+		form_draw_rect3d(e->win.wd, bx, by, bw, bh, hi1, hi2, sh1, sh2, button);
+	
+	win_btext(e->win.wd, button, fg, bx + h, by + h, bt);
 	
 	win_end_paint();
 }
@@ -119,51 +148,39 @@ void redraw_appwin(struct event *e)
 
 void fail(char *msg, int err) __attribute__((noreturn));
 
-void fail(char *msg, int err)
+static void wfail(const char *msg)
 {
 	struct event e;
+	int bdown = 0;
+	int kdown = 0;
 	int desk_w, desk_h;
 	int win_w, win_h;
 	int win_x, win_y;
+	int exe_w, exe_h;
+	int msg_w, msg_h;
 	int wd;
 	
-	_sysmesg("user.bin: ");
-	_sysmesg(__libc_progname);
-	_sysmesg(": ");
-	_sysmesg(msg);
-	_sysmesg("\n");
-	
-	if (err)
-	{
-		_sysmesg("user.bin: ");
-		_sysmesg(__libc_progname);
-		_sysmesg(": ");
-		_sysmesg(strerror(err));
-		_sysmesg("\n");
-	}
-	
-	fprintf(_get_stderr(), "user.bin: %s: %s\n", __libc_progname, msg);
-	if (err)
-		fprintf(_get_stderr(), "user.bin: %s: %s\n", __libc_progname, strerror(err));
-	
 	if (win_attach())
-		goto fini;
+		return;
 	
 	if (win_desktop_size(&desk_w, &desk_h))
-		goto fini;
+		return;
 	
 	if (desk_w < 2 || desk_h < 2)
-		goto fini;
+		return;
+	
+	win_text_size(WIN_FONT_DEFAULT, &exe_w, &exe_h, __libc_progname);
+	win_text_size(WIN_FONT_DEFAULT, &msg_w, &msg_h, msg);
 	
 	win_w = desk_w - 200;
-	win_h = 100;
+	win_h = msg_h * 12;
 	if (win_w < 300)
 		win_w = 300;
 	win_x = (desk_w - win_w) >> 1;
 	win_y = (desk_h - win_h) >> 1;
 	
 	if (win_creat(&wd, 1, win_x, win_y, win_w, win_h, NULL, NULL))
-		goto fini;
+		return;
 	win_set_title(wd, __libc_progname);
 	win_raise(wd);
 	win_focus(wd);
@@ -176,20 +193,64 @@ void fail(char *msg, int err)
 		switch (e.win.type)
 		{
 		case WIN_E_KEY_DOWN:
-		case WIN_E_PTR_UP:
+			if (e.win.wd != wd)
+				break;
+			if (e.win.ch == ' ' || e.win.ch == '\n')
+			{
+				redraw_msgwin(&e, win_w, win_h, msg, bdown = 1);
+				kdown = 1;
+			}
+			break;
+		case WIN_E_KEY_UP:
+			if (e.win.wd != wd || !kdown)
+				break;
+			if (e.win.ch == ' ' || e.win.ch == '\n')
+				return;
+			break;
+		case WIN_E_PTR_DOWN:
 			if (e.win.wd == wd)
-				goto fini;
+				redraw_msgwin(&e, win_w, win_h, msg, bdown = 1);
+			break;
+		case WIN_E_PTR_UP:
+			if (e.win.wd == wd || !bdown)
+				return;
 			break;
 		case WIN_E_REDRAW:
 			if (e.win.wd == wd)
-				redraw_msgwin(&e, win_w, win_h, msg);
+				redraw_msgwin(&e, win_w, win_h, msg, bdown);
 			else
 				redraw_appwin(&e);
 			break;
 		}
 	}
+}
+
+void fail(char *msg, int err)
+{
+	const char *errstr = NULL;
 	
-fini:
+	_sysmesg("user.bin: ");
+	_sysmesg(__libc_progname);
+	_sysmesg(": ");
+	_sysmesg(msg);
+	_sysmesg("\n");
+	
+	if (err)
+	{
+		errstr = strerror(err);
+		
+		_sysmesg("user.bin: ");
+		_sysmesg(__libc_progname);
+		_sysmesg(": ");
+		_sysmesg(errstr);
+		_sysmesg("\n");
+	}
+	
+	fprintf(_get_stderr(), "user.bin: %s: %s\n", __libc_progname, msg);
+	if (err)
+		fprintf(_get_stderr(), "user.bin: %s: %s\n", __libc_progname, strerror(err));
+	
+	wfail(msg);
 	_exit(255);
 }
 
