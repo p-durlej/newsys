@@ -654,7 +654,7 @@ static void editor_redraw_line(struct gadget *g, int i, int clip)
 	win_rgb2color(&sfg,   0,   0,   0);
 	win_rgb2color(&bg,    0,   0, 128);
 	win_rgb2color(&fg,  255, 255, 255);
-	win_rgb2color(&lfg, 255,   0,   0);
+	win_rgb2color(&lfg,  64,  64, 192);
 	
 	x = 0;
 	y = font_h * (i - cur_buf->top_y);
