@@ -58,6 +58,11 @@
 
 typedef char echar;
 
+static struct
+{
+	int run_mode;
+} config;
+
 struct buffer
 {
 	char pathname[PATH_MAX];
@@ -1285,7 +1290,10 @@ static void run_click(struct menu_item *mi)
 	if (_mkcanon(NULL, pathname))
 		goto fail;
 	
-	switch (mi->l_data)
+	if (mi->l_data)
+		config.run_mode = mi->l_data;
+	
+	switch (config.run_mode)
 	{
 	case 1:
 		_newtaskl(pathname, pathname, (void *)NULL);
@@ -1374,6 +1382,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	
+	c_load("code", &config, sizeof config);
+	
 	for (i = 0; i < sizeof buffers / sizeof *buffers; i++)
 		if (new_buffer(&buffers[i]))
 		{
@@ -1404,6 +1414,7 @@ int main(int argc, char **argv)
 	create_form();
 	form_wait(main_form);
 	form_get_state(main_form, &fst);
+	c_save("code", &config, sizeof config);
 	c_save("code_fst", &fst, sizeof fst);
 	return 0;
 }
