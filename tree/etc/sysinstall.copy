@@ -245,6 +245,7 @@
 
 600 /root/.startup
 600 /root/.desktop/.dirinfo
+600 /root/.desktop/Examples
 600 /root/.desktop/Home
 600 /root/.desktop/Prefs
 600 /root/.desktop/Apps/.dirinfo
@@ -267,6 +268,7 @@
 
 600 /etc/skel/.startup
 600 /etc/skel/.desktop/.dirinfo
+600 /etc/skel/.desktop/Examples
 600 /etc/skel/.desktop/Home
 600 /etc/skel/.desktop/Prefs
 600 /etc/skel/.desktop/Apps/.dirinfo

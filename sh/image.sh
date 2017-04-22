@@ -120,6 +120,7 @@ make_sdk_lists()
 	
 	cat >> tree.tmp/etc/sdk.copy << EOF
 755 /bin/code
+755 /usr/bin/examples
 755 /usr/bin/tcc
 644 /lib/icons/code.pnm
 644 /lib/icons64/code.pnm
@@ -127,6 +128,7 @@ make_sdk_lists()
 644 /etc/filetype/ext-h
 644 /etc/skel/.desktop/Apps/Code Editor
 644 /root/.desktop/Apps/Code Editor
+644 /usr/examples/.dirinfo
 EOF
 }
 
@@ -138,6 +140,7 @@ copy_sdk()
 	cp -pf		lib/arch/crt0/crt0.o	tree.tmp/usr/lib/
 	cp -pf		cmd/tcc.lib/libtcc1.a	tree.tmp/usr/lib/
 	cp -pf		cmd/tcc/tcc		tree.tmp/usr/bin/
+	cp -pf		cmd/sdk.bin/*		tree.tmp/usr/bin/
 	
 	for i in $examples; do
 		cp -f cmd/bin/$i tree.tmp/usr/examples/
