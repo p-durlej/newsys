@@ -62,6 +62,7 @@
 /cmd/bin/ckexe
 /cmd/bin/clear
 /cmd/bin/clock
+/cmd/bin/code
 /cmd/bin/colors
 /cmd/bin/detach
 /cmd/bin/df

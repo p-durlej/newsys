@@ -119,7 +119,12 @@ make_sdk_lists()
 	done >> tree.tmp/etc/sdk.copy
 	
 	cat >> tree.tmp/etc/sdk.copy << EOF
+755 /bin/code
 755 /usr/bin/tcc
+644 /lib/icons/code.pnm
+644 /lib/icons64/code.pnm
+644 /etc/filetype/ext-c
+644 /etc/filetype/ext-h
 EOF
 }
 

@@ -25,10 +25,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-CMD := avail clock edit pictview calc charmap pref.color pref.display \
-       aclock vtty passwd df ps box tinycomm taskbar pref.mouse \
-       pref.desktop pmd pref.time ckexe hexdump detach \
-       formview colors osk pref.osk pal bltbench uptime wfind \
+CMD := avail clock edit pictview calc charmap pref.color pref.display	\
+       aclock vtty passwd df ps box tinycomm taskbar pref.mouse		\
+       pref.desktop pmd pref.time ckexe hexdump code detach		\
+       formview colors osk pref.osk pal bltbench uptime wfind		\
        pref.theme clear tar winlist pref.sound bell textbench aout
 
 include cmd.mk
