@@ -51,6 +51,7 @@
 ./usr/bin
 ./usr/include
 ./usr/lib
+./usr/examples
 ./var
 ./var/log
 ./var/run

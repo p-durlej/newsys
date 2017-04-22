@@ -29,6 +29,8 @@
 set -e
 
 fonts="mono system mono-large system-large mono-narrow mono-large-narrow"
+examples="aclock.c avail.c calc.c edit.c hexdump.c ps.c winlist.c"
+sexamples="taskman.c"
 
 regen_tree()
 {
@@ -112,6 +114,10 @@ make_sdk_lists()
 		echo "644 /$i"
 	done > tree.tmp/etc/sdk.copy
 	
+	for i in $examples $sexamples; do
+		echo "644 /usr/examples/$i"
+	done >> tree.tmp/etc/sdk.copy
+	
 	cat >> tree.tmp/etc/sdk.copy << EOF
 755 /usr/bin/tcc
 EOF
@@ -125,6 +131,14 @@ copy_sdk()
 	cp -pf		lib/arch/crt0/crt0.o	tree.tmp/usr/lib/
 	cp -pf		cmd/tcc.lib/libtcc1.a	tree.tmp/usr/lib/
 	cp -pf		cmd/tcc/tcc		tree.tmp/usr/bin/
+	
+	for i in $examples; do
+		cp -f cmd/bin/$i tree.tmp/usr/examples/
+	done
+	
+	for i in $sexamples; do
+		cp -f cmd/sbin/$i tree.tmp/usr/examples/
+	done
 	
 	rm -rf		tree.tmp/usr/include/kern/machine-*
 	rm -rf		tree.tmp/usr/include/kern/arch-*
