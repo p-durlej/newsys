@@ -105,3 +105,8 @@ void gadget_set_want_focus(struct gadget *g, int flag)
 {
 	g->want_focus = flag;
 }
+
+void gadget_set_want_tab(struct gadget *g, int flag)
+{
+	g->want_tab = flag;
+}

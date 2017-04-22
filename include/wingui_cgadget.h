@@ -67,5 +67,6 @@ void gadget_set_drop_cb(struct gadget *g, gadget_drop_cb *cb);
 void gadget_set_drag_cb(struct gadget *g, gadget_drag_cb *cb);
 
 void gadget_set_want_focus(struct gadget *g, int flag);
+void gadget_set_want_tab(struct gadget *g, int flag);
 
 #endif
