@@ -1332,6 +1332,27 @@ static void font_click(struct menu_item *mi)
 	gadget_redraw(editor);
 }
 
+static void goto_click(struct menu_item *mi)
+{
+	struct cell *p;
+	char buf[16];
+	int y;
+	
+	sprintf(buf, "%i", ptrline(cur_buf, cur_buf->text + cur_buf->cur_index) + 1);
+	dlg_input(main_form, "Go to line", buf, sizeof buf);
+	y = atoi(buf) - 1;
+	
+	p = lineptr(cur_buf, y);
+	if (!p)
+		return;
+	
+	cur_buf->cur_index = p - cur_buf->text;
+	editor_updsel(editor);
+	editor_redraw_line(editor, y + 1, 1);
+	editor_redraw_line(editor, y, 1);
+	editor_adjpos(editor);
+}
+
 static void create_form(void)
 {
 	struct form_state fst;
@@ -1356,6 +1377,8 @@ static void create_form(void)
 	menu_newitem5(m, "Paste",	WIN_KEY_INS, WIN_SHIFT_SHIFT,	paste_click);
 	menu_newitem (m, "-",		NULL);
 	menu_newitem4(m, "Delete",	WIN_KEY_DEL,			delete_click);
+	menu_newitem (m, "-",		NULL);
+	menu_newitem4(m, "Go to line",	'L', goto_click);
 	menu_newitem (m, "-",		NULL);
 	menu_newitem4(m, "Select All",	'A', all_click);
 	menu_submenu(main_menu, "Edit", m);
