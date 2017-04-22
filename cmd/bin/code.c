@@ -630,8 +630,10 @@ static void editor_redraw_line(struct gadget *g, int i, int clip)
 	win_color sfg;
 	win_color bg;
 	win_color fg;
+	char numstr[16];
 	int font_w;
 	int font_h;
+	int tw, th;
 	int ci = -1;
 	int x;
 	int y;
@@ -674,12 +676,20 @@ static void editor_redraw_line(struct gadget *g, int i, int clip)
 	win_rgb2color(&fg,  255, 255, 255);
 	win_rgb2color(&lfg,  64,  64, 192);
 	
-	x = 0;
+	win_set_font(wd, config.font);
+	
 	y = font_h * (i - cur_buf->top_y);
+	x = font_w * 8;
+	
+	sprintf(numstr, "%i", i + 1);
+	win_text_size(config.font, &tw, &th, numstr);
+	
+	win_rect(wd,  bg, 0, y, font_w * 8, font_h);
+	win_btext(wd, bg, lfg, font_w * 6 - tw, y, numstr);
+	
 	win_paint();
 	if (p)
 	{
-		win_set_font(wd, config.font);
 		while (ci < cur_buf->length && p->ch != '\n')
 		{
 			if (ci == cur_buf->cur_index)
