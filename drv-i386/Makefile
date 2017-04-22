@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-DRV := vga.drv vga256.drv vbe.drv i386-pc.drv biosdisk.drv
+DRV := vga.drv vgagray.drv vga256.drv vbe.drv i386-pc.drv biosdisk.drv
 
 I386_PC_O := i386-pc/main.o	\
 	     i386-pc/bios.o	\
@@ -44,5 +44,8 @@ i386-pc.drv.o: $(I386_PC_O)
 
 i386-pc.drv: i386-pc.drv.o i386-pc-syms
 	$(MODGEN) $@ $< i386-pc-syms
+
+vgagray.drv.o: vga.drv.c
+	$(CC) $(CFLAGS) -DGRAY -c -o $@ $<
 
 include drv.mk

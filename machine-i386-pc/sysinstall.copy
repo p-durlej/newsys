@@ -15,12 +15,14 @@
 600 /lib/drv/hd.drv
 600 /lib/drv/fd.drv
 600 /lib/drv/pciide.drv
+600 /lib/drv/vgagray.drv
 
 600 /lib/sys/noboot.bin
 600 /lib/sys/fdboot.bin
 600 /lib/sys/hdboot.bin
 600 /lib/sys/hdipl.bin
 
+600 /lib/drv_list/display/Monochrome VGA
 600 /lib/drv_list/display/VGA Compatible
 600 /lib/drv_list/display/VGA 256
 600 /lib/drv_list/display/VBE 2.0+

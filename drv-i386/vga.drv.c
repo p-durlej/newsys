@@ -32,7 +32,9 @@
 #include <devices.h>
 #include <errno.h>
 
+#ifndef GRAY
 #define GRAY		0
+#endif
 
 #define MODE_COUNT	3
 
