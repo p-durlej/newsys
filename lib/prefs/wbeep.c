@@ -39,8 +39,8 @@ void pref_wbeep_reload(void)
 	{
 		memset(&pref_wbeep, 0, sizeof pref_wbeep);
 		
-		pref_wbeep.freq	= 440;
-		pref_wbeep.dur	= 250;
+		pref_wbeep.freq	= 1024;
+		pref_wbeep.dur	= 50;
 		pref_wbeep.ena	= 1;
 	}
 	pref_wbeep_loaded = 1;
