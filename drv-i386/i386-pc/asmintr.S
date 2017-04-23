@@ -63,17 +63,17 @@ asm_irq_ ## nr ## :			\
 	movl	$0,%ebp;		\
 	LOAD_SEGS;			\
 1:					\
-	IRQENTER;			\
 	movl	%esp,%eax;		\
 	pushl	$nr;			\
 	pushl	%eax;			\
 	call	intr_enter;		\
+	IRQENTER;			\
 	pushl	$nr;			\
 	call	intr_irq;		\
 	addl	$4,%esp;		\
+	IRQLEAVE;			\
 	call	intr_leave;		\
 	add	$8,%esp;		\
-	IRQLEAVE;			\
 	RESTORE_REGS;			\
 	iret
 
