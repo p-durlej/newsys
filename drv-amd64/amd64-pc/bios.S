@@ -74,7 +74,7 @@ do_halt:
 	movsb
 	
 	lidtq	apm_off_idt
-	ljmpw	1f
+	ljmpw	*1f
 1:	.word	CODE_BASE
 	.word	KERN16_CS
 	
@@ -137,9 +137,9 @@ real_apm_off:
 	movw	$0x5300, %ax
 	movw	$0x0000, %bx
 	int	$0x15
-	jc	ABS16(halt_16)
+	jc	halt_16
 	cmpw	$0x504d, %bx
-	jne	ABS16(halt_16)
+	jne	halt_16
 	
 	movw	$0x5304, %ax
 	movw	$0x0000, %bx
