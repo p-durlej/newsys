@@ -89,7 +89,7 @@ static void bargraph_redraw(struct gadget *g, int wd)
 	win_rect(wd, bg, 2 * tl,      2 * tl, gw - 4 * tl, 2 * tl);
 	win_rect(wd, bg, 2 * tl, gh - 4 * tl, gw - 4 * tl, 2 * tl);
 	win_rect(wd, bg, 2 * tl, 4 * tl, tw0 + m0 - 2 * tl, gh - 8 * tl);
-	win_rect(wd, bg, tw0 + m0 + w, 4 * tl, gw - w - tw0 - m0, gh - 8 * tl);
+	win_rect(wd, bg, tw0 + m0 + w, 4 * tl, gw - w - tw0 - m0 - 2 * tl, gh - 8 * tl);
 	
 	win_rect(wd, bar, tw0 + m0, 4 * tl, w, gh - 8 * tl);
 	
