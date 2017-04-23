@@ -30,6 +30,6 @@ set -e
 
 . s/env.sh
 
-gmake symlinks
-gmake clean
-gmake clean-symlinks
+gmake -s symlinks
+gmake -s clean
+gmake -s clean-symlinks
