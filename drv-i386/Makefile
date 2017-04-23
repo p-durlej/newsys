@@ -46,6 +46,6 @@ i386-pc.drv: i386-pc.drv.o i386-pc-syms
 	$(MODGEN) $@ $< i386-pc-syms
 
 vgagray.drv.o: vga.drv.c
-	$(CC) $(CFLAGS) -DGRAY -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DGRAY -c -o $@ $<
 
 include drv.mk
