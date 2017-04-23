@@ -140,9 +140,11 @@ void clear_owner(void)
 	win_owner(-1);
 }
 
-struct passwd *get_owner(void)
+static const char *get_owner(void)
 {
-	char buf[32];
+	static char buf[LOGNAME_MAX + 1];
+	
+	struct passwd *pwd;
 	uid_t uid;
 	FILE *f;
 	
@@ -156,12 +158,20 @@ struct passwd *get_owner(void)
 	
 	fclose(f);
 	
-	return getpwuid(uid);
+	pwd = getpwuid(uid);
+	if (pwd)
+	{
+		strcpy(buf, pwd->pw_name);
+		endpwent();
+		return buf;
+	}
+	endpwent();
+	return NULL;
 }
 
 void sig_chld(int nr)
 {
-	struct passwd *pwd;
+	const char *user;
 	int status;
 	pid_t pid;
 	
@@ -169,7 +179,7 @@ void sig_chld(int nr)
 	{
 		if (pid == login_pid)
 		{
-			pwd = get_owner();
+			user = get_owner();
 			
 			win_killdesktop(SIGKILL);
 			login_pid = -1;
@@ -188,8 +198,8 @@ void sig_chld(int nr)
 				redraw();
 				usleep2(1000000, 0);
 				
-				if (pwd)
-					login_pid = _newtaskl(WLOGIN, WLOGIN, "-la", pwd->pw_name, NULL);
+				if (user)
+					login_pid = _newtaskl(WLOGIN, WLOGIN, "-la", user, NULL);
 				
 				secure_msg = win_break(WIN_FONT_DEFAULT, SECURE_MSG, desktop_w);
 				redraw();
