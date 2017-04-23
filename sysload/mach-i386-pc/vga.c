@@ -51,7 +51,7 @@ static int vesa_trymode(struct mode *m)
 	
 	bcp.eax	 = 0x4f01;
 	bcp.ecx	 = m->nr;
-	bcp.edi	 = (int)bounce;
+	bcp.edi	 = (uintptr_t)bounce;
 	bcp.es	 = 0;
 	bcp.intr = 0x10;
 	bioscall();
@@ -77,8 +77,8 @@ static int vesa_setmode(struct mode *m)
 	bcp.intr = 0x10;
 	bcp.eax = 0x4f02;
 	bcp.ebx = m->nr;
-	bcp.es  = (unsigned)bounce >> 4;
-	bcp.edi = (unsigned)bounce & 0x000f;
+	bcp.es  = (uintptr_t)bounce >> 4;
+	bcp.edi = (uintptr_t)bounce & 0x000f;
 	bioscall();
 	if (bcp.eax != 0x004f)
 		return EINVAL;

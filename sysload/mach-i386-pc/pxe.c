@@ -57,7 +57,7 @@ static int pxe_get_addrs(void)
 	*(uint32_t *)(bounce + 2) = 3;
 	
 	fcp.stack[0]	= 0x71;
-	fcp.stack[1]	= (uintptr_t)bounce;
+	fcp.stack[1]	= (intptr_t)bounce;
 	fcp.stack[2]	= 0;
 	fcp.addr	= pxe_entry;
 	farcall();
@@ -111,7 +111,7 @@ static int pxe_tftp_open(const char *name)
 	bounce[141] = 2;
 	
 	fcp.stack[0]	= 0x20;
-	fcp.stack[1]	= (uintptr_t)bounce;
+	fcp.stack[1]	= (intptr_t)bounce;
 	fcp.stack[2]	= 0;
 	fcp.addr	= pxe_entry;
 	farcall();
@@ -142,10 +142,10 @@ static size_t pxe_tftp_read(void *buf, size_t *sz)
 	
 	memset(bounce, 0, sizeof bounce);
 	
-	*(uint16_t *)(bounce + 6) = (uintptr_t)(bounce + 16);
+	*(uint16_t *)(bounce + 6) = (uintptr_t)bounce + 16;
 	
 	fcp.stack[0]	= 0x22;
-	fcp.stack[1]	= (uintptr_t)bounce;
+	fcp.stack[1]	= (intptr_t)bounce;
 	fcp.stack[2]	= 0;
 	fcp.addr	= pxe_entry;
 	farcall();

@@ -67,7 +67,7 @@ void mem_preinit(void)
 	mem_size_88 = bcp.eax;
 	mem_hbrk    = 0x100000 + mem_size_88 * 1024;
 	
-	p = (void *)conv_mem_hbrk;
+	p = (void *)(uintptr_t)conv_mem_hbrk;
 	
 	bcp.intr = 0x15;
 	bcp.ebx	 = 0;
@@ -76,8 +76,8 @@ void mem_preinit(void)
 		bcp.eax	 = 0xe820;
 		bcp.ecx	 = sizeof *p;
 		bcp.edx	 = 'SMAP';
-		bcp.es	 = (unsigned)&ard >> 4;
-		bcp.edi	 = (unsigned)&ard & 15;
+		bcp.es	 = (intptr_t)&ard >> 4;
+		bcp.edi	 = (intptr_t)&ard & 15;
 		bioscall();
 		if (bcp.eax != 'SMAP' || (bcp.eflags & 1))
 			break;
@@ -96,10 +96,10 @@ void mem_preinit(void)
 		p->size *= 1024;
 	}
 	
-	mem_cnt	      = (struct kmapent *)conv_mem_size - p;
+	mem_cnt	      = (struct kmapent *)(intptr_t)conv_mem_size - p;
 	mem_map	      = p;
-	pm_esp	      = (uint32_t)p;
-	conv_mem_hbrk = (uint32_t)p;
+	pm_esp	      = (intptr_t)p;
+	conv_mem_hbrk = (intptr_t)p;
 }
 
 void *mem_alloc(size_t sz, int ma)

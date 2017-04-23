@@ -72,7 +72,7 @@ static int disk_read_chs(struct disk *dk, blk_t blk, void *buf)
 	bcp.ecx	 = (c << 8) | s | ((c & 0x300) >> 2);
 	bcp.edx	 = (h << 8) | dk->unit;
 	bcp.es	 = 0;
-	bcp.ebx	 = (int)bounce;
+	bcp.ebx	 = (intptr_t)bounce;
 	bcp.intr = 0x13;
 	bioscall();
 	if (bcp.eflags & 1)
@@ -103,15 +103,15 @@ static int disk_read_edd(struct disk *dk, blk_t blk, void *buf)
 		.buf_seg = 0xffff,
 	};
 	
-	dap.buf_off = (uint32_t)bounce & 15;
-	dap.buf_seg = (uint32_t)bounce >> 4;
+	dap.buf_off = (intptr_t)bounce & 15;
+	dap.buf_seg = (intptr_t)bounce >> 4;
 	dap.blk	    = blk;
 	
 	bcp.intr = 0x13;
 	bcp.eax	 = 0x4200;
 	bcp.edx	 = dk->unit;
-	bcp.esi	 = (uint32_t)&dap & 15;
-	bcp.ds	 = (uint32_t)&dap >> 4;
+	bcp.esi	 = (intptr_t)&dap & 15;
+	bcp.ds	 = (intptr_t)&dap >> 4;
 	bioscall();
 	
 	if (bcp.eflags & 1)
@@ -130,15 +130,15 @@ static int disk_read_cdrom(struct disk *dk, blk_t blk, void *buf)
 		.buf_seg = 0xffff,
 	};
 	
-	dap.buf_off = (uint32_t)bounce & 15;
-	dap.buf_seg = (uint32_t)bounce >> 4;
+	dap.buf_off = (intptr_t)bounce & 15;
+	dap.buf_seg = (intptr_t)bounce >> 4;
 	dap.blk	    = blk / 4;
 	
 	bcp.intr = 0x13;
 	bcp.eax	 = 0x4200;
 	bcp.edx	 = dk->unit;
-	bcp.esi	 = (uint32_t)&dap & 15;
-	bcp.ds	 = (uint32_t)&dap >> 4;
+	bcp.esi	 = (intptr_t)&dap & 15;
+	bcp.ds	 = (intptr_t)&dap >> 4;
 	bioscall();
 	
 	if (bcp.eflags & 1)
@@ -147,7 +147,7 @@ static int disk_read_cdrom(struct disk *dk, blk_t blk, void *buf)
 	return 0;
 }
 
-static void disk_cpart(struct disk *dk,  int nr, blk_t start, blk_t size, int type, int act)
+static void disk_cpart(struct disk *dk, int nr, blk_t start, blk_t size, int type, int act)
 {
 	struct disk *dkp;
 	char *p;
@@ -248,8 +248,8 @@ static void disk_chk_edd(struct disk *dk)
 	
 	bcp.eax = 0x4800;
 	bcp.edx = dk->unit;
-	bcp.esi = (uint32_t)&dpb & 15;
-	bcp.ds	= (uint32_t)&dpb >> 4;
+	bcp.esi = (intptr_t)&dpb & 15;
+	bcp.ds	= (intptr_t)&dpb >> 4;
 	bioscall();
 	if (bcp.eflags & 1)
 	{
