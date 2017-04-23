@@ -24,11 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sysload/kparam.h>
 #include <kern/config.h>
 #include <kern/printk.h>
 #include <kern/errno.h>
 #include <kern/clock.h>
 #include <kern/block.h>
+#include <kern/start.h>
 #include <kern/task.h>
 #include <kern/lib.h>
 #include <kern/fs.h>
@@ -139,29 +141,33 @@ int fs_umount(const char *prefix)
 		
 		if (fso->refcnt && fso->fs == fs)
 		{
-			const char *prefix = fs->prefix;
-			if (!*prefix)
-				prefix = "/";
-			
-			if (fs->dev != NULL)
-				printk("mount.c: fs_umount: %s: (%s): file %i active, refcnt = %i\n", prefix, fs->dev->name, fso->index, fso->refcnt);
-			else
-				printk("mount.c: fs_umount: %s: file %i active, refcnt = %i\n", prefix, fso->index, fso->refcnt);
-			
-			for (i = 0; i < TASK_MAX; i++)
+			if (kparam.boot_flags & BOOT_VERBOSE)
 			{
-				struct task *t = task[i];
+				const char *prefix = fs->prefix;
 				
-				if (!t)
-					continue;
+				if (!*prefix)
+					prefix = "/";
 				
-				for (k = 0; k < OPEN_MAX; k++)
+				if (fs->dev != NULL)
+					printk("mount.c: fs_umount: %s: (%s): file %i active, refcnt = %i\n", prefix, fs->dev->name, fso->index, fso->refcnt);
+				else
+					printk("mount.c: fs_umount: %s: file %i active, refcnt = %i\n", prefix, fso->index, fso->refcnt);
+				
+				for (i = 0; i < TASK_MAX; i++)
 				{
-					struct fs_desc *fd = &task[i]->file_desc[k];
-					struct fs_file *f = fd->file;
+					struct task *t = task[i];
 					
-					if (f && f->fso == fso)
-						printk("mount.c: fs_umount: pid = %i, exec_name = %s, fd = %i\n", task[i]->pid, task[i]->exec_name, fd - task[i]->file_desc);
+					if (!t)
+						continue;
+					
+					for (k = 0; k < OPEN_MAX; k++)
+					{
+						struct fs_desc *fd = &task[i]->file_desc[k];
+						struct fs_file *f = fd->file;
+						
+						if (f && f->fso == fso)
+							printk("mount.c: fs_umount: pid = %i, exec_name = %s, fd = %i\n", task[i]->pid, task[i]->exec_name, fd - task[i]->file_desc);
+					}
 				}
 			}
 			
