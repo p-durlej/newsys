@@ -714,7 +714,6 @@ static void editor_redraw_line(struct gadget *g, int i, int clip)
 		x += font_w;
 	}
 	win_rect(wd, bg, x, y, g->rect.w - x, font_h);
-	win_vline(wd, lfg, font_w * 80, y, font_h);
 	win_end_paint();
 }
 
