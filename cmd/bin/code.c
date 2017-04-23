@@ -1313,7 +1313,7 @@ static void run_click(struct menu_item *mi)
 		_newtaskl(_PATH_B_VTTY, _PATH_B_VTTY, "-T", "Standard I/O", "-w", "--", "/bin/detach", pathname, (void *)NULL);
 		break;
 	default:
-		_newtaskl(_PATH_B_VTTY, _PATH_B_VTTY, "-T", "Standard I/O", "-w", "--", pathname, (void *)NULL);
+		_newtaskl(_PATH_B_VTTY, _PATH_B_VTTY, "-T", "Standard I/O", "-wH", "--", pathname, (void *)NULL);
 	}
 	
 	return;
