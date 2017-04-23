@@ -44,6 +44,7 @@ static void bargraph_redraw(struct gadget *g, int wd)
 	char buf[64];
 	int tw0, th0;
 	int tw1, th1;
+	int gw, gh;
 	int m0, m1;
 	int w = 0;
 	int tl;
@@ -60,6 +61,9 @@ static void bargraph_redraw(struct gadget *g, int wd)
 	
 	minl = g->bargraph.min_label;
 	maxl = g->bargraph.max_label;
+	
+	gw = g->rect.w;
+	gh = g->rect.h;
 	
 	if (!minl)
 		minl = "0";
@@ -82,13 +86,17 @@ static void bargraph_redraw(struct gadget *g, int wd)
 		w /= g->bargraph.limit;
 	}
 	
-	win_rect(wd,  bg,  0,		  0,		 g->rect.w, g->rect.h);
-	win_rect(wd,  bar, tw0 + m0, 4 * tl, w, g->rect.h - 8 * tl);
+	win_rect(wd, bg, 2 * tl,      2 * tl, gw - 4 * tl, 2 * tl);
+	win_rect(wd, bg, 2 * tl, gh - 4 * tl, gw - 4 * tl, 2 * tl);
+	win_rect(wd, bg, 2 * tl, 4 * tl, tw0 + m0 - 2 * tl, gh - 8 * tl);
+	win_rect(wd, bg, tw0 + m0 + w, 4 * tl, gw - w - tw0 - m0, gh - 8 * tl);
 	
-	form_draw_frame3d(wd, 0, 0, g->rect.w, g->rect.h, sh1, sh2, hi1, hi2);
+	win_rect(wd, bar, tw0 + m0, 4 * tl, w, gh - 8 * tl);
 	
-	win_text(wd, fg, 4 * tl,		   (g->rect.h - th0) / 2, minl);
-	win_text(wd, fg, g->rect.w - tw1 - 4 * tl, (g->rect.h - th1) / 2, maxl);
+	form_draw_frame3d(wd, 0, 0, gw, gh, sh1, sh2, hi1, hi2);
+	
+	win_text(wd, fg, 4 * tl,	    (gh - th0) / 2, minl);
+	win_text(wd, fg, gw - tw1 - 4 * tl, (gh - th1) / 2, maxl);
 }
 
 struct gadget *bargraph_creat(struct form *f, int x, int y, int w, int h)
