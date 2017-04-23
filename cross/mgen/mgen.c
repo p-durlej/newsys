@@ -550,6 +550,17 @@ static void add_rel(uint32_t off, int size, int shift, int type)
 	mod_nrel++;
 }
 
+static uint32_t read16(symval off)
+{
+	return image[off] | ((uint32_t)image[off + 1] << 8);
+}
+
+static void write16(symval off, uint32_t v)
+{
+	image[off    ] = v;
+	image[off + 1] = v >> 8;
+}
+
 static uint32_t read24(symval off)
 {
 	return		   image[off	]	|
@@ -699,84 +710,6 @@ static void proc_amd64_rel(symval off, int type, int rel, symval a, symval adden
 	
 	switch (type)
 	{
-#if 0
-	case ELF_REL_386_32:
-		if (rel)
-			add_rel(off, 4, 0, MR_T_NORMAL);
-		v  = read32(off);
-		v += a;
-		write32(off, v);
-		break;
-	case ELF_REL_386_PC32:
-		if (!rel)
-			add_rel(off, 4, 0, MR_T_ABS);
-		v  = read32(off);
-		v += a;
-		v -= off;
-		write32(off, v);
-		break;
-	case ELF_REL_386_GOT32:
-		goff = grow_image(4, 4);
-		write32(goff, a);
-		
-		if (!rel)
-			add_rel(off, 4, 0, MR_T_ABS);
-		v  = read32(off);
-		v += goff;
-		v -= off;
-		write32(off, v);
-		abort();
-		break;
-	case ELF_REL_386_PLT32:
-		abort();
-		break;
-	case ELF_REL_386_COPY:
-		abort();
-		break;
-	case ELF_REL_386_GLOB_DAT:
-		abort();
-		break;
-	case ELF_REL_386_JMP_SLOT:
-		abort();
-		break;
-	case ELF_REL_386_RELATIVE:
-		abort();
-		break;
-	case ELF_REL_386_GOTOFF:
-		fprintf(stderr, "ELF_REL_386_GOTOFF @ 0x%x\n", off);
-		if (!rel)
-			add_rel(off, 4, 0, MR_T_ABS);
-		v  = read32(off);
-		v += a;
-		v -= got_off;
-		write32(off, v);
-		break;
-	case ELF_REL_386_GOTPC:
-		fprintf(stderr, "ELF_REL_386_GOTPC @ 0x%x\n", off);
-		if (!rel)
-			add_rel(off, 4, 0, MR_T_ABS);
-		v  = read32(off);
-		v += got_off;
-		v += addend;
-		v -= off;
-		write32(off, v);
-		break;
-	case ELF_REL_386_16:
-		if (rel)
-			add_rel(off, 2, 0, MR_T_NORMAL);
-		v  = read32(off);
-		v += a;
-		write32(off, v);
-		break;
-	case ELF_REL_386_PC16:
-		if (!rel)
-			add_rel(off, 2, 0, MR_T_ABS);
-		v = read32(off);
-		v += a;
-		v -= off;
-		write32(off, v);
-		break;
-#endif
 	case ELF_REL_AMD64_64:
 		if (rel)
 			add_rel(off, 8, 0, MR_T_NORMAL);
@@ -791,6 +724,21 @@ static void proc_amd64_rel(symval off, int type, int rel, symval a, symval adden
 		v += a;
 		v -= off;
 		write32(off, v);
+		break;
+	case ELF_REL_AMD64_16:
+		if (rel)
+			add_rel(off, 2, 0, MR_T_NORMAL);
+		v  = read32(off);
+		v += a;
+		write32(off, v);
+		break;
+	case ELF_REL_AMD64_PC16:
+		if (!rel)
+			add_rel(off, 2, 0, MR_T_ABS);
+		v  = read16(off);
+		v += a;
+		v -= off;
+		write16(off, v);
 		break;
 	case ELF_REL_AMD64_32:
 	case ELF_REL_AMD64_32S:
