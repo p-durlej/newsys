@@ -1,6 +1,6 @@
-# Nameless OS Lite
+# Nameless OS Final
 
-This is the complete source code of Nameless OS Lite v1.3, it's around 92K LoC.
+This is the complete source code of Nameless OS Final (v1.3).
 
 The system is released under a BSD 2-clause license.
 
