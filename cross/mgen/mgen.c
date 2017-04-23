@@ -801,8 +801,7 @@ static void proc_amd64_rel(symval off, int type, int rel, symval a, symval adden
 		write32(off, v);
 		break;
 	default:
-		/* errx(1, "proc_amd64_rel: unsupported type %i", (int)type); */
-		warnx("proc_amd64_rel: unsupported type %i", (int)type);
+		errx(1, "proc_amd64_rel: unsupported type %i", (int)type);
 	}
 }
 
