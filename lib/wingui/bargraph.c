@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <priv/wingui_form.h>
+#include <wingui_metrics.h>
 #include <wingui_cgadget.h>
 #include <wingui_color.h>
 #include <wingui_form.h>
@@ -44,6 +46,9 @@ static void bargraph_redraw(struct gadget *g, int wd)
 	int tw1, th1;
 	int m0, m1;
 	int w = 0;
+	int tl;
+	
+	tl = wm_get(WM_THIN_LINE);
 	
 	bg  = wc_get(WC_BG);
 	fg  = wc_get(WC_FG);
@@ -68,8 +73,8 @@ static void bargraph_redraw(struct gadget *g, int wd)
 	win_text_size(WIN_FONT_DEFAULT, &tw0, &th0, minl);
 	win_text_size(WIN_FONT_DEFAULT, &tw1, &th1, maxl);
 	
-	m0 = tw0 ? 5 : 4;
-	m1 = tw1 ? 6 : 4;
+	m0 = (tw0 ? 5 : 4) * tl;
+	m1 = (tw1 ? 6 : 4) * tl;
 	
 	if (g->bargraph.limit > 0 && g->bargraph.value <= g->bargraph.limit)
 	{
@@ -78,18 +83,12 @@ static void bargraph_redraw(struct gadget *g, int wd)
 	}
 	
 	win_rect(wd,  bg,  0,		  0,		 g->rect.w, g->rect.h);
-	win_rect(wd,  bar, tw0 + m0,	  4,		 w, g->rect.h - 8);
-	win_hline(wd, sh1, 0,		  0,		 g->rect.w);
-	win_hline(wd, hi1, 0,		  g->rect.h - 1, g->rect.w);
-	win_vline(wd, sh1, 0,		  0,		 g->rect.h);
-	win_vline(wd, hi1, g->rect.w - 1, 0,		 g->rect.h);
-	win_hline(wd, sh2, 1,		  1,		 g->rect.w - 2);
-	win_hline(wd, hi2, 1,		  g->rect.h - 2, g->rect.w - 2);
-	win_vline(wd, sh2, 1,		  1,		 g->rect.h - 2);
-	win_vline(wd, hi2, g->rect.w - 2, 1,		 g->rect.h - 2);
+	win_rect(wd,  bar, tw0 + m0, 4 * tl, w, g->rect.h - 8 * tl);
 	
-	win_text(wd, fg, 4,		      (g->rect.h - th0) / 2, minl);
-	win_text(wd, fg, g->rect.w - tw1 - 4, (g->rect.h - th1) / 2, maxl);
+	form_draw_frame3d(wd, 0, 0, g->rect.w, g->rect.h, sh1, sh2, hi1, hi2);
+	
+	win_text(wd, fg, 4 * tl,		   (g->rect.h - th0) / 2, minl);
+	win_text(wd, fg, g->rect.w - tw1 - 4 * tl, (g->rect.h - th1) / 2, maxl);
 }
 
 struct gadget *bargraph_creat(struct form *f, int x, int y, int w, int h)
