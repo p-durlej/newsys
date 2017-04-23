@@ -25,6 +25,11 @@
 #endif
 #include "tcctools.c"
 
+static const char banner[] =
+    "Tiny C Compiler "TCC_VERSION" - Copyright (C) 2001-2006 Fabrice Bellard\n"
+    "Modifications - Copyright (C) 2017 Piotr Durlej\n\n"
+    "Type tcc -h for help.\n";
+
 static const char help[] =
     "Tiny C Compiler "TCC_VERSION" - Copyright (C) 2001-2006 Fabrice Bellard\n"
     "Modifications - Copyright (C) 2017 Piotr Durlej\n\n"
@@ -241,6 +246,11 @@ int main(int argc, char **argv)
     unsigned start_time = 0;
     const char *first_file;
 
+    if (argc < 2)
+    {
+        printf("%s", banner);
+        return 1;
+    }
 redo:
     s = tcc_new();
     opt = tcc_parse_args(s, &argc, &argv, 1);
