@@ -139,6 +139,7 @@ static void chk_shell(const char *sh)
 static void do_login(const char *name, int autologin)
 {
 	struct passwd *pwd;
+	char *p;
 	
 	pwd = getpwnam(name);
 	if (!pwd)
@@ -148,6 +149,10 @@ static void do_login(const char *name, int autologin)
 		incorrect();
 	}
 	chk_shell(pwd->pw_shell);
+	
+	p = getenv("SPEAKER");
+	if (p != NULL)
+		chown(p, pwd->pw_uid, pwd->pw_gid);
 	
 	write_owner(pwd->pw_uid, pwd->pw_gid);
 	win_sec_unlock();
