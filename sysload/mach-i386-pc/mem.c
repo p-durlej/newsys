@@ -33,6 +33,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#define SMAP		0x534d4150 /* 'SMAP' */
+
 #define E820_MEM	1
 #define E820_RSVD	2
 #define E820_ACPI	3
@@ -75,11 +77,11 @@ void mem_preinit(void)
 	{
 		bcp.eax	 = 0xe820;
 		bcp.ecx	 = sizeof *p;
-		bcp.edx	 = 'SMAP';
+		bcp.edx	 = SMAP;
 		bcp.es	 = (intptr_t)&ard >> 4;
 		bcp.edi	 = (intptr_t)&ard & 15;
 		bioscall();
-		if (bcp.eax != 'SMAP' || (bcp.eflags & 1))
+		if (bcp.eax != SMAP || (bcp.eflags & 1))
 			break;
 		memset(--p, 0, sizeof *p);
 		p->type = ard.type == E820_MEM ? KMAPENT_MEM : KMAPENT_RSVD;
