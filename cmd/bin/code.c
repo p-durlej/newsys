@@ -1293,6 +1293,8 @@ static void run_click(struct menu_item *mi)
 		if (pst)
 			return;
 	}
+	else
+		unlink(pathname);
 	
 	signal(SIGCHLD, SIG_IGN);
 	*ext = 0;
