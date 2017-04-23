@@ -27,6 +27,7 @@
 
 static const char help[] =
     "Tiny C Compiler "TCC_VERSION" - Copyright (C) 2001-2006 Fabrice Bellard\n"
+    "Modifications - Copyright (C) 2017 Piotr Durlej\n\n"
     "Usage: tcc [options...] [-o outfile] [-c] infile(s)...\n"
     "General options:\n"
     "  -c          compile only - generate an object file\n"
