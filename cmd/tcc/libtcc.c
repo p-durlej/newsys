@@ -1957,18 +1957,30 @@ LIBTCCAPI void tcc_set_options(TCCState *s, const char *r)
     dynarray_reset(&argv, &argc);
 }
 
+static void tcc_fracs(char *buf, unsigned long v)
+{
+	sprintf(buf, "%lu.%03lu", v / 1000, v % 1000);
+}
+
 PUB_FUNC void tcc_print_stats(TCCState *s, unsigned total_time)
 {
+    char time_str[16];
+    char byte_str[16];
+    
     if (total_time < 1)
         total_time = 1;
     if (total_bytes < 1)
         total_bytes = 1;
+    
+    tcc_fracs(time_str, total_time);
+    tcc_fracs(byte_str, total_bytes / total_time);
+    
     fprintf(stderr, "* %d idents, %d lines, %d bytes\n"
-                    "* %0.3f s, %u lines/s, %0.1f MB/s\n",
+                    "* %s s, %u lines/s, %s MB/s\n",
            tok_ident - TOK_IDENT, total_lines, total_bytes,
-           (double)total_time/1000,
+           time_str,
            (unsigned)total_lines*1000/total_time,
-           (double)total_bytes/1000/total_time);
+           byte_str);
 #ifdef MEM_DEBUG
     fprintf(stderr, "* %d bytes memory used\n", mem_max_size);
 #endif
