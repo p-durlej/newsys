@@ -27,6 +27,17 @@
 
 set -e
 
+make_src() {
+	rm -rf disks/src
+	mkdir  disks/src
+	
+	git clone -q . disks/src
+	rm -rf disks/src/.git
+	tar cf disks/src.tar -C disks src
+	
+	rm -rf disks/src
+}
+
 dd status=none if=boot/hdflat.bin	of=disks/hdflat.img
 dd status=none if=sysload/sysload	of=disks/hdflat.img	seek=2
 dd status=none if=/dev/null		of=disks/hdflat.img	seek=16384
@@ -39,4 +50,6 @@ cross/mkbfs disks/cdrom.iso 0 128 tree.tmp
 
 cross/mkbfs disks/pxe.img 0 128 tree.tmp
 
-genisoimage -quiet -V "NamelessOS" -o disks/altcd.iso -hard-disk-boot -eltorito-boot hdflat.img -hide boot.catalog -hide hdflat.img disks/hdflat.img doc/readme.txt
+make_src
+
+genisoimage -quiet -V "NamelessOS" -o disks/altcd.iso -hard-disk-boot -eltorito-boot hdflat.img -hide boot.catalog -hide hdflat.img disks/hdflat.img doc/readme.txt disks/src.tar
