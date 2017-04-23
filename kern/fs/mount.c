@@ -121,7 +121,7 @@ int fs_mount(const char *prefix, const char *bdev_name, const char *fstype, int 
 int fs_umount(const char *prefix)
 {
 	struct fs *fs;
-	int i, n;
+	int i, n, k;
 	int err;
 	
 	for (i = 0; i < FS_MAXFS; i++)
@@ -147,6 +147,23 @@ int fs_umount(const char *prefix)
 				printk("mount.c: fs_umount: %s: (%s): file %i active, refcnt = %i\n", prefix, fs->dev->name, fso->index, fso->refcnt);
 			else
 				printk("mount.c: fs_umount: %s: file %i active, refcnt = %i\n", prefix, fso->index, fso->refcnt);
+			
+			for (i = 0; i < TASK_MAX; i++)
+			{
+				struct task *t = task[i];
+				
+				if (!t)
+					continue;
+				
+				for (k = 0; k < OPEN_MAX; k++)
+				{
+					struct fs_desc *fd = &task[i]->file_desc[k];
+					struct fs_file *f = fd->file;
+					
+					if (f && f->fso == fso)
+						printk("mount.c: fs_umount: pid = %i, exec_name = %s, fd = %i\n", task[i]->pid, task[i]->exec_name, fd - task[i]->file_desc);
+				}
+			}
 			
 			return EBUSY;
 		}
