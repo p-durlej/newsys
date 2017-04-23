@@ -28,6 +28,8 @@
 #include <prefs/wbeep.h>
 #include <wingui_msgbox.h>
 #include <wingui_form.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <err.h>
@@ -99,8 +101,17 @@ static void test(void)
 
 int main(int argc, char **argv)
 {
+	const char *p;
+	
 	if (win_attach())
 		err(1, "win_attach");
+	
+	p = getenv("SPEAKER");
+	if (!p || access(p, R_OK | W_OK))
+	{
+		msgbox(NULL, "Warning Beep", "The speaker device is either not present or not accessible.");
+		return 1;
+	}
 	
 	pref = pref_wbeep_get();
 	if (!pref)
