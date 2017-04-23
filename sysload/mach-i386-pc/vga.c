@@ -28,6 +28,7 @@
 #include <sysload/kparam.h>
 #include <sysload/flags.h>
 #include <sysload/main.h>
+#include <arch/archdef.h>
 #include <kern/errno.h>
 
 #define MODE_MAX	64
@@ -74,6 +75,8 @@ static int vesa_trymode(struct mode *m)
 
 static int vesa_setmode(struct mode *m)
 {
+	uint32_t *p, *e;
+	
 	bcp.intr = 0x10;
 	bcp.eax = 0x4f02;
 	bcp.ebx = m->nr;
@@ -133,7 +136,9 @@ static int vesa_find_and_set(int xres, int yres, int bpp)
 
 struct kfb *vga_init(void)
 {
+#ifdef __ARCH_AMD64__
 	uint16_t *p, *e;
+#endif
 	
 	if (!(boot_params.boot_flags & BOOT_TEXT))
 	{
@@ -141,6 +146,17 @@ struct kfb *vga_init(void)
 		
 		if (!vesa_find_and_set(bootfb_xres, bootfb_yres, bootfb_bpp))
 			goto fini;
+		
+#ifdef __ARCH_AMD64__
+		if (!vesa_find_and_set(1024, 768, 32))
+			goto fini;
+		
+		if (!vesa_find_and_set(640, 480, 32))
+			goto fini;
+		
+		if (!vesa_find_and_set(640, 480, 8))
+			goto fini;
+#endif
 	}
 	
 	bcp.eax	 = 0x0f00;
