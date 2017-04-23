@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define _LIB_INTERNALS
+
 #include <priv/copyright.h>
 #include <wingui_metrics.h>
 #include <wingui_cgadget.h>
@@ -81,6 +83,7 @@ static int form_y = -1;
 static int save_config = 1;
 static int restrict;
 static int backdrop;
+static int bigH;
 static int bigM;
 static int term;
 
@@ -220,6 +223,7 @@ static void resize_tty(int ncol, int nlin)
 	char msg[256];
 	int xm, ym;
 	int x, y;
+	int sv;
 	int i;
 	
 	if (ncol < MIN_COLUMNS)
@@ -274,10 +278,15 @@ static void resize_tty(int ncol, int nlin)
 			cur_y = nr_lin - 1;
 	}
 	
-	form_hide(main_form);
+	sv = main_form->visible;
+	if (sv)
+		form_hide(main_form);
+	
 	form_resize(main_form, ncol * font_w, nlin * font_h);
 	gadget_resize(screen, ncol * font_w, nlin * font_h);
-	form_show(main_form);
+	
+	if (sv)
+		form_show(main_form);
 	
 	update_pty_size();
 }
@@ -548,6 +557,8 @@ static void print(const char *str, int len)
 	int pcy = cur_y;
 	int pcx = cur_x;
 	
+	if (len)
+		form_show(main_form);
 	while (len)
 	{
 		if (esc_mode)
@@ -661,7 +672,7 @@ static void sig_chld(int nr)
 		msgbox(main_form, "VTTY", msg);
 	}
 	
-	if (config.auto_close)
+	if (config.auto_close || !main_form->visible)
 		form_close(main_form);
 	else
 	{
@@ -694,9 +705,12 @@ static char **parse_args(int argc, char **argv)
 		exit(0);
 	}
 	
-	while (opt = getopt(argc, argv, "Mwbc:l:x:y:frT:"), opt > 0)
+	while (opt = getopt(argc, argv, "HMwbc:l:x:y:frT:"), opt > 0)
 		switch (opt)
 		{
+		case 'H':
+			bigH = 1;
+			break;
 		case 'T':
 			title = optarg;
 			break;
@@ -952,7 +966,8 @@ int main(int argc, char **argv)
 	if (c_loaded && form_x < 0 && form_y < 0)
 		form_set_state(main_form, &config.fst);
 	resize_tty(config.nr_col, config.nr_lin);
-	form_show(main_form);
+	if (!bigH)
+		form_show(main_form);
 	
 	if (open(_PATH_D_PTMX, O_RDWR | O_NDELAY))
 	{
