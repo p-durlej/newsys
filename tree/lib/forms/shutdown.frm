@@ -30,11 +30,11 @@ flag(FORM_TITLE);
 flag(FORM_FRAME);
 flag(FORM_CENTER);
 
-label(NULL,10,10,	"What is the type of shutdown to be performed?");
+label(NULL,10,10,	"Do you want the machine to:");
 
-chkbox("c1",20,30,	"Power Down");
-chkbox("c2",20,50,	"Reboot");
-chkbox("c3",20,70,	"Halt");
+chkbox("c1",20,30,	"Power Down?");
+chkbox("c2",20,50,	"Reboot?");
+chkbox("c3",20,70,	"Halt?");
 
 button(NULL,10,90,60,20,"OK",1);
 button(NULL,75,90,60,20,"Cancel",2);
