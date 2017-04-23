@@ -55,21 +55,6 @@ static const char help[] =
     "  -soname     set name for shared library to be used at runtime\n"
 #endif
     "  -Wl,-opt[=val]  set linker option (see tcc -hh)\n"
-    "Debugger options:\n"
-    "  -g          generate runtime debug info\n"
-#ifdef CONFIG_TCC_BCHECK
-    "  -b          compile with built-in memory and bounds checker (implies -g)\n"
-#endif
-#ifdef CONFIG_TCC_BACKTRACE
-    "  -bt N       show N callers in stack traces\n"
-#endif
-    "Misc. options:\n"
-    "  -x[c|a|n]   specify type of the next infile\n"
-    "  -nostdinc   do not use standard system include paths\n"
-    "  -nostdlib   do not link with standard crt and libraries\n"
-    "  -Bdir       set tcc's private include/library dir\n"
-    "  -MD         generate dependency file for make\n"
-    "  -MF file    specify dependency file name\n"
     "Tools:\n"
     "  create library  : tcc -ar [rcsv] lib.a files\n"
 #ifdef TCC_TARGET_PE
@@ -79,6 +64,21 @@ static const char help[] =
 
 static const char help2[] =
     "Tiny C Compiler "TCC_VERSION" - More Options\n"
+    "Misc. options:\n"
+    "  -x[c|a|n]   specify type of the next infile\n"
+    "  -nostdinc   do not use standard system include paths\n"
+    "  -nostdlib   do not link with standard crt and libraries\n"
+    "  -Bdir       set tcc's private include/library dir\n"
+    "  -MD         generate dependency file for make\n"
+    "  -MF file    specify dependency file name\n"
+    "Debugger options:\n"
+    "  -g          generate runtime debug info\n"
+#ifdef CONFIG_TCC_BCHECK
+    "  -b          compile with built-in memory and bounds checker (implies -g)\n"
+#endif
+#ifdef CONFIG_TCC_BACKTRACE
+    "  -bt N       show N callers in stack traces\n"
+#endif
     "Special options:\n"
     "  -P -P1                        with -E: no/alternative #line output\n"
     "  -dD -dM                       with -E: output #define directives\n"
