@@ -107,7 +107,8 @@ static int pxe_tftp_open(const char *name)
 	strcpy(bounce + 10, name);
 	bounce[138] = 0;
 	bounce[139] = 69;
-	bounce[140] = 512;
+	bounce[140] = 0;
+	bounce[141] = 2;
 	
 	fcp.stack[0]	= 0x20;
 	fcp.stack[1]	= (intptr_t)bounce;
