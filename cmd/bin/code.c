@@ -117,6 +117,41 @@ static void help(void)
 	msgbox(main_form, "Help", msg);
 }
 
+static void update_title(void)
+{
+	char title[NAME_MAX + 64] = "Code: ";
+	const char *p;
+	
+	if (cur_buf == &errbuf)
+	{
+		form_set_title(main_form, "Code: Compiler Output");
+		return;
+	}
+	else if (!*cur_buf->pathname)
+	{
+		form_set_title(main_form, "Code");
+		return;
+	}
+	else
+	{
+		p = strrchr(cur_buf->pathname, '/');
+		if (p)
+			p++;
+		else
+			p = cur_buf->pathname;
+	}
+	
+	strcat(title, p);
+	form_set_title(main_form, title);
+}
+
+static void show_buffer(struct buffer *buf)
+{
+	cur_buf = buf;
+	gadget_redraw(editor);
+	update_title();
+}
+
 static int new_buffer(struct buffer *buf)
 {
 	memset(buf, 0, sizeof *buf);
@@ -405,8 +440,7 @@ static int asksave(struct buffer *buf)
 	
 	strcat(msg, "Do you want to save the changes?");
 	
-	cur_buf = buf;
-	gadget_redraw(editor);
+	show_buffer(buf);
 	
 	if (msgbox_ask(main_form, "Code", msg) != MSGBOX_NO)
 	{
@@ -428,17 +462,22 @@ static void new_click(struct menu_item *mi)
 		return;
 	clear_buffer(cur_buf);
 	gadget_redraw(editor);
+	update_title();
 }
 
 static void open_click(struct menu_item *mi)
 {
+	char pathname[PATH_MAX];
+	
 	if (asksave(cur_buf))
 		return;
-	if (!dlg_open(main_form, "Open", cur_buf->pathname, sizeof cur_buf->pathname))
+	strcpy(pathname, cur_buf->pathname);
+	if (!dlg_open(main_form, "Open", pathname, sizeof pathname))
 		return;
-	if (load_buffer(cur_buf, cur_buf->pathname))
+	if (load_buffer(cur_buf, pathname))
 		msgbox(main_form, "Code", "Cannot load the buffer.");
 	gadget_redraw(editor);
+	update_title();
 }
 
 static void save_as_click(struct menu_item *mi)
@@ -448,6 +487,7 @@ static void save_as_click(struct menu_item *mi)
 	if (save_buffer(cur_buf, cur_buf->pathname))
 		msgbox(main_form, "Code", "Could not save the buffer.");
 	cur_buf->dirty = 0;
+	update_title();
 }
 
 static void save_click(struct menu_item *mi)
@@ -1127,7 +1167,7 @@ static void editor_key_down(struct gadget *g, unsigned ch, unsigned shift)
 {
 	if ((shift & WIN_SHIFT_CTRL) && ch >= WIN_KEY_F12 && ch <= WIN_KEY_F1)
 	{
-		cur_buf  = &buffers[11 - (ch - WIN_KEY_F12)];
+		show_buffer(&buffers[11 - (ch - WIN_KEY_F12)]);
 		prev_buf = NULL;
 		gadget_redraw(g);
 		return;
@@ -1287,7 +1327,7 @@ static void run_click(struct menu_item *mi)
 	{
 		load_buffer(&errbuf, pathname);
 		prev_buf = cur_buf;
-		cur_buf = &errbuf;
+		show_buffer(&errbuf);
 		gadget_redraw(editor);
 		
 		if (pst)
@@ -1462,6 +1502,7 @@ int main(int argc, char **argv)
 	}
 	
 	create_form();
+	update_title();
 	form_wait(main_form);
 	form_get_state(main_form, &fst);
 	c_save("code", &config, sizeof config);
