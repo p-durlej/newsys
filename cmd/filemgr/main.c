@@ -1653,7 +1653,7 @@ static void create_bg_form(void)
 	
 	win_ws_getrect(&wsr);
 	
-	bg_form = form_creat(FORM_BACKDROP, 1, wsr.x, wsr.y, wsr.w, wsr.h, "bg");
+	bg_form = form_creat(FORM_BACKDROP | FORM_EXCLUDE_FROM_LIST, 1, wsr.x, wsr.y, wsr.w, wsr.h, "");
 	bg = gadget_creat(bg_form, 0, 0, wsr.w, wsr.h);
 	
 	bg->redraw = bg_redraw;
