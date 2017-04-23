@@ -201,17 +201,6 @@ void uclean(void)
 		pdp[i >> 18] = 0;
 	}
 	
-#if 0
-	for (i = PAGE_USER; i < PAGE_USER_END; i += (1L << 27))
-	{
-		if (!pml4[i >> 27])
-			continue;
-		
-		pg_free(pml4[i >> 27] >> 12);
-		pml4[i >> 27] = 0;
-	}
-#endif
-	
 	pg_utlb();
 	curr->pg_count = 0;
 }

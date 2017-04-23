@@ -1896,32 +1896,6 @@ static int form_grow_bg_rects(struct form *f, int cap)
 	return 0;
 }
 
-#if 0
-static void form_clip_rect(struct win_rect *d, struct win_rect *s)
-{
-	int x0, y0, x1, y1;
-	
-	x0 = d->x;
-	y0 = d->y;
-	x1 = d->x + d->w;
-	y1 = d->y + d->h;
-	
-	if (x0 < s->x)
-		x0 = s->x;
-	if (y0 < s->y)
-		y0 = s->y;
-	if (x1 > s->x + s->w)
-		x1 = s->x + s->w;
-	if (y1 > s->y + s->h)
-		y1 = s->y + s->h;
-	
-	d->x = x0;
-	d->y = y0;
-	d->w = x1 - x0;
-	d->h = y1 - y0;
-}
-#endif
-
 static int form_make_bg_rects(struct form *f)
 {
 	struct win_rect *rp, *nrp;

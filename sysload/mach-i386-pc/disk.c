@@ -234,17 +234,6 @@ static void disk_chk_edd(struct disk *dk)
 #endif
 		return;
 	}
-#if 0
-	if (!(bcp.ecx & 4))
-	{
-#if DEBUG
-		con_puts("disk_chk_edd: parameter table bit in CX not set for drive ");
-		con_putx8(dk->unit);
-		con_putc('\n');
-#endif
-		return;
-	}
-#endif
 	
 	bcp.eax = 0x4800;
 	bcp.edx = dk->unit;

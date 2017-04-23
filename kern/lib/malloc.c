@@ -177,14 +177,6 @@ void *realloc(void *ptr, unsigned size)
 
 void malloc_boot(void)
 {
-#if 0
-	if (sizeof(struct mhead) != 32)
-	{
-		printk("sizeof(struct mhead) = %i\n", sizeof(struct mhead));
-		panic("malloc_boot: sizeof(struct mhead) != 32");
-	}
-#endif
-
 	list_init(&kmalloc_list, struct mhead, litem);
 }
 

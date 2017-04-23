@@ -437,18 +437,6 @@ static void alloc_com(struct elf64_sym *sym, const char *strtab)
 	sym->sect  = obj_sect0;
 	if (!obj_sect0)
 		errx(1, "%s: alloc_com: no sections", obj_name);
-
-#if 0
-	sym->value = image_size + (sym->value - 1) & ~(sym->value - 1);
-	sym->sect  = obj_sect0; /* XXX */
-	if (!obj_sect0)
-		errx(1, "%s: alloc_com: no sections", obj_name);
-
-	nsz   = sym->value + sym->size;
-	image = x_realloc(image, nsz);
-	memset(image + image_size, 0, nsz - image_size);
-	image_size = nsz;
-#endif
 }
 
 static symval sym_val(const struct elf64_sym *sym, const struct elf64_sect_head *strs, const char *strtab)

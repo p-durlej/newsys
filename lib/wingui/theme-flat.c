@@ -225,10 +225,12 @@ const struct form_theme fl_theme =
 	.d_zoombtn	= d_zoombtn,
 	.d_minibtn	= d_minibtn,
 	.d_menubtn	= d_menubtn,
-	// .d_menuframe	= d_menuframe,
-	// .d_formframe	= d_formframe,
-	// .d_formbg	= d_formbg,
-	// .d_edboxframe	= d_edboxframe,
+#if 0
+	.d_menuframe	= d_menuframe,
+	.d_formframe	= d_formframe,
+	.d_formbg	= d_formbg,
+	.d_edboxframe	= d_edboxframe,
+#endif
 	
 	.form_shadow_w	= 0,
 	.edbox_shadow_w	= 0,

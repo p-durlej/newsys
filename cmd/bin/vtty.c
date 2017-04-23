@@ -111,49 +111,6 @@ static struct
 	int ftd;
 } config;
 
-#if 0
-static const struct
-{
-	unsigned kcode;
-	char *str;
-} key_tab[] =
-{
-	{ WIN_KEY_UP,		"\eu]"	},
-	{ WIN_KEY_DOWN,		"\ed]"	},
-	{ WIN_KEY_LEFT,		"\el]"	},
-	{ WIN_KEY_RIGHT,	"\er]"	},
-	{ WIN_KEY_PGUP,		"\eU]"	},
-	{ WIN_KEY_PGDN,		"\eD]"	},
-	{ WIN_KEY_HOME,		"\eH]"	},
-	{ WIN_KEY_END,		"\eE]"	},
-	{ WIN_KEY_INS,		"\ei]"	},
-	{ WIN_KEY_DEL,		"\ed]"	},
-	{ WIN_KEY_F1,		"\e1]"	},
-	{ WIN_KEY_F2,		"\e2]"	},
-	{ WIN_KEY_F3,		"\e3]"	},
-	{ WIN_KEY_F4,		"\e4]"	},
-	{ WIN_KEY_F5,		"\e5]"	},
-	{ WIN_KEY_F6,		"\e6]"	},
-	{ WIN_KEY_F7,		"\e7]"	},
-	{ WIN_KEY_F8,		"\e8]"	},
-	{ WIN_KEY_F9,		"\e9]"	},
-	{ WIN_KEY_F10,		"\e10]"	},
-	{ WIN_KEY_F11,		"\e11]"	},
-	{ WIN_KEY_F12,		"\e12]"	},
-	{ WIN_KEY_F13,		"\e13]"	},
-	{ WIN_KEY_F14,		"\e14]"	},
-	{ WIN_KEY_F15,		"\e15]"	},
-	{ WIN_KEY_F16,		"\e16]"	},
-	{ '\n',			"\n"	},
-	{ '\b',			"\b"	},
-	{ '\e',			"\e\e"	},
-	{ 3,			"\003"	},
-	{ 4,			"\004"	},
-	{ 21,			"\025"	},
-	{ 0,			NULL	}
-};
-#endif
-
 static struct win_rgba color_table[19] =
 {
 	{ 0,	0,	0,	255 },
@@ -396,7 +353,6 @@ static void term_msgbox(void)
 static void key_down(struct gadget *g, unsigned ch, unsigned shift)
 {
 	char c = ch;
-	// int i;
 	
 	if (term)
 	{
@@ -406,15 +362,6 @@ static void key_down(struct gadget *g, unsigned ch, unsigned shift)
 			term_msgbox();
 		return;
 	}
-	
-#if 0
-	for (i = 0; key_tab[i].kcode; i++)
-		if (key_tab[i].kcode == ch)
-		{
-			write(PTM_FD, key_tab[i].str, strlen(key_tab[i].str));
-			return;
-		}
-#endif
 	
 	if (ch == '\\' && (shift & WIN_SHIFT_CTRL))
 		c = 28;
