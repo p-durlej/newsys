@@ -1284,6 +1284,8 @@ static void run_click(struct menu_item *mi)
 	strcpy(spathname, cur_buf->pathname);
 	strcpy(pathname, cur_buf->pathname);
 	
+	form_busy(main_form);
+	
 	ext = strrchr(pathname, '.');
 	if (!ext)
 		goto fail;
@@ -1357,9 +1359,11 @@ static void run_click(struct menu_item *mi)
 		_newtaskl(_PATH_B_VTTY, _PATH_B_VTTY, "-T", "Standard I/O", "-wH", "--", pathname, (void *)NULL);
 	}
 	
+	form_unbusy(main_form);
 	return;
 fail:
 	wb(WB_ERROR);
+	form_unbusy(main_form);
 }
 
 static void help_click(struct menu_item *mi)
