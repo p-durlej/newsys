@@ -287,9 +287,10 @@ void intr_leave(struct intr_regs *r, int i)
 	
 	if (r->cs & 0x0003 && !(r->eflags & FLAG_VM86))
 	{
+		intr_ena();
 		task_rundp();
-		
 		intr_dis();
+		
 restart:
 		while (curr->signal_pending)
 		{
