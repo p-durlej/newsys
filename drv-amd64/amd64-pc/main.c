@@ -33,8 +33,8 @@ void con_init(void);
 int  gc_init(void);
 
 void do_panic(const char *msg);
-void apm_off(void);
-void halt(void);
+int  apm_off(void);
+int  halt(void);
 
 static int suspend(void)
 {
