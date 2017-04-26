@@ -464,6 +464,12 @@ int main()
 	if (win_attach())
 		err(255, NULL);
 	
+	if (win_get_dpi_class())
+	{
+		msgbox(NULL, "Disk Performance", "This program cannot be run in high DPI mode.");
+		return 1;
+	}
+	
 	collect_devs();
 	create_form();
 	
