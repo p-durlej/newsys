@@ -52,4 +52,4 @@ cross/mkbfs disks/pxe.img 0 128 tree.tmp
 
 make_src
 
-genisoimage -quiet -V "NamelessOS" -o disks/altcd.iso -hard-disk-boot -eltorito-boot hdflat.img -hide boot.catalog -hide hdflat.img disks/hdflat.img doc/readme.txt disks/src.tar
+mkisofs -quiet -V "NamelessOS" -o disks/altcd.iso -hard-disk-boot -eltorito-boot hdflat.img -hide boot.catalog -hide hdflat.img disks/hdflat.img doc/readme.txt disks/src.tar
