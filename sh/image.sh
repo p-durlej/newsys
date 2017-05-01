@@ -29,7 +29,7 @@
 set -e
 
 fonts="mono system mono-large system-large mono-narrow mono-large-narrow"
-examples="aclock.c avail.c calc.c edit.c hexdump.c ps.c winlist.c"
+examples="aclock.c avail.c box.c calc.c edit.c ps.c textbench.c uptime.c"
 sexamples="taskman.c"
 
 regen_tree()
