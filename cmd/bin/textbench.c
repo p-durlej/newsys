@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 	f = form_creat(FORM_TITLE | FORM_FRAME | FORM_ALLOW_CLOSE | FORM_ALLOW_MINIMIZE, 1, -1, -1, w, h, "Text output benchmark");
 	form_on_close(f, f_close);
 	
-	for (i = 0; i < 2 * COLS; i++)
+	for (i = 0; i < sizeof text; i++)
 		text[i] = 33 + i % 94;
 	text[sizeof text - 1] = 0;
 	
