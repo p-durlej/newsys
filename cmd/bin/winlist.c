@@ -67,18 +67,15 @@ static void popup()
 	char title[WIN_TITLE_MAX + 1];
 	struct menu_item *mi;
 	struct menu *menu;
-	int vi;
 	int i;
 	
 	menu = menu_creat();
 	for (i = 0; i < WIN_MAX; i++)
 	{
-		if (win_is_visible(i, &vi))
-			continue;
 		if (win_get_title(i, title, sizeof title))
 			continue;
 		
-		if (vi && *title)
+		if (*title)
 		{
 			mi = menu_newitem(menu, title, m_click);
 			mi->l_data = i;
