@@ -2100,6 +2100,14 @@ void form_redraw(struct form *f)
 	form_erect(f, 0, 0, f->win_rect.w, f->win_rect.h);
 }
 
+static void form_update_title(struct form *form)
+{
+	if ((form->flags & FORM_EXCLUDE_FROM_LIST) || form->parent_form || !form->visible)
+		win_set_title(form->wd, "");
+	else
+		win_set_title(form->wd, form->title);
+}
+
 struct form *form_creat(int flags, int visible, int x, int y, int w, int h, const char *title)
 {
 	struct win_rect wsr;
@@ -2129,9 +2137,6 @@ struct form *form_creat(int flags, int visible, int x, int y, int w, int h, cons
 		free(t);
 		return NULL;
 	}
-	
-	if (!(flags & FORM_EXCLUDE_FROM_LIST))
-		win_set_title(f->wd, title);
 	
 	f->curr_ptr	   = WIN_PTR_ARROW;
 	f->visible	   = visible;
@@ -2187,6 +2192,8 @@ struct form *form_creat(int flags, int visible, int x, int y, int w, int h, cons
 	f->last_x = px - f->win_rect.x;
 	f->last_y = py - f->win_rect.y;
 	
+	form_update_title(f);
+	
 	list_app(&form_list, f);
 	return f;
 }
@@ -2230,14 +2237,6 @@ int form_close(struct form *form)
 	free(form->title);
 	free(form);
 	return 0;
-}
-
-static void form_update_title(struct form *form)
-{
-	if ((form->flags & FORM_EXCLUDE_FROM_LIST) || form->parent_form || !form->visible)
-		win_set_title(form->wd, "");
-	else
-		win_set_title(form->wd, form->title);
 }
 
 int form_set_title(struct form *form, const char *title)
