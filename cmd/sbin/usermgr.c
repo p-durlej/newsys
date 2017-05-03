@@ -634,6 +634,7 @@ void create_form(void)
 	menu_submenu(m, "Options", om);
 	
 	main_form = form_creat(FORM_APPFLAGS, 0, -1, -1, 400, 198, "User Account Manager");
+	form_min_size(main_form, tw * 40, th * 8);
 	form_set_menu(main_form, m);
 	
 	label_creat(main_form, 5	  , 2, "Name");
