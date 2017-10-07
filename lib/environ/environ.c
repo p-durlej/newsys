@@ -69,7 +69,7 @@ static int env_find(const char *n, int p)
 		return -1;
 	
 	for (i = 0; env[i]; i++)
-		if (!strncmp(env[i], n, l))
+		if (!strncmp(env[i], n, l) && env[i][l] == '=')
 			return i;
 	return -1;
 }
