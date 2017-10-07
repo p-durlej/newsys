@@ -1045,6 +1045,9 @@ static void save_pos(int complain)
 	struct form_state fst;
 	int fd = -1;
 	
+	if (listfd >= 0)
+		return;
+	
 	bzero(&fst, sizeof fst);
 	form_get_state(main_form, &fst);
 	
@@ -1104,6 +1107,9 @@ static void load_pos(void)
 	struct form_state fst;
 	struct stat st;
 	int fd = -1;
+	
+	if (listfd >= 0)
+		return;
 	
 	fd = open(WINPOS, O_RDONLY);
 	if (fd < 0)
