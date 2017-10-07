@@ -176,7 +176,7 @@ int main(int argc, char **argv)
 	
 	exec = _findexec(argv[enve], NULL);
 	if (exec == NULL)
-		err(errno, "%s", exec);
+		err(errno, "%s", argv[enve]);
 	
 	execve(exec, argv + enve, nenv); /* XXX execvpe */
 	err(errno, "%s", argv[enve]);
