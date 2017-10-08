@@ -28,6 +28,11 @@
 
 set -e
 
+if [ "$(pwd)" != "$HOME/os386/src" ]; then
+	echo "s/mkall: Both the source code root directory and cwd must be \$HOME/os386/src" >&2
+	exit 1
+fi
+
 (cd gcc && sh all.sh)
 
 for i in i386 amd64; do
