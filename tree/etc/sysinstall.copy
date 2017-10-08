@@ -36,6 +36,7 @@
 755 /bin/wfind
 755 /bin/box
 755 /bin/tar
+755 /bin/stat
 
 700 /sbin/kdebug
 700 /sbin/addblk

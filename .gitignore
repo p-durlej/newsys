@@ -44,6 +44,7 @@
 /cmd/acex-bin/rm
 /cmd/acex-bin/rmdir
 /cmd/acex-bin/sleep
+/cmd/acex-bin/stat
 /cmd/acex-bin/test
 /cmd/acex-bin/true
 /cmd/acex-bin/tty
