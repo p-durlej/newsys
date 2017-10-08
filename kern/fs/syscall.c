@@ -529,6 +529,7 @@ int sys_fstat(int fd, struct stat *st)
 {
 	struct fso *fso;
 	int err;
+	int i;
 	
 	err = fs_fdaccess(fd, 0);
 	if (err)
@@ -559,6 +560,14 @@ int sys_fstat(int fd, struct stat *st)
 	st->st_atime	= fso->atime;
 	st->st_ctime	= fso->ctime;
 	st->st_mtime	= fso->mtime;
+	
+	if (fso->fs->dev)
+		for (i = 0; i < BLK_MAXDEV; i++)
+			if (blk_dev[i] == fso->fs->dev)
+			{
+				st->st_dev = makedev(1, i + 9); /* XXX BDEV_INDEX */
+				break;
+			}
 	
 	return 0;
 }
