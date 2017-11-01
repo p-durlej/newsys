@@ -112,7 +112,7 @@ static int conv_chr(unsigned nr)
 	char buf[256];
 	char *nl;
 	char och;
-	char ch;
+	int ch;
 	int len;
 	int x, y;
 	
@@ -163,7 +163,7 @@ static void end_chr(void)
 static void count_glyphs(void)
 {
 	char buf[256];
-	char ch;
+	int ch;
 	char *p;
 	int w;
 	int i;
