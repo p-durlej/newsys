@@ -111,7 +111,6 @@ static int conv_chr(unsigned nr)
 	unsigned di = 0;
 	char buf[256];
 	char *nl;
-	char och;
 	int ch;
 	int len;
 	int x, y;
