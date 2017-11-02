@@ -408,7 +408,7 @@ static void check_file(unsigned first_block, int depth, char *name)
 	size = check_bmap(file);
 	if (file->hd.blocks != size)
 	{
-		warnx("%i has incorrect block count (is %i, should be %i)", first_block, file->hd.blocks, size);
+		warnx("%li has incorrect block count (is %i, should be %i)", (long)first_block, file->hd.blocks, size);
 		if (fix)
 		{
 			file->hd.blocks = size;
@@ -472,7 +472,7 @@ static void check_dir(unsigned first_block, int depth, char *name)
 	
 	if (file->hd.blocks != size)
 	{
-		warnx("%i has incorrect block count", first_block);
+		warnx("%li has incorrect block count", (long)first_block);
 		if (fix)
 		{
 			file->hd.blocks = size;
@@ -560,8 +560,7 @@ static void check_dir(unsigned first_block, int depth, char *name)
 			if (dir[i].first_block < sb.data_block ||
 			    dir[i].first_block >= sb.data_block + sb.data_size)
 			{
-				warnx("directory entry has bad "
-				       "first_block member");
+				warnx("directory entry has bad first_block member");
 				if (fix)
 				{
 					memset(dir[i].name, 0, sizeof dir[i].name);
@@ -591,7 +590,7 @@ static void check_nlink(void)
 	for (i = 0; i < file_count; i++)
 		if (file[i].true_nlink != file[i].hd.nlink)
 		{
-			warnx("%i has incorrect link count", file[i].first_block);
+			warnx("%li has incorrect link count", (long)file[i].first_block);
 			if (fix)
 			{
 				file[i].hd.nlink = file[i].true_nlink;
