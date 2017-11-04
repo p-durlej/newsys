@@ -55,7 +55,7 @@ void sig_alrm(int nr)
 	
 	if (_systat(&st))
 	{
-		msgbox_perror(main_form, "SYSTAT", "Could not get info", errno);
+		msgbox_perror(main_form, "Avail", "Could not get info", errno);
 		exit(errno);
 	}
 	
