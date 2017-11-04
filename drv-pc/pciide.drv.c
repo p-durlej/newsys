@@ -71,10 +71,6 @@ static unsigned hd_iobase1;
 static unsigned hd_bmbase;
 static int	hd_bus_master;
 
-static int	    hd_timeout;
-static struct task *hd_wtask;
-
-
 #define DK_UNIT(i)	{ .refcnt = 0,		\
 			  .name	  = NULL,	\
 			  .unit	  = (i),	\
@@ -114,7 +110,6 @@ static struct unit
 	unsigned iobase;
 	
 	int use_lba;
-	// int use_dma;
 	int chan;
 	int unit;
 	int ncyl;
@@ -220,35 +215,9 @@ static void hd_shutdown(int type)
 		}
 }
 
-static void hd_clock(void)
-{
-	int s;
-	
-	if (hd_timeout && !--hd_timeout)
-	{
-		s = intr_dis();
-		if (hd_wtask != NULL)
-		{
-			task_resume(hd_wtask);
-			hd_wtask = NULL;
-		}
-		intr_res(s);
-	}
-}
-
 static void hd_irqv()
 {
-	int s;
-	
-	s = intr_dis();
-	if (hd_wtask)
-	{
-		task_resume(hd_wtask);
-		hd_timeout = 0;
-		hd_wtask   = NULL;
-	}
 	hd_irq = 1;
-	intr_res(s);
 }
 
 static int reset1(unsigned iobase)

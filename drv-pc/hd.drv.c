@@ -70,9 +70,6 @@ static volatile int hd_irq;
 static unsigned hd_irq_nr;
 static unsigned hd_iobase;
 
-static int	    hd_timeout;
-static struct task *hd_wtask;
-
 #define DK_UNIT(i)	{ .refcnt = 0,		\
 			  .name	  = NULL,	\
 			  .unit	  = (i),	\
@@ -191,35 +188,9 @@ static void hd_shutdown(int type)
 		}
 }
 
-static void hd_clock(void)
-{
-	int s;
-	
-	if (hd_timeout && !--hd_timeout)
-	{
-		s = intr_dis();
-		if (hd_wtask != NULL)
-		{
-			task_resume(hd_wtask);
-			hd_wtask = NULL;
-		}
-		intr_res(s);
-	}
-}
-
 static void hd_irqv()
 {
-	int s;
-	
-	s = intr_dis();
-	if (hd_wtask)
-	{
-		task_resume(hd_wtask);
-		hd_timeout = 0;
-		hd_wtask   = NULL;
-	}
 	hd_irq = 1;
-	intr_res(s);
 }
 
 static int hd_reset(void)
