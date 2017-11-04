@@ -398,8 +398,7 @@ static int SYMBOL(regexec_p)(struct rx *rx)
 
 static int SYMBOL(regexec_br)(struct rx *rx)
 {
-	DPRINTF("i_regexp: entering branch, pc = %p, spos = \"%s\"",
-		rx->piece, rx->spos);
+	DPRINTF("i_regexp: entering branch, pc = %p, spos = \"%s\"", rx->piece, rx->spos);
 	while (rx->piece->type != PT_GUARD)
 	{
 		if (rx->piece->type == PT_BRANCH)
@@ -573,8 +572,7 @@ int main(int argc, char **argv)
 		regdump(rx);
 		
 		if (!!regexec(rx, rxt[i].string) != rxt[i].result)
-			errx(1, "mismatch for pattern \"%s\", string \"%s\"",
-				rxt[i].pattern, rxt[i].string);
+			errx(1, "mismatch for pattern \"%s\", string \"%s\"", rxt[i].pattern, rxt[i].string);
 	}
 	return 0;
 }
