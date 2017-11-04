@@ -520,9 +520,6 @@ static void load_libx(void)
 	
 	if (strcmp(libxh->arch, isa))
 	{
-		_sysmesg(libxh->arch);
-		_sysmesg("\n");
-		
 		msg = "ISA mismatch";
 		goto clean;
 	}
