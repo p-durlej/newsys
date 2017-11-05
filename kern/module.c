@@ -392,10 +392,7 @@ int mod_init(struct module *m, const char *pathname, struct modhead *head, void 
 	
 	err = on_load(md, pathname, data, data_size);
 	if (err)
-	{
-		m->in_use = 0;
 		return err;
-	}
 	
 	return 0;
 }
