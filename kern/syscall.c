@@ -828,6 +828,11 @@ int sys__systat(struct systat *buf)
 		if (!fs_file[i].refcnt)
 			lbuf.file_avail++;
 	
+	for (i = 0; i < MODULE_MAX; i++)
+		if (module[i].in_use)
+			lbuf.mod++;
+	lbuf.mod_max = MODULE_MAX;
+	
 	err = tucpy(buf, &lbuf, sizeof lbuf);
 	if (err)
 	{

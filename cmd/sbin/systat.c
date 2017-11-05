@@ -54,6 +54,8 @@ int main(int argc, char **argv)
 	printf("uptime     = %i\n",	(int)st.uptime);
 	printf("cpu        = %i\n",	(int)st.cpu);
 	printf("cpu_max    = %i\n",	(int)st.cpu_max);
+	printf("mod        = %i\n",	(int)st.mod);
+	printf("mod_max    = %i\n",	(int)st.mod_max);
 	
 	return 0;
 }

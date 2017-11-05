@@ -61,6 +61,9 @@ struct systat
 	
 	int		cpu;
 	int		cpu_max;
+	
+	int		mod;
+	int		mod_max;
 };
 
 struct taskinfo
