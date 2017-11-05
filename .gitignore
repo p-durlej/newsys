@@ -1,9 +1,11 @@
 *.img
-*.bin
 *.elf
 *.sys
 *.drv
 *.o
+
+/boot-*/*.bin
+/sysload/sysload.bin
 
 /lib/arch-amd64/crt0/autogen/
 /lib/arch-amd64/crt0/libc.a
@@ -179,6 +181,12 @@
 /cmd/tests/test.time
 /cmd/tests/test.timer
 /cmd/tests/test.vtty
+/cmd/sdk.bin/examples
+/cmd/sdk.bin/fnc
+/cmd/sdk.bin/mgen
+/cmd/sdk.bin/modinfo
+/cmd/sdk.bin/modlist
+/cmd/sdk.bin/modload
 /cross/cdcks
 /cross/cfont
 /cross/ckexe
