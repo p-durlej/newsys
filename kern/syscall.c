@@ -898,6 +898,37 @@ int sys__taskmax(void)
 	return TASK_MAX;
 }
 
+int sys__modinfo(struct modinfo *buf)
+{
+	struct modinfo *p;
+	struct module *m;
+	int err;
+	
+	err = uga(&buf, sizeof *buf * MODULE_MAX, UA_WRITE);
+	if (err)
+	{
+		uerr(err);
+		return -1;
+	}
+	
+	p = buf;
+	for (m = module; m < module + MODULE_MAX; m++)
+		if (m->in_use)
+		{
+			strcpy(p->name, m->name);
+			p->md	= m - module;
+			p->base	= m->code;
+			p++;
+		}
+	
+	return p - buf;
+}
+
+int sys__modmax(void)
+{
+	return MODULE_MAX;
+}
+
 int sys_gettimeofday(struct timeval *tv, struct timezone *tz)
 {
 	struct timeval ltv;

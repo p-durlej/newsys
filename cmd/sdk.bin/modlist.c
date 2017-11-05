@@ -24,72 +24,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _SYSTAT_H
-#define _SYSTAT_H
+#include <stdlib.h>
+#include <systat.h>
+#include <stdio.h>
+#include <err.h>
 
-#include <sys/types.h>
-#include <limits.h>
-
-typedef long long memstat_t;
-
-struct systat
+int main(int argc, char **argv)
 {
-	int		task_avail;
-	int		task_max;
+	struct modinfo *buf;
+	int cnt;
+	int i;
 	
-	memstat_t	core_avail;
-	memstat_t	core_max;
+	cnt = _modmax();
+	buf = calloc(cnt, sizeof *buf);
+	if (!buf)
+		err(1, NULL);
 	
-	memstat_t	kva_avail;
-	memstat_t	kva_max;
+	cnt = _modinfo(buf);
+	if (cnt < 0)
+		err(1, NULL);
 	
-	int		file_avail;
-	int		file_max;
+	for (i = 0; i < cnt; i++)
+		if (buf[i].base)
+			printf("%i %08lx %s\n", buf[i].md, (unsigned long)buf[i].base, buf[i].name);
 	
-	int		fso_avail;
-	int		fso_max;
-	
-	int		blk_dirty;
-	int		blk_valid;
-	int		blk_avail;
-	int		blk_max;
-	
-	int		sw_freq;
-	int		hz;
-	
-	time_t		uptime;
-	
-	int		cpu;
-	int		cpu_max;
-};
-
-struct taskinfo
-{
-	char		pathname[PATH_MAX];
-	char		queue[64];
-	uid_t		euid;
-	gid_t		egid;
-	uid_t		ruid;
-	gid_t		rgid;
-	pid_t		ppid;
-	pid_t		pid;
-	memstat_t	size;
-	unsigned	maxev;
-	int		prio;
-	int		cpu;
-};
-
-struct modinfo
-{
-	char	name[NAME_MAX + 1];
-	void *	base;
-	int	md;
-};
-
-int _systat(struct systat *buf);
-int _taskinfo(struct taskinfo *buf);
-int _taskmax(void);
-int _modinfo(struct modinfo *buf);
-int _modmax(void);
-
-#endif
+	return 0;
+}

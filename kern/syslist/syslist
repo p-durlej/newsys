@@ -147,11 +147,13 @@
 137	user	_systat
 138	user	_taskinfo
 139	user	_taskmax
-140	root	_boot_flags
+140	root	_modinfo
+141	root	_modmax
+142	root	_boot_flags
 
-141	user	evt_count
-142	user	_evt_wait
-143	user	evt_signal
+143	user	evt_count
+144	user	_evt_wait
+145	user	evt_signal
 
-144	root	_bdev_stat
-145	root	_bdev_max
+146	root	_bdev_stat
+147	root	_bdev_max

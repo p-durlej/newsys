@@ -25,6 +25,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-CMD := examples fnc mgen modinfo modload
+CMD := examples fnc mgen modinfo modload modlist
 
 include cmd.mk

@@ -634,3 +634,5 @@ dlg_file6
 sizebox_set_bg
 sizebox_set_fg
 gadget_set_want_tab
+_modinfo
+_modmax

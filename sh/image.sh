@@ -124,6 +124,7 @@ make_sdk_lists()
 755 /usr/bin/fnc
 755 /usr/bin/mgen
 755 /usr/bin/modinfo
+700 /usr/bin/modlist
 700 /usr/bin/modload
 755 /usr/bin/tcc
 644 /lib/icons/code.pnm

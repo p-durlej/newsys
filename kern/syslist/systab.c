@@ -141,6 +141,8 @@ extern int sys_win_set_font_map();
 extern int sys__systat();
 extern int sys__taskinfo();
 extern int sys__taskmax();
+extern int sys__modinfo();
+extern int sys__modmax();
 extern int sys__boot_flags();
 extern int sys_evt_count();
 extern int sys__evt_wait();
@@ -152,7 +154,7 @@ struct syscall
 {
 	void *	proc;
 	int	uidz;
-} syscall_tab[146] = 
+} syscall_tab[148] = 
 {
 	[0]	= { sys__sysmesg,		1 },
 	[1]	= { sys__iopl,			1 },
@@ -294,10 +296,12 @@ struct syscall
 	[137]	= { sys__systat,		0 },
 	[138]	= { sys__taskinfo,		0 },
 	[139]	= { sys__taskmax,		0 },
-	[140]	= { sys__boot_flags,		1 },
-	[141]	= { sys_evt_count,		0 },
-	[142]	= { sys__evt_wait,		0 },
-	[143]	= { sys_evt_signal,		0 },
-	[144]	= { sys__bdev_stat,		1 },
-	[145]	= { sys__bdev_max,		1 },
+	[140]	= { sys__modinfo,		1 },
+	[141]	= { sys__modmax,		1 },
+	[142]	= { sys__boot_flags,		1 },
+	[143]	= { sys_evt_count,		0 },
+	[144]	= { sys__evt_wait,		0 },
+	[145]	= { sys_evt_signal,		0 },
+	[146]	= { sys__bdev_stat,		1 },
+	[147]	= { sys__bdev_max,		1 },
 };
