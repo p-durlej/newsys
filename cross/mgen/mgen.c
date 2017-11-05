@@ -103,7 +103,6 @@ static void obj_seek(off_t off)
 static void obj_read(void *buf, size_t sz)
 {
 	ssize_t cnt;
-	int se;
 
 	cnt = read(obj_fd, buf, sz);
 	if (cnt < 0)
@@ -267,11 +266,11 @@ static void *load_sym_sect(int i, int *sym_cnt)
 	return d;
 }
 
+#if 0
 static void show_sh(void)
 {
 	struct elf64_sect_head *s;
 	struct elf64_sect_head *e;
-	int i;
 
 	fprintf(stderr, "show_sh:     type    flags     addr     size    align     link     info   offset\n");
 	e = obj_sect + obj_head64.sh_elem_cnt;
@@ -291,6 +290,7 @@ static void show_sh(void)
 		s++;
 	}
 }
+#endif
 
 static void load_sh_32(void)
 {
@@ -389,7 +389,6 @@ static void init_img(void)
 {
 	struct elf64_sect_head *s;
 	struct elf64_sect_head *e;
-	int i;
 
 	image = x_malloc(image_size);
 
@@ -418,7 +417,7 @@ static symval grow_image(size_t sz, size_t align)
 	size_t nsz;
 	symval v;
 
-	v = image_size + align - 1 & ~(align - 1);
+	v = (image_size + align - 1) & ~(align - 1);
 
 	nsz   = v + sz;
 	image = x_realloc(image, nsz);
@@ -549,6 +548,7 @@ static void write16(symval off, uint32_t v)
 	image[off + 1] = v >> 8;
 }
 
+#if 0
 static uint32_t read24(symval off)
 {
 	return		   image[off	]	|
@@ -562,6 +562,7 @@ static void write24(symval off, uint32_t v)
 	image[off + 1] = v >> 8;
 	image[off + 2] = v >> 16;
 }
+#endif
 
 static uint32_t read32(symval off)
 {
@@ -693,7 +694,6 @@ static void proc_i386_rel(symval off, int type, int rel, symval a, symval addend
 
 static void proc_amd64_rel(symval off, int type, int rel, symval a, symval addend)
 {
-	uint32_t goff;
 	uint32_t v;
 	
 	switch (type)
@@ -855,7 +855,6 @@ static void proc_coms(void)
 {
 	struct elf64_sect_head *s;
 	struct elf64_sect_head *e;
-	int i;
 	
 	e = obj_sect + obj_head64.sh_elem_cnt;
 	for (s = obj_sect; s < e; s++)
@@ -930,7 +929,6 @@ static void proc_rel(void)
 {
 	struct elf64_sect_head *s;
 	struct elf64_sect_head *e;
-	int i;
 	
 	got_off = grow_image(0, 16);
 	e = obj_sect + obj_head64.sh_elem_cnt;

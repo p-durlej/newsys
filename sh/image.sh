@@ -121,6 +121,9 @@ make_sdk_lists()
 	cat >> tree.tmp/etc/sdk.copy << EOF
 755 /bin/code
 755 /usr/bin/examples
+755 /usr/bin/fnc
+755 /usr/bin/mgen
+755 /usr/bin/modinfo
 755 /usr/bin/tcc
 644 /lib/icons/code.pnm
 644 /lib/icons64/code.pnm

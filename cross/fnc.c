@@ -34,6 +34,9 @@
 #include <errno.h>
 #include <err.h>
 
+#define ftello ftell // XXX
+#define fseeko fseek // XXX
+
 struct font_chr
 {
 	unsigned	nr;
@@ -108,11 +111,8 @@ static int conv_chr(unsigned nr)
 	struct font_chr hdr;
 	int width = -1;
 	unsigned code;
-	unsigned di = 0;
 	char buf[256];
-	char *nl;
 	int ch;
-	int len;
 	int x, y;
 	
 	code = get_val("glyph");
@@ -163,7 +163,6 @@ static void count_glyphs(void)
 {
 	char buf[256];
 	int ch;
-	char *p;
 	int w;
 	int i;
 	
