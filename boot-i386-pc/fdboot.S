@@ -118,7 +118,6 @@ load_sect:
 	incw	kern_c
 	
 load_sect_end:
-	/* mov	$0x2e,%al */
 	incw	cnt
 	movw	cnt, %bx
 	andw	$3, %bx
