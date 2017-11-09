@@ -145,7 +145,14 @@ copy_sdk()
 	cp -pf		lib/arch/crt0/crt0.o	tree.tmp/usr/lib/
 	cp -pf		cmd/tcc.lib/libtcc1.a	tree.tmp/usr/lib/
 	cp -pf		cmd/tcc/tcc		tree.tmp/usr/bin/
-	cp -pf		cmd/sdk.bin/*		tree.tmp/usr/bin/
+	
+	for i in cmd/sdk.bin/*; do
+		if [ -x $i ]
+		then
+			cp -pf $i tree.tmp/usr/bin/$(basename $i)
+			do_strip tree.tmp/usr/bin/$(basename $i)
+		fi
+	done
 	
 	for i in $examples; do
 		cp -f cmd/bin/$i tree.tmp/usr/examples/
