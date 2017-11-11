@@ -52,7 +52,7 @@ char *	strtok(char *s, const char *delim);
 const char *strsignal(int sig);
 const char *strerror(int errno);
 
-char *	strdup(const char *s);
+char *strdup(const char *s);
 
 void bcopy(const void *s, void *d, size_t len);
 void bzero(void *p, size_t len);

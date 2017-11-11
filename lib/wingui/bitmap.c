@@ -512,10 +512,8 @@ int bmp_hotspot(struct bitmap *bmp, int *x, int *y)
 
 int bmp_size(struct bitmap *bmp, int *w, int *h)
 {
-	struct bitmap *b = bmp;
-	
-	*w = b->width;
-	*h = b->height;
+	*w = bmp->width;
+	*h = bmp->height;
 	
 	return 0;
 }
@@ -528,18 +526,12 @@ int bmp_free(struct bitmap *bmp)
 
 int bmp_conv(struct bitmap *bmp)
 {
-	struct bitmap *b = bmp;
-	
-	if (win_bconv(b->pixels, b->rgba, b->width * b->height))
-		return -1;
-	return 0;
+	return win_bconv(bmp->pixels, bmp->rgba, bmp->width * bmp->height);
 }
 
 int bmp_draw(int wd, struct bitmap *bmp, int x, int y)
 {
-	struct bitmap *b = bmp;
-	
-	return win_bitmap(wd, b->pixels, x, y, b->width, b->height);
+	return win_bitmap(wd, bmp->pixels, x, y, bmp->width, bmp->height);
 }
 
 void bmp_set_bg(struct bitmap *bmp, int r, int g, int b, int a)
