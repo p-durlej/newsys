@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 	
 	for (i = 0; i < cnt; i++)
 		if (buf[i].base)
-			printf("%i %08lx %s\n", buf[i].md, (unsigned long)buf[i].base, buf[i].name);
+			printf("%2i %08lx %s\n", buf[i].md, (unsigned long)buf[i].base, buf[i].name);
 	
 	return 0;
 }
