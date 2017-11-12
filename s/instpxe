@@ -26,5 +26,5 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-cp disks/pxe.img	/tftpboot/m/image
-cp sysload/sysload.pxe	/tftpboot/m/sysload
+cp disks/pxe.img	/var/tftpboot/m/image
+cp sysload/sysload.pxe	/var/tftpboot/m/sysload
