@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pkg_add bzip2 cdrtools gmake gmp mpfr wget
