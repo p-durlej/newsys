@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#define _LIB_INTERNALS // for DIR internals in <dirent.h>
+
 #include <priv/copyright.h>
 #include <wingui_msgbox.h>
 #include <wingui_color.h>

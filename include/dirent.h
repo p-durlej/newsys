@@ -38,12 +38,16 @@ struct dirent
 	char d_name[NAME_MAX+1];
 };
 
+#ifdef _LIB_INTERNALS
 typedef struct
 {
 	int fd;
 	int index;
 	struct dirent de;
 } DIR;
+#else
+typedef struct _DIR DIR;
+#endif
 
 DIR *opendir(const char *path);
 int closedir(DIR *dir);
