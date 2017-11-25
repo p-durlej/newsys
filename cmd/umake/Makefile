@@ -1,6 +1,6 @@
 # Copyright (C) Piotr Durlej
 
-CFLAGS = -g
+include config.mk
 
 OBJ = umake.o load.o
 BIN = umake
@@ -11,6 +11,4 @@ clean:
 	-rm -f $(BIN) $(OBJ)
 
 $(BIN): $(OBJ)
-	$(CC) $(CFLAGS) -o $(BIN) $(OBJ)
-
-include cmd.mk
+	$(CC) -o $(BIN) $(OBJ) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)

@@ -15,6 +15,8 @@
 
 #include "umake.h"
 
+#define TIMESPEC	0
+
 static char *mfnames[] =
 {
 	"umakefile",
@@ -108,6 +110,7 @@ static void trace(struct rule *r, const char *src, const char *target)
 			warnx("making %s: input %s", target, *input);
 }
 
+#if TIMESPEC
 static int older(const struct timespec *ts1, const struct timespec *ts2)
 {
 	if (ts1->tv_sec < ts2->tv_sec)
@@ -116,10 +119,20 @@ static int older(const struct timespec *ts1, const struct timespec *ts2)
 		return 0;
 	return ts1->tv_nsec < ts2->tv_nsec;
 }
+#else
+static int older(time_t t1, time_t t2)
+{
+	return t1 < t2;
+}
+#endif
 
 int make(struct rule *r, const char *src, const char *target)
 {
+#if TIMESPEC
 	struct timespec stv = { 0, 0};
+#else
+	time_t stv;
+#endif
 	struct stat st;
 	char **input;
 	char **cmd;
@@ -144,11 +157,21 @@ int make(struct rule *r, const char *src, const char *target)
 	for (input = r->input; *input; input++)
 	{
 		f |= makebyname(*input);
+#if TIMESPEC
 		if (!stat(*input, &st) && older(&stv, &st.st_mtim))
 			stv = st.st_mtim;
+#else
+		if (!stat(*input, &st) && older(stv, st.st_mtime))
+			stv = st.st_mtime;
+#endif
 	}
+#if TIMESPEC
 	if (!stat(src, &st) && older(&stv, &st.st_mtim))
 		stv = st.st_mtim;
+#else
+	if (!stat(src, &st) && older(stv, st.st_mtime))
+		stv = st.st_mtime;
+#endif
 	
 	if (f)
 	{
@@ -156,11 +179,19 @@ int make(struct rule *r, const char *src, const char *target)
 		return 1;
 	}
 	
+#if TIMESPEC
 	if (src != NULL && !stat(target, &st) && !older(&st.st_mtim, &stv))
 	{
 		depth--;
 		return 0;
 	}
+#else
+	if (src != NULL && !stat(target, &st) && !older(st.st_mtime, stv))
+	{
+		depth--;
+		return 0;
+	}
+#endif
 	
 	if (r->cmds)
 		for (cmd = r->cmds; *cmd; cmd++)
