@@ -38,6 +38,7 @@ all:
 	cd acex-bin	&& $(MAKE) all
 	cd acex-sbin	&& $(MAKE) all
 	cd sdk.bin	&& $(MAKE) all
+	cd umake	&& $(MAKE) all
 
 clean:
 	cd filemgr	&& $(MAKE) clean
@@ -50,3 +51,4 @@ clean:
 	cd acex-bin	&& $(MAKE) clean
 	cd acex-sbin	&& $(MAKE) clean
 	cd sdk.bin	&& $(MAKE) clean
+	cd umake	&& $(MAKE) clean
