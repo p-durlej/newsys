@@ -134,7 +134,7 @@ static void substvars(void)
 
 static int isstokc(int c)
 {
-	return c == '=' || c == ':';
+	return c == '=' || c == ':' || c == '+';
 }
 
 static int ismtokc(int c)
@@ -221,6 +221,37 @@ static void procset(void)
 	
 	setvar(name, val);
 	free(name);
+}
+
+static void proccat(void)
+{
+	struct var *v;
+	char *name;
+	char *val;
+	char *eq;
+	
+	name = token();
+	free(token());
+	eq = token();
+	val = token();
+	
+	if (strcmp(eq, "=") || val == NULL)
+	{
+		warnx("%s: %i: syntax error", mfpathname, mfline);
+		mffail = 1;
+		return;
+	}
+	
+	for (v = vars; v != NULL; v = v->next)
+		if (!strcmp(v->name, name))
+		{
+			if (asprintf(&v->val, "%s %s", v->val, val) < 0)
+				err(1, NULL);
+			warnx("%s = %s", v->name, v->val);
+			return;
+		}
+	
+	setvar(name, val);
 }
 
 static void proccmd(void)
@@ -337,6 +368,9 @@ static void procline(void)
 		return;
 	case '=':
 		procset();
+		return;
+	case '+':
+		proccat();
 		return;
 	}
 	
