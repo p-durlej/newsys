@@ -4,6 +4,7 @@ CFLAGS=
 LD=ld
 AS=as
 CC=cc
+AR=ar
 
 .c.o:
 	$(CC) $(CPPFLAGS) -c -o $@ $<

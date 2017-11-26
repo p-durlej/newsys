@@ -124,6 +124,7 @@ EOF
 	
 	cat >> tree.tmp/etc/sdk.copy << EOF
 755 /bin/code
+755 /usr/bin/ar
 755 /usr/bin/examples
 755 /usr/bin/fnc
 755 /usr/bin/mgen

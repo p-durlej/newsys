@@ -181,6 +181,7 @@
 /cmd/tests/test.time
 /cmd/tests/test.timer
 /cmd/tests/test.vtty
+/cmd/sdk.bin/ar
 /cmd/sdk.bin/examples
 /cmd/sdk.bin/fnc
 /cmd/sdk.bin/mgen
