@@ -342,7 +342,7 @@ static void procline(void)
 	
 	substvars();
 	
-	if (*inbuf == '\t')
+	if (*inbuf == '\t' || *inbuf == ' ')
 	{
 		proccmd();
 		return;
