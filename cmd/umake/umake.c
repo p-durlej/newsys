@@ -30,6 +30,7 @@ static const char *defpath = "/usr/mk";
 static char *mfname;
 static int sflag;
 static int nflag;
+static int rflag;
 static int fail;
 static int depth;
 
@@ -288,6 +289,39 @@ static void addpath(const char *path)
 	incpaths[incpathcnt - 1] = path;
 }
 
+static void rdump1(struct rule *r)
+{
+	char **pp;
+	
+	printf("%s:", r->output);
+	if (r->input)
+		for (pp = r->input; *pp; pp++)
+			printf(" %s", *pp);
+	fputc('\n', stdout);
+	
+	if (r->cmds)
+		for (pp = r->cmds; *pp; pp++)
+			printf("\t%s\n", *pp);
+}
+
+static void rdump(void)
+{
+	struct rule **rr;
+	struct rule *r;
+	int cnt;
+	int i;
+	
+	for (cnt = 0, r = rules; r != NULL; r = r->next)
+		cnt++;
+	
+	rr = calloc(cnt, sizeof *rr);
+	for (i = cnt, r = rules; r; r = r->next)
+		rr[--i] = r;
+	
+	for (i = 0; i < cnt; i++)
+		rdump1(rr[i]);
+}
+
 int main(int argc, char **argv)
 {
 	struct utsname un;
@@ -303,7 +337,7 @@ int main(int argc, char **argv)
 			break;
 		}
 	
-	while (c = getopt(argc, argv, "nsvd:f:i:I:"), c > 0)
+	while (c = getopt(argc, argv, "nrsvd:f:i:I:"), c > 0)
 		switch (c)
 		{
 		case 'i':
@@ -327,6 +361,9 @@ int main(int argc, char **argv)
 		case 'v':
 			vflag = 1;
 			break;
+		case 'r':
+			rflag = 1;
+			break;
 		default:
 			return 1;
 		}
@@ -348,6 +385,12 @@ int main(int argc, char **argv)
 		return 1;
 	if (load(mfname))
 		return 1;
+	
+	if (rflag)
+	{
+		rdump();
+		return 0;
+	}
 	
 	if (!argc)
 	{
