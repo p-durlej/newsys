@@ -35,7 +35,7 @@ int system(const char *comm)
 	pid_t xpid;
 	pid_t pid;
 	
-	pid = _newtaskl("/bin/sh", "/bin/sh", "-c", comm);
+	pid = _newtaskl("/bin/sh", "/bin/sh", "-c", comm, (void *)NULL);
 	if (pid < 0)
 		return -1;
 	
