@@ -29,6 +29,9 @@ void setvar(const char *name, const char *value)
 {
 	struct var *var;
 	
+	if (vflag)
+		warnx("%s = %s", name, value);
+	
 	for (var = vars; var != NULL; var = var->next)
 		if (!strcmp(var->name, name))
 		{
@@ -100,15 +103,17 @@ static const char *getvar(const char *name)
 	return NULL;
 }
 
-static void substvars(void)
+char *substvars(const char *s)
 {
+	char buf[4096]; // XXX
 	char *p, *p1, *p2;
 	const char *v;
 	char *sp, *dp;
 	ssize_t o;
 	size_t l;
 	
-	p = inbuf;
+	strcpy(buf, s); // XXX
+	p = buf;
 	while (p1 = strstr(p, "$("), p1 != NULL)
 	{
 		p2 = strchr(p1, ')');
@@ -117,7 +122,7 @@ static void substvars(void)
 		{
 			warnx("%s: %i: unterminated $(...)", mfpathname, mfline);
 			mffail = 1;
-			return;
+			goto fini;
 		}
 		
 		v = getvar(p1 + 2);
@@ -134,6 +139,11 @@ static void substvars(void)
 		memmove(dp, sp, strlen(sp) + 1);
 		memcpy(p1, v, l);
 	}
+fini:
+	p = strdup(buf);
+	if (p == NULL)
+		err(1, NULL);
+	return p;
 }
 
 static int isstokc(int c)
@@ -197,13 +207,14 @@ static void procrule(void)
 	r->next = rules;
 	rules = r;
 	
-	r->output = token();
+	r->output = substvars(token());
 	free(token());
 	
 	while (d = token(), d != NULL)
 	{
 		r->input = realloc(r->input, (cnt + 2) * sizeof r->input);
-		r->input[cnt++] = d;
+		r->input[cnt++] = substvars(d);
+		free(d);
 	}
 	if (cnt)
 		r->input[cnt] = NULL;
@@ -344,7 +355,7 @@ static void procline(void)
 	if (vflag)
 		warnx("< %s", inbuf);
 	
-	substvars();
+	// substvars();
 	
 	if (*inbuf == '\t' || *inbuf == ' ')
 	{

@@ -27,5 +27,6 @@ static struct rule *find_rule(const char *output);
 int load(const char *pathname);
 int make(struct rule *r, const char *src, const char *target);
 void setvar(const char *name, const char *value);
+char *substvars(const char *s);
 
 #endif

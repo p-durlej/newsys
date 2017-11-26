@@ -42,13 +42,16 @@ int makebyname(const char *name);
 int docmd(const char *cmd, const char *src, const char *target)
 {
 	char buf[4096];
+	char *sbuf;
 	const char *sp;
 	int noecho = 0;
 	int iexit = 0;
 	int f = 0;
 	char *dp;
 	
-	for (dp = buf, sp = cmd; *sp; sp++)
+	sbuf = substvars(cmd);
+	
+	for (dp = buf, sp = sbuf; *sp; sp++)
 		switch (*sp)
 		{
 		case '$':
