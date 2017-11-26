@@ -202,7 +202,7 @@ static void procrule(void)
 	
 	while (d = token(), d != NULL)
 	{
-		r->input = realloc(r->input, (cnt + 1) * sizeof r->input);
+		r->input = realloc(r->input, (cnt + 2) * sizeof r->input);
 		r->input[cnt++] = d;
 	}
 	if (cnt)

@@ -282,7 +282,7 @@ static void addpath(const char *path)
 	incpaths = realloc(incpaths, ++incpathcnt * sizeof *incpaths);
 	if (incpaths == NULL)
 		err(1, NULL);
-	incpaths[incpathcnt++] = path;
+	incpaths[incpathcnt - 1] = path;
 }
 
 int main(int argc, char **argv)
