@@ -331,12 +331,6 @@ int main(int argc, char **argv)
 	argv += optind;
 	argc -= optind;
 	
-	setvar("CPPFLAGS",	"");
-	setvar("CFLAGS",	"-g");
-	setvar("LD",		"ld");
-	setvar("AS",		"as");
-	setvar("CC",		"cc");
-	
 	if (load(defmk))
 		return 1;
 	if (load(mfname))
