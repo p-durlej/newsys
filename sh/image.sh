@@ -118,6 +118,10 @@ make_sdk_lists()
 		echo "644 /usr/examples/$i"
 	done >> tree.tmp/etc/sdk.copy
 	
+	cat >> tree.tmp/etc/sdk.mkdir << EOF
+755 /usr/mk
+EOF
+	
 	cat >> tree.tmp/etc/sdk.copy << EOF
 755 /bin/code
 755 /usr/bin/examples
@@ -127,6 +131,7 @@ make_sdk_lists()
 700 /usr/bin/modlist
 700 /usr/bin/modload
 755 /usr/bin/tcc
+755 /usr/bin/umake
 644 /lib/icons/code.pnm
 644 /lib/icons64/code.pnm
 644 /etc/filetype/ext-c
@@ -134,6 +139,7 @@ make_sdk_lists()
 644 /etc/skel/.desktop/Apps/Code Editor
 644 /root/.desktop/Apps/Code Editor
 644 /usr/examples/.dirinfo
+644 /usr/mk/default.mk
 EOF
 }
 
@@ -153,6 +159,15 @@ copy_sdk()
 			do_strip tree.tmp/usr/bin/$(basename $i)
 		fi
 	done
+	
+	for i in cmd/umake/*; do
+		if [ -x $i ]; then
+			cp -pf $i tree.tmp/usr/bin/$(basename $i)
+			do_strip tree.tmp/usr/bin/$(basename $i)
+		fi
+	done
+	
+	cp cmd/umake/default.mk tree.tmp/usr/mk/default.mk
 	
 	for i in $examples; do
 		cp -f cmd/bin/$i tree.tmp/usr/examples/
