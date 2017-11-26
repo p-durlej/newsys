@@ -300,7 +300,7 @@ int main(int argc, char **argv)
 			break;
 		}
 	
-	while (c = getopt(argc, argv, "nsvd:f:"), c > 0)
+	while (c = getopt(argc, argv, "nsvd:f:i:I:"), c > 0)
 		switch (c)
 		{
 		case 'i':
