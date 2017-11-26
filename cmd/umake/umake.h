@@ -19,6 +19,10 @@ extern struct var
 	char *val;
 } *vars;
 
+extern char **incpaths;
+extern int incpathcnt;
+extern int vflag;
+
 static struct rule *find_rule(const char *output);
 int load(const char *pathname);
 int make(struct rule *r, const char *src, const char *target);

@@ -25,12 +25,16 @@ static char *mfnames[] =
 };
 
 static const char *defmk = "/usr/mk/default.mk";
+static const char *defpath = "/usr/mk";
 static char *mfname;
 static int sflag;
 static int nflag;
-static int vflag;
 static int fail;
 static int depth;
+
+char **incpaths;
+int incpathcnt;
+int vflag;
 
 int makebyname(const char *name);
 
@@ -272,6 +276,14 @@ int makebyname(const char *name)
 	return -1;
 }
 
+static void addpath(const char *path)
+{
+	incpaths = realloc(incpaths, ++incpathcnt * sizeof *incpaths);
+	if (incpaths == NULL)
+		err(1, NULL);
+	incpaths[incpathcnt++] = path;
+}
+
 int main(int argc, char **argv)
 {
 	struct rule *r;
@@ -288,6 +300,12 @@ int main(int argc, char **argv)
 	while (c = getopt(argc, argv, "nsvd:f:"), c > 0)
 		switch (c)
 		{
+		case 'i':
+			defpath = optarg;
+			break;
+		case 'I':
+			addpath(optarg);
+			break;
 		case 'd':
 			defmk = optarg;
 			break;
@@ -306,6 +324,9 @@ int main(int argc, char **argv)
 		default:
 			return 1;
 		}
+	
+	if (*defpath)
+		addpath(defpath);
 	
 	argv += optind;
 	argc -= optind;

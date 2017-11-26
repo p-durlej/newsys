@@ -249,9 +249,65 @@ static void proccmd(void)
 		err(1, NULL);
 }
 
+static void procincl(void)
+{
+	const char *smfpathname;
+	int smfnextline;
+	int smfline;
+	int smffail;
+	FILE *smffile;
+	char *pathname = NULL;
+	char buf[PATH_MAX];
+	char *name;
+	int i;
+	
+	smfpathname	= mfpathname;
+	smfnextline	= mfnextline;
+	smfline		= mfline;
+	smffail		= mffail;
+	smffile		= mffile;
+	
+	free(token());
+	name = token();
+	
+	if (!access(name, 0))
+		pathname = name;
+	else
+		for (i = 0; i < incpathcnt; i++)
+		{
+			sprintf(buf, "%s/%s", incpaths[i], name);
+			if (!access(buf, 0))
+			{
+				pathname = buf;
+				break;
+			}
+		}
+	
+	if (pathname == NULL)
+	{
+		warnx("%s: %i: %s: Not found", mfpathname, mfline, name);
+		mffail = 1;
+		return;
+	}
+	
+	load(pathname);
+	
+	mfpathname	= smfpathname;
+	mfnextline	= smfnextline;
+	mfline		= smfline;
+	// mffail		= smffail;
+	mffile		= smffile;
+	mfeof		= 0;
+	
+	free(name);
+}
+
 static void procline(void)
 {
 	char *p;
+	
+	if (vflag)
+		warnx("< %s", inbuf);
 	
 	substvars();
 	
@@ -264,6 +320,12 @@ static void procline(void)
 	p = inbuf;
 	while (ismtokc(*p))
 		p++;
+	
+	if (p - inbuf == 7 && !memcmp(inbuf, "include", 7))
+	{
+		procincl();
+		return;
+	}
 	
 	while (isspace(*p))
 		p++;
