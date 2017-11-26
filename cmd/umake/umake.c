@@ -2,6 +2,7 @@
 
 #define _GNU_SOURCE
 
+#include <sys/utsname.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -286,7 +287,9 @@ static void addpath(const char *path)
 
 int main(int argc, char **argv)
 {
+	struct utsname un;
 	struct rule *r;
+	char *p;
 	int i;
 	int c;
 	
@@ -330,6 +333,13 @@ int main(int argc, char **argv)
 	
 	argv += optind;
 	argc -= optind;
+	
+	uname(&un);
+	setvar("MACH", un.machine);
+	p = strchr(un.machine, '-');
+	if (p)
+		*p = 0;
+	setvar("ARCH", un.machine);
 	
 	if (load(defmk))
 		return 1;
