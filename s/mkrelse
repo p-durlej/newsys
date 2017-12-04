@@ -30,7 +30,7 @@ set -e
 
 . s/env.sh
 
-: ${ARCH:=amd64}
+: ${ARCH:=i386}
 
 gmake -s symlinks
 gmake -s clean

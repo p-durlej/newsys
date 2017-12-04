@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ARCH		?= amd64
+ARCH		?= i386
 MACH		:= $(ARCH)-pc
 
 TOOLDIR		:= $(TOPDIR)/../tools
