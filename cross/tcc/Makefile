@@ -4,6 +4,8 @@ OBJ	 = libtcc.o tccasm.o tcc.o tccelf.o tccgen.o tccpp.o
 OBJ	+= $(OBJ_I386)
 BIN	 = ctcc
 
+CFLAGS	+= -I ../../include-$(ARCH)
+
 all: $(BIN)
 
 $(BIN): $(OBJ)

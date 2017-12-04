@@ -147,6 +147,7 @@ EOF
 
 copy_sdk()
 {
+	cp -LRpf	include-$ARCH/*		tree.tmp/usr/include/
 	cp -LRpf	include-$MACH/*		tree.tmp/usr/include/
 	cp -LRpf	include/*		tree.tmp/usr/include/
 	cp -pf		cmd/tcc.include/*	tree.tmp/usr/include/
@@ -179,9 +180,6 @@ copy_sdk()
 	for i in $sexamples; do
 		cp -f cmd/sbin/$i tree.tmp/usr/examples/
 	done
-	
-	rm -rf		tree.tmp/usr/include/kern/arch-*
-	rm -rf		tree.tmp/usr/include/arch-*
 	
 	do_strip	tree.tmp/usr/bin/tcc
 	

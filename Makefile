@@ -60,8 +60,6 @@ clean-symlinks:
 	rm -f include/machine
 	rm -f machine
 	rm -f boot
-	rm -f include/kern/arch
-	rm -f include/arch
 	rm -f kern/arch
 	rm -f lib/load/arch
 	rm -f lib/arch
@@ -71,8 +69,6 @@ clean-symlinks:
 symlinks: clean-symlinks
 	ln -s machine-$(MACH)				machine
 	ln -s boot-$(MACH)				boot
-	ln -s arch-$(ARCH)				include/kern/arch
-	ln -s arch-$(ARCH)				include/arch
 	ln -s arch-$(ARCH)				kern/arch
 	ln -s arch-$(ARCH)				lib/load/arch
 	ln -s arch-$(ARCH)				lib/arch

@@ -1,5 +1,5 @@
 
-#include "../../include/arch/archdef.h"
+#include <arch/archdef.h>
 
 #ifdef __ARCH_AMD64__
 #define TCC_TARGET_X86_64
