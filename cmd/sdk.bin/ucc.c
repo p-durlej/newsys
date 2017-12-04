@@ -19,14 +19,23 @@ static char *output;
 static int cflag;
 static int kflag;
 static int mflag;
+static int vflag;
 static int xflag;
 
 static int spawn(char *pathname, char **argv)
 {
 	pid_t pid;
 	int st;
+	int i;
 	
 	signal(SIGCHLD, SIG_DFL);
+	
+	if (vflag)
+	{
+		for (i = 0; argv[i]; i++)
+			fprintf(stderr, "%s ", argv[i]);
+		fputc('\n', stderr);
+	}
 	
 	pid = _newtaskv(pathname, argv);
 	if (pid < 0)
@@ -135,7 +144,7 @@ int main(int argc, char **argv)
 	int st;
 	int c;
 	
-	while (c = getopt(argc, argv, "kmco:x"), c > 0)
+	while (c = getopt(argc, argv, "kmco:vx"), c > 0)
 		switch (c)
 		{
 		case 'k':
@@ -153,6 +162,9 @@ int main(int argc, char **argv)
 			break;
 		case 'x':
 			xflag = 1;
+			break;
+		case 'v':
+			vflag = 1;
 			break;
 		default:
 			return 1;
