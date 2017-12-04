@@ -69,8 +69,6 @@ clean-symlinks:
 	rm -f drv-arch
 
 symlinks: clean-symlinks
-	ln -s machine-$(MACH)				include/kern/machine
-	ln -s machine-$(MACH)				include/machine
 	ln -s machine-$(MACH)				machine
 	ln -s boot-$(MACH)				boot
 	ln -s arch-$(ARCH)				include/kern/arch

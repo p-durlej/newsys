@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <kern/machine-i386-pc/bioscall.h>
+#include <kern/machine/bioscall.h>
 #include <kern/wingui.h>
 #include <kern/lib.h>
 #include <dev/framebuf.h>
