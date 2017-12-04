@@ -26,4 +26,4 @@
 #
 
 ARCH_O	= elo/elo_amd64.o
-HEAD_O	= arch/load_asm.o
+HEAD_O	= arch-amd64/load_asm.o

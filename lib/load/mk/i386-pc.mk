@@ -26,4 +26,4 @@
 #
 
 ARCH_O	= elo/elo_i386.o
-HEAD_O	= arch/load_asm.o
+HEAD_O	= arch-i386/load_asm.o
