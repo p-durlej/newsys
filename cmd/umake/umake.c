@@ -485,15 +485,16 @@ int main(int argc, char **argv)
 	if (*defpath)
 		addpath(defpath);
 	
-	argv += optind;
-	argc -= optind;
-	
 	uname(&un);
 	setvar("MACH", un.machine);
 	p = strchr(un.machine, '-');
 	if (p)
 		*p = 0;
 	setvar("ARCH", un.machine);
+	setvar("MAKE", argv[0]);
+	
+	argv += optind;
+	argc -= optind;
 	
 	if (load(defmk))
 		return 1;
