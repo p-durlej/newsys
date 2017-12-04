@@ -99,7 +99,7 @@ copy_sys()
 {
 	cp -pf sysload/sysload	tree.tmp/lib/sys/sysload
 	cp -pf kern/os386	tree.tmp/lib/sys/kern.bin
-	cp -pf boot/*.bin	tree.tmp/lib/sys/
+	cp -pf boot-pc/*.bin	tree.tmp/lib/sys/
 	
 	chmod a-x tree.tmp/lib/sys/*.bin > /dev/null 2>&1 # XXX
 }

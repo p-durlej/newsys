@@ -38,7 +38,7 @@ endif
 all:
 	cd cross	&& $(MAKE) all
 	cd fonts	&& $(MAKE) all
-	cd boot		&& $(MAKE) all
+	cd boot-pc	&& $(MAKE) all
 	cd sysload	&& $(MAKE) all
 	cd kern		&& $(MAKE) all
 	cd drv-$(ARCH)	&& $(MAKE) all
@@ -59,7 +59,6 @@ clean-symlinks:
 	rm -f include/kern/machine
 	rm -f include/machine
 	rm -f machine
-	rm -f boot
 	rm -f kern/arch
 	rm -f lib/load/arch
 	rm -f lib/arch
@@ -67,7 +66,6 @@ clean-symlinks:
 
 symlinks: clean-symlinks
 	ln -s machine-$(MACH)				machine
-	ln -s boot-$(MACH)				boot
 	ln -s arch-$(ARCH)				kern/arch
 	ln -s arch-$(ARCH)				lib/load/arch
 	ln -s arch-$(ARCH)				lib/arch
@@ -76,7 +74,7 @@ symlinks: clean-symlinks
 clean:
 	cd cross	&& $(MAKE) clean
 	cd fonts	&& $(MAKE) clean
-	cd boot		&& $(MAKE) clean
+	cd boot-pc	&& $(MAKE) clean
 	cd sysload	&& $(MAKE) clean
 	cd kern		&& $(MAKE) clean
 	cd drv-$(ARCH)	&& $(MAKE) clean

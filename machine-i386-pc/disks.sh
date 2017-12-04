@@ -38,12 +38,12 @@ make_src() {
 	rm -rf disks/src
 }
 
-dd status=none if=boot/hdflat.bin	of=disks/hdflat.img
+dd status=none if=boot-pc/hdflat.bin	of=disks/hdflat.img
 dd status=none if=sysload/sysload	of=disks/hdflat.img	seek=2
 dd status=none if=/dev/null		of=disks/hdflat.img	seek=16384
 cross/mkbfs disks/hdflat.img 1 128 tree.tmp
 
-dd status=none if=boot/cdboot.bin	of=disks/cdrom.iso
+dd status=none if=boot-pc/cdboot.bin	of=disks/cdrom.iso
 dd status=none if=sysload/sysload.cdrom	of=disks/cdrom.iso	seek=4		conv=notrunc
 dd status=none if=/dev/null		of=disks/cdrom.iso	seek=16384
 cross/mkbfs disks/cdrom.iso 0 128 tree.tmp
