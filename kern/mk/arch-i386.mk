@@ -25,15 +25,15 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ARCH_O := ../lib/arch/io.o	\
-	  arch/switch.o		\
-	  arch/syscall.o	\
-	  arch/intr_regs.o	\
-	  arch/cpu.o		\
-	  arch/module.o		\
-	  arch/umem.o		\
-	  arch/umem_fault.o	\
-	  arch/page.o		\
-	  arch/page_asm.o	\
-	  panic_i386.o		\
+ARCH_O := ../lib/arch/io.o		\
+	  arch-i386/switch.o		\
+	  arch-i386/syscall.o		\
+	  arch-i386/intr_regs.o		\
+	  arch-i386/cpu.o		\
+	  arch-i386/module.o		\
+	  arch-i386/umem.o		\
+	  arch-i386/umem_fault.o	\
+	  arch-i386/page.o		\
+	  arch-i386/page_asm.o		\
+	  panic_i386.o			\
 	  lib/printk_i386.o

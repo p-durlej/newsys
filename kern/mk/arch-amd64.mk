@@ -25,18 +25,18 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ARCH_O := ../lib/arch/io.o	\
-	  arch/switch.o		\
-	  arch/syscall.o	\
-	  arch/intr_regs.o	\
-	  arch/cpu.o		\
-	  arch/module.o		\
-	  arch/uboot.o		\
-	  arch/umem.o		\
-	  arch/umem_fault.o	\
-	  arch/page.o		\
-	  arch/page_asm.o	\
-	  panic_amd64.o		\
+ARCH_O := ../lib/arch/io.o		\
+	  arch-amd64/switch.o		\
+	  arch-amd64/syscall.o		\
+	  arch-amd64/intr_regs.o	\
+	  arch-amd64/cpu.o		\
+	  arch-amd64/module.o		\
+	  arch-amd64/uboot.o		\
+	  arch-amd64/umem.o		\
+	  arch-amd64/umem_fault.o	\
+	  arch-amd64/page.o		\
+	  arch-amd64/page_asm.o		\
+	  panic_amd64.o			\
 	  lib/printk_amd64.o
 
 CFLAGS += -mno-red-zone

@@ -58,12 +58,10 @@ base:
 clean-symlinks:
 	rm -f include/kern/machine
 	rm -f include/machine
-	rm -f kern/arch
 	rm -f lib/load/arch
 	rm -f lib/arch
 
 symlinks: clean-symlinks
-	ln -s arch-$(ARCH)				kern/arch
 	ln -s arch-$(ARCH)				lib/load/arch
 	ln -s arch-$(ARCH)				lib/arch
 
