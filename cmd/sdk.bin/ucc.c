@@ -9,8 +9,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <err.h>
 
+#define MGEN	"/usr/bin/mgen"
 #define CC	"/usr/bin/cc"
 
 static char *output;
@@ -18,12 +20,81 @@ static int cflag;
 static int kflag;
 static int mflag;
 
-int main(int argc, char **argv)
+static int spawn(char *pathname, char **argv)
+{
+	pid_t pid;
+	int st;
+	
+	signal(SIGCHLD, SIG_DFL);
+	
+	pid = _newtaskv(pathname, argv);
+	if (pid < 0)
+		err(1, "%s", CC);
+	
+	while (wait(&st) != pid)
+		;
+	
+	if (WIFEXITED(st))
+		return WEXITSTATUS(st);
+	return WTERMSIG(st) + 128;
+}
+
+static int ccld(char *output, char **input, int cflag)
 {
 	char **cargs;
 	char **spp;
 	char **pp;
-	pid_t pid;
+	int cnt;
+	
+	for (cnt = 0; input[cnt]; cnt++)
+		;
+	
+	pp = cargs = calloc(cnt + 16, sizeof *cargs);
+	if (cargs == NULL)
+		err(1, NULL);
+	
+	*pp++ = CC;
+	
+	if (kflag)
+		*pp++ = "-D_KERN_";
+	if (cflag)
+		*pp++ = "-c";
+	
+	*pp++ = "-o";
+	*pp++ = output;
+	
+	for (spp = input; *spp != NULL; spp++)
+		*pp++ = *spp;
+	*pp = NULL;
+	
+	return spawn(CC, cargs);
+}
+
+static int mkmod(char *output, char **input)
+{
+	char *args[] =
+	{
+		MGEN,
+		output,
+		"",
+		NULL
+	};
+	char *partial;
+	int st;
+	
+	if (asprintf(&partial, "%s.o", output) < 0)
+		err(1, NULL);
+	args[2] = partial;
+	
+	st = ccld(partial, input, 1);
+	if (st)
+		return st;
+	
+	return spawn(MGEN, args);
+}
+
+int main(int argc, char **argv)
+{
 	int st;
 	int c;
 	
@@ -57,7 +128,7 @@ int main(int argc, char **argv)
 	{
 		char *p;
 		
-		p = strchr(argv[0], '.');
+		p = strrchr(argv[0], '.');
 		if (p == NULL || !p[1])
 			errx(1, "no output name");
 		
@@ -65,7 +136,7 @@ int main(int argc, char **argv)
 		if (output == NULL)
 			err(1, NULL);
 		
-		p = strchr(output, '.');
+		p = strrchr(output, '.');
 		if (cflag)
 		{
 			p[1] = 'o';
@@ -75,34 +146,13 @@ int main(int argc, char **argv)
 			*p = 0;
 	}
 	
-	pp = cargs = calloc(argc + 8, sizeof *cargs);
-	if (cargs == NULL)
-		err(1, NULL);
+	if (mflag && !cflag)
+		st = mkmod(output, argv);
+	else
+		st = ccld(output, argv, cflag);
 	
-	*pp++ = CC;
+	if (st)
+		return st;
 	
-	if (kflag)
-		*pp++ = "-D_KERN_";
-	if (cflag)
-		*pp++ = "-c";
-	
-	*pp++ = "-o";
-	*pp++ = output;
-	
-	for (spp = argv; *spp != NULL; spp++)
-		*pp++ = *spp;
-	*pp = NULL;
-	
-	signal(SIGCHLD, SIG_DFL);
-	
-	pid = _newtaskv(CC, cargs);
-	if (pid < 0)
-		err(1, "%s", CC);
-	
-	while (wait(&st) != pid)
-		;
-	
-	if (WIFEXITED(st))
-		return WEXITSTATUS(st);
-	return WTERMSIG(st) + 128;
+	return 0;
 }
