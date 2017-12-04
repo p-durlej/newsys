@@ -81,7 +81,7 @@ static int form_x = -1;
 static int form_y = -1;
 
 static int save_config = 1;
-static int restrict;
+static int restricted;
 static int backdrop;
 static int bigH;
 static int bigM;
@@ -704,7 +704,7 @@ static char **parse_args(int argc, char **argv)
 			break;
 		}
 		case 'r':
-			restrict    = 1;
+			restricted  = 1;
 			save_config = 0;
 			break;
 		default:
@@ -761,7 +761,7 @@ restart:
 		colorsel_get(fgcs, &color_table[FG_DEFAULT]);
 		colorsel_get(cscs, &color_table[CURSOR]);
 		gadget_redraw(screen);
-		if (!restrict && c_save("vtty-color", &color_table, sizeof color_table))
+		if (!restricted && c_save("vtty-color", &color_table, sizeof color_table))
 		{
 			msgbox_perror(main_form, title, "Cannot save settings", errno);
 			goto restart;

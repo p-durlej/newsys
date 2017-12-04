@@ -25,9 +25,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-CMD := test ls echo mkdir rmdir cp mv ln sleep rm cat expr \
-       basename dirname kill true false chmod whoami more du \
-       dd date uname pwd env printenv which chsh tty grep mknod \
-       nice cmp stat
+CMD = test ls echo mkdir rmdir cp mv ln sleep rm cat expr	\
+      basename dirname kill true false chmod whoami more du	\
+      dd date uname pwd env printenv which chsh tty grep mknod	\
+      nice cmp stat
 
 include cmd.mk

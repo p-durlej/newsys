@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#pragma GCC diagnostic ignored "-Wdiv-by-zero"
+
 #include <arch/archdef.h>
 #include <kern/page.h>
 #include <sys/io.h>
@@ -53,8 +55,6 @@ void segv_click(struct gadget *g, int x, int y)
 	*p = 0;
 }
 
-#pragma GCC push
-#pragma GCC diagnostic ignored "-Wdiv-by-zero"
 void divz_click(struct gadget *g, int x, int y)
 {
 	int v = 1;
@@ -64,7 +64,6 @@ void divz_click(struct gadget *g, int x, int y)
 	
 	v = v / 0;
 }
-#pragma GCC pop
 
 void loop_click(struct gadget *g, int x, int y)
 {

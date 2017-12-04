@@ -25,6 +25,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-CMD := chown nologin
+CMD = chown nologin
 
 include cmd.mk

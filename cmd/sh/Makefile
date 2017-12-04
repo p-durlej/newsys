@@ -25,6 +25,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-CMD := sh glob if
+CMD = sh glob if
 
 include cmd.mk
