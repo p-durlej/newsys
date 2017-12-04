@@ -32,7 +32,6 @@ set -e
 
 : ${ARCH:=i386}
 
-gmake -s symlinks
 gmake -s clean
 gmake -s
 

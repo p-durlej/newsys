@@ -55,12 +55,6 @@ base:
 	cd cmd		&& $(MAKE) all
 	s/makebase
 
-clean-symlinks:
-	rm -f include/kern/machine
-	rm -f include/machine
-
-symlinks: clean-symlinks
-
 clean:
 	cd cross	&& $(MAKE) clean
 	cd fonts	&& $(MAKE) clean
