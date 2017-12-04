@@ -62,7 +62,7 @@ static char *mkinput(const char *target)
 			return buf;
 		}
 	
-	tx = strchr(target, '.');
+	tx = strrchr(target, '.');
 	if (tx != NULL)
 		for (r = rules; r; r = r->next)
 		{
@@ -90,27 +90,27 @@ static char *mkinput(const char *target)
 			
 			return buf;
 		}
-	else
-		for (r = rules; r; r = r->next)
+	
+	for (r = rules; r; r = r->next)
+	{
+		if (*r->output != '.')
+			continue;
+		
+		p = strchr(r->output + 1, '.');
+		if (p != NULL)
+			continue;
+		
+		for (sp = r->input; *sp != NULL; sp++)
 		{
-			if (*r->output != '.')
-				continue;
-			
-			p = strchr(r->output + 1, '.');
-			if (p != NULL)
-				continue;
-			
-			for (sp = r->input; *sp != NULL; sp++)
-			{
-				strcat(buf, *sp);
-				strcat(buf, " ");
-			}
-			
-			strcat(buf, target);
-			strcat(buf, r->output);
-			
-			return buf;
+			strcat(buf, *sp);
+			strcat(buf, " ");
 		}
+		
+		strcat(buf, target);
+		strcat(buf, r->output);
+		
+		return buf;
+	}
 	return buf;
 }
 
@@ -213,7 +213,7 @@ static int older(time_t t1, time_t t2)
 int make(struct rule *r, const char *src, const char *target)
 {
 #if TIMESPEC
-	struct timespec stv = { 0, 0};
+	struct timespec stv = { 0, 0 };
 #else
 	time_t stv;
 #endif
@@ -307,7 +307,7 @@ int makebyname(const char *name)
 				return 0;
 		}
 	
-	tx = strchr(name, '.');
+	tx = strrchr(name, '.');
 	if (tx != NULL)
 		for (r = rules; r; r = r->next)
 		{
@@ -337,27 +337,27 @@ int makebyname(const char *name)
 			if (r->cmds)
 				return 0;
 		}
-	else
-		for (r = rules; r; r = r->next)
-		{
-			if (*r->output != '.')
-				continue;
-			
-			p = strchr(r->output + 1, '.');
-			if (p != NULL)
-				continue;
-			
-			xlen = p - r->output;
-			blen = tx - name;
-			
-			if (asprintf(&src, "%s%s", name, r->output) < 0)
-				err(1, NULL);
-			
-			if (make(r, src, name))
-				return -1;
-			if (r->cmds)
-				return 0;
-		}
+	
+	for (r = rules; r; r = r->next)
+	{
+		if (*r->output != '.')
+			continue;
+		
+		p = strchr(r->output + 1, '.');
+		if (p != NULL)
+			continue;
+		
+		xlen = p - r->output;
+		blen = tx - name;
+		
+		if (asprintf(&src, "%s%s", name, r->output) < 0)
+			err(1, NULL);
+		
+		if (make(r, src, name))
+			return -1;
+		if (r->cmds)
+			return 0;
+	}
 	
 	if (!access(name, 0))
 		return 0;
@@ -374,7 +374,7 @@ static void linkrule(struct rule *r)
 	const char *oext;
 	struct rule *r1;
 	
-	oext = strchr(output, '.');
+	oext = strrchr(output, '.');
 	for (r1 = r->next; r1 != NULL; r1 = r1->next)
 	{
 		if (oext == NULL || strcmp(r1->output, oext))
