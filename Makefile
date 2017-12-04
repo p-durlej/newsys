@@ -41,7 +41,7 @@ all:
 	cd boot		&& $(MAKE) all
 	cd sysload	&& $(MAKE) all
 	cd kern		&& $(MAKE) all
-	cd drv-arch	&& $(MAKE) all
+	cd drv-$(ARCH)	&& $(MAKE) all
 	cd drv-pc	&& $(MAKE) all
 	cd drv		&& $(MAKE) all
 	cd lib		&& $(MAKE) all
@@ -64,7 +64,6 @@ clean-symlinks:
 	rm -f lib/load/arch
 	rm -f lib/arch
 	rm -f arch
-	rm -f drv-arch
 
 symlinks: clean-symlinks
 	ln -s machine-$(MACH)				machine
@@ -73,7 +72,6 @@ symlinks: clean-symlinks
 	ln -s arch-$(ARCH)				lib/load/arch
 	ln -s arch-$(ARCH)				lib/arch
 	ln -s arch-$(ARCH)				arch
-	ln -s drv-$(ARCH)				drv-arch
 
 clean:
 	cd cross	&& $(MAKE) clean
@@ -81,7 +79,7 @@ clean:
 	cd boot		&& $(MAKE) clean
 	cd sysload	&& $(MAKE) clean
 	cd kern		&& $(MAKE) clean
-	cd drv-arch	&& $(MAKE) clean
+	cd drv-$(ARCH)	&& $(MAKE) clean
 	cd drv-pc	&& $(MAKE) clean
 	cd drv		&& $(MAKE) clean
 	cd lib		&& $(MAKE) clean

@@ -79,7 +79,7 @@ copy_files()
 		fi
 	done
 	
-	for i in drv/*.drv drv/*.sys drv-arch/*.drv drv-pc/*.drv
+	for i in drv/*.drv drv/*.sys drv-$ARCH/*.drv drv-pc/*.drv
 	do
 		if [ -f $i ]
 		then
