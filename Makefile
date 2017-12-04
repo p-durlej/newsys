@@ -62,14 +62,12 @@ clean-symlinks:
 	rm -f kern/arch
 	rm -f lib/load/arch
 	rm -f lib/arch
-	rm -f arch
 
 symlinks: clean-symlinks
 	ln -s machine-$(MACH)				machine
 	ln -s arch-$(ARCH)				kern/arch
 	ln -s arch-$(ARCH)				lib/load/arch
 	ln -s arch-$(ARCH)				lib/arch
-	ln -s arch-$(ARCH)				arch
 
 clean:
 	cd cross	&& $(MAKE) clean

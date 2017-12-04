@@ -48,10 +48,10 @@ do_strip()
 
 copy_sysinstall()
 {
-	cat machine/sysinstall.mkdir >> tree.tmp/etc/sysinstall.mkdir
-	cat machine/sysinstall.copy  >> tree.tmp/etc/sysinstall.copy
-	cat arch/sysinstall.mkdir    >> tree.tmp/etc/sysinstall.mkdir
-	cat arch/sysinstall.copy     >> tree.tmp/etc/sysinstall.copy
+	cat machine/sysinstall.mkdir	>> tree.tmp/etc/sysinstall.mkdir
+	cat machine/sysinstall.copy	>> tree.tmp/etc/sysinstall.copy
+	cat arch-$ARCH/sysinstall.mkdir	>> tree.tmp/etc/sysinstall.mkdir
+	cat arch-$ARCH/sysinstall.copy	>> tree.tmp/etc/sysinstall.copy
 }
 
 copy_files()
