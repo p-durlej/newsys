@@ -49,7 +49,7 @@ static int spawn(char *pathname, char **argv)
 	return WTERMSIG(st) + 128;
 }
 
-static int ccld(char *output, char **input, int cflag)
+static int ccld(char *output, char **input, int cflag, int rflag)
 {
 	char **cargs;
 	char **spp;
@@ -69,6 +69,8 @@ static int ccld(char *output, char **input, int cflag)
 		*pp++ = "-D_KERN_";
 	if (cflag)
 		*pp++ = "-c";
+	if (rflag)
+		*pp++ = "-r";
 	
 	*pp++ = "-o";
 	*pp++ = output;
@@ -96,7 +98,7 @@ static int mkmod(char *output, char **input)
 		err(1, NULL);
 	args[2] = partial;
 	
-	st = ccld(partial, input, 1);
+	st = ccld(partial, input, 0, 1);
 	if (st)
 		return st;
 	
@@ -133,7 +135,7 @@ static int docc(char **input)
 	if (mflag && !cflag)
 		st = mkmod(out, input);
 	else
-		st = ccld(out, input, cflag);
+		st = ccld(out, input, cflag, 0);
 	
 	return st;
 }
