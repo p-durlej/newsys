@@ -28,6 +28,7 @@
 #include <wingui_form.h>
 #include <sys/signal.h>
 #include <sys/stat.h>
+#include <mkcanon.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>

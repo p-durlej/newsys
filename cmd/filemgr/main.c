@@ -49,6 +49,7 @@
 #include <fmthuman.h>
 #include <confdb.h>
 #include <newtask.h>
+#include <mkcanon.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>

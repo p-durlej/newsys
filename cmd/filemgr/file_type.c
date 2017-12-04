@@ -29,6 +29,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
+#include <confdb.h>
 #include <errno.h>
 #include <stdio.h>
 #include <fcntl.h>

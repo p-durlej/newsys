@@ -26,10 +26,12 @@
 
 #include <unistd.h>
 #include <dirent.h>
+#include <string.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <mount.h>
 #include <paths.h>
+#include <err.h>
 
 static struct _mtab mtab[MOUNT_MAX];
 
