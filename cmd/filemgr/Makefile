@@ -27,21 +27,20 @@
 
 include config.mk
 
-FILEMGR_O := main.o get_info.o file_type.o
-LIB_DEP	  := $(CRT0) $(CRTBEG) $(CRTEND) $(LIBC)
+FILEMGR_O = main.o get_info.o file_type.o
 
 all: filemgr filemgr.slave filemgr.mkfsi pref.filemgr
 
-filemgr: $(FILEMGR_O) $(LIB_DEP)
+filemgr: $(FILEMGR_O)
 	$(CC) $(FILEMGR_O) -o filemgr $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
 
-pref.filemgr: pref.filemgr.c $(LIB_DEP)
+pref.filemgr: pref.filemgr.c
 	$(CC) pref.filemgr.c -o pref.filemgr $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
 
-filemgr.slave: filemgr.slave.c $(LIB_DEP)
+filemgr.slave: filemgr.slave.c
 	$(CC) filemgr.slave.c -o filemgr.slave $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
 
-filemgr.mkfsi: filemgr.mkfsi.c $(LIB_DEP)
+filemgr.mkfsi: filemgr.mkfsi.c
 	$(CC) filemgr.mkfsi.c -o filemgr.mkfsi $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
 
 clean:
