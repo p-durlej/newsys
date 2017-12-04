@@ -57,22 +57,46 @@ void setvar(const char *name, const char *value)
 static int input(void)
 {
 	char *p;
+	int c;
 	
 	mfline = mfnextline;
 	
-	while (fgets(inbuf, sizeof inbuf, mffile))
+	p = inbuf;
+	while (c = fgetc(mffile), c != EOF)
 	{
-		mfnextline++;
+		if (p >= inbuf + sizeof inbuf - 1)
+		{
+			warnx("%s: %i: line too long", mfpathname, mfline);
+			mffail = 1;
+			return -1;
+		}
 		
-		p = strchr(inbuf, '\n');
-		if (p)
+		switch (c)
+		{
+		case '\\':
+			c = fgetc(mffile);
+			if (c == '\n')
+			{
+				mfnextline++;
+				c = ' ';
+			}
+			if (c != EOF)
+				*p++ = c;
+			break;
+		case '\n':
+			mfnextline++;
+			
+			if (*inbuf == '#' || p == inbuf)
+			{
+				p = inbuf;
+				continue;
+			}
+			tokenp = inbuf;
 			*p = 0;
-		
-		if (!*inbuf || *inbuf == '#')
-			continue;
-		
-		tokenp = inbuf;
-		return 0;
+			return 0;
+		default:
+			*p++ = c;
+		}
 	}
 	
 	if (feof(mffile))
