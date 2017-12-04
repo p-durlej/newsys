@@ -143,8 +143,20 @@ static int docc(char **input)
 int main(int argc, char **argv)
 {
 	char **pp;
+	char *p;
 	int st;
 	int c;
+	
+	p = strchr(argv[0], '/');
+	if (p)
+		p++;
+	else
+		p = argv[0];
+	
+	if (!strcmp(p, "mcc"))
+		mflag = kflag = 1;
+	if (!strcmp(p, "kcc"))
+		kflag = 1;
 	
 	while (c = getopt(argc, argv, "kmco:vx"), c > 0)
 		switch (c)

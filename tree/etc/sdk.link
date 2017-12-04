@@ -1,2 +1,4 @@
 /usr/bin/umake	/usr/bin/make
 /usr/bin/tcc	/usr/bin/cc
+/usr/bin/ucc	/usr/bin/mcc
+/usr/bin/ucc	/usr/bin/kcc
