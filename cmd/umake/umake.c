@@ -34,14 +34,89 @@ static int rflag;
 static int fail;
 static int depth;
 
-char **incpaths;
+const char **incpaths;
 int incpathcnt;
 int vflag;
 
 int makebyname(const char *name);
 
-int docmd(const char *cmd, const char *src, const char *target)
+static char *mkinput(const char *target)
 {
+	static char buf[4096]; // XXX
+	
+	struct rule *r;
+	const char *tx;
+	char **sp;
+	char *p;
+	
+	*buf = 0;
+	
+	for (r = rules; r; r = r->next)
+		if (*r->output != '.' && !strcmp(r->output, target))
+		{
+			for (sp = r->input; *sp != NULL; sp++)
+			{
+				strcat(buf, *sp);
+				strcat(buf, " ");
+			}
+			return buf;
+		}
+	
+	tx = strchr(target, '.');
+	if (tx != NULL)
+		for (r = rules; r; r = r->next)
+		{
+			if (*r->output != '.')
+				continue;
+			
+			p = strchr(r->output + 1, '.');
+			if (p == NULL)
+				continue;
+			
+			if (strcmp(tx, p))
+				continue;
+			
+			for (sp = r->input; *sp != NULL; sp++)
+			{
+				strcat(buf, *sp);
+				strcat(buf, " ");
+			}
+			
+			strcat(buf, target);
+			*strrchr(buf, '.') = 0;
+			
+			strcat(buf, r->output);
+			*strrchr(buf, '.') = 0;
+			
+			return buf;
+		}
+	else
+		for (r = rules; r; r = r->next)
+		{
+			if (*r->output != '.')
+				continue;
+			
+			p = strchr(r->output + 1, '.');
+			if (p != NULL)
+				continue;
+			
+			for (sp = r->input; *sp != NULL; sp++)
+			{
+				strcat(buf, *sp);
+				strcat(buf, " ");
+			}
+			
+			strcat(buf, target);
+			strcat(buf, r->output);
+			
+			return buf;
+		}
+	return buf;
+}
+
+int docmd(const char *cmd, const char *target, struct rule *rule)
+{
+	struct rule *r;
 	char buf[4096];
 	char *sbuf;
 	const char *sp;
@@ -63,8 +138,8 @@ int docmd(const char *cmd, const char *src, const char *target)
 				dp += strlen(target);
 				break;
 			case '<':
-				strcpy(dp, src);
-				dp += strlen(src);
+				strcpy(dp, mkinput(target));
+				dp = strchr(dp, 0);
 				break;
 			default:
 				*dp++ = '$';
@@ -156,10 +231,11 @@ int make(struct rule *r, const char *src, const char *target)
 		return 1;
 	}
 	
-	if (src == NULL && r->input)
-		src = r->input[0];
 	if (target == NULL)
 		target = r->output;
+	
+	if (src == NULL && r->input)
+		src = r->input[0];
 	
 	trace(r, src, target);
 	
@@ -204,11 +280,11 @@ int make(struct rule *r, const char *src, const char *target)
 	
 	if (r->cmds)
 		for (cmd = r->cmds; *cmd; cmd++)
-			docmd(*cmd, src, target);
+			docmd(*cmd, target, r);
 	
 	if (*r->output != '.')
 		r->done = 1;
-
+	
 	depth--;
 	return 0;
 }
@@ -224,7 +300,12 @@ int makebyname(const char *name)
 	
 	for (r = rules; r; r = r->next)
 		if (*r->output != '.' && !strcmp(r->output, name))
-			return make(r, NULL, NULL);
+		{
+			if (make(r, NULL, NULL))
+				return -1;
+			if (r->cmds)
+				return 0;
+		}
 	
 	tx = strchr(name, '.');
 	if (tx != NULL)
@@ -251,7 +332,10 @@ int makebyname(const char *name)
 			memcpy(src + blen, r->output, xlen);
 			src[blen + xlen] = 0;
 			
-			return make(r, src, name);
+			if (make(r, src, name))
+				return -1;
+			if (r->cmds)
+				return 0;
 		}
 	else
 		for (r = rules; r; r = r->next)
@@ -269,7 +353,10 @@ int makebyname(const char *name)
 			if (asprintf(&src, "%s%s", name, r->output) < 0)
 				err(1, NULL);
 			
-			return make(r, src, name);
+			if (make(r, src, name))
+				return -1;
+			if (r->cmds)
+				return 0;
 		}
 	
 	if (!access(name, 0))
@@ -279,6 +366,33 @@ int makebyname(const char *name)
 	errno = EINVAL;
 	fail = 1;
 	return -1;
+}
+
+static void linkrule(struct rule *r)
+{
+	const char *output = r->output;
+	const char *oext;
+	struct rule *r1;
+	
+	oext = strchr(output, '.');
+	for (r1 = r->next; r1 != NULL; r1 = r1->next)
+	{
+		if (oext == NULL || strcmp(r1->output, oext))
+			continue;
+		if (strcmp(r1->output, output))
+			continue;
+		
+		r->chain = r1;
+		break;
+	}
+}
+
+static void linkrules(void)
+{
+	struct rule *r;
+	
+	for (r = rules; r != NULL; r = r->next)
+		linkrule(r);
 }
 
 static void addpath(const char *path)
@@ -385,6 +499,7 @@ int main(int argc, char **argv)
 		return 1;
 	if (load(mfname))
 		return 1;
+	linkrules();
 	
 	if (rflag)
 	{

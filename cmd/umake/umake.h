@@ -5,6 +5,7 @@
 extern struct rule
 {
 	struct rule *next;
+	struct rule *chain;
 	int done;
 	
 	char *output;
@@ -19,7 +20,7 @@ extern struct var
 	char *val;
 } *vars;
 
-extern char **incpaths;
+extern const char **incpaths;
 extern int incpathcnt;
 extern int vflag;
 

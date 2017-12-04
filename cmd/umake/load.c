@@ -210,11 +210,13 @@ static void procrule(void)
 	r->output = substvars(token());
 	free(token());
 	
+	d = substvars(tokenp);
+	tokenp = d;
+	
 	while (d = token(), d != NULL)
 	{
 		r->input = realloc(r->input, (cnt + 2) * sizeof r->input);
-		r->input[cnt++] = substvars(d);
-		free(d);
+		r->input[cnt++] = d;
 	}
 	if (cnt)
 		r->input[cnt] = NULL;
@@ -262,7 +264,6 @@ static void proccat(void)
 		{
 			if (asprintf(&v->val, "%s %s", v->val, val) < 0)
 				err(1, NULL);
-			warnx("%s = %s", v->name, v->val);
 			return;
 		}
 	
