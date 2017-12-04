@@ -19,6 +19,7 @@ static char *output;
 static int cflag;
 static int kflag;
 static int mflag;
+static int xflag;
 
 static int spawn(char *pathname, char **argv)
 {
@@ -93,12 +94,48 @@ static int mkmod(char *output, char **input)
 	return spawn(MGEN, args);
 }
 
+static int docc(char **input)
+{
+	char *out = output;
+	int st;
+	
+	if (out == NULL)
+	{
+		char *p;
+		
+		p = strrchr(input[0], '.');
+		if (p == NULL || !p[1])
+			errx(1, "no output name");
+		
+		out = strdup(input[0]);
+		if (out == NULL)
+			err(1, NULL);
+		
+		p = strrchr(out, '.');
+		if (cflag)
+		{
+			p[1] = 'o';
+			p[2] = 0;
+		}
+		else
+			*p = 0;
+	}
+	
+	if (mflag && !cflag)
+		st = mkmod(out, input);
+	else
+		st = ccld(out, input, cflag);
+	
+	return st;
+}
+
 int main(int argc, char **argv)
 {
+	char **pp;
 	int st;
 	int c;
 	
-	while (c = getopt(argc, argv, "kmco:"), c > 0)
+	while (c = getopt(argc, argv, "kmco:x"), c > 0)
 		switch (c)
 		{
 		case 'k':
@@ -114,6 +151,9 @@ int main(int argc, char **argv)
 		case 'o':
 			output = optarg;
 			break;
+		case 'x':
+			xflag = 1;
+			break;
 		default:
 			return 1;
 		}
@@ -124,35 +164,18 @@ int main(int argc, char **argv)
 	if (!argc)
 		errx(1, "wrong nr of args");
 	
-	if (output == NULL)
+	if (xflag)
 	{
-		char *p;
-		
-		p = strrchr(argv[0], '.');
-		if (p == NULL || !p[1])
-			errx(1, "no output name");
-		
-		output = strdup(argv[0]);
-		if (output == NULL)
-			err(1, NULL);
-		
-		p = strrchr(output, '.');
-		if (cflag)
+		for (pp = argv; *pp; pp++)
 		{
-			p[1] = 'o';
-			p[2] = 0;
+			char *args[] = { *pp, NULL };
+			
+			st = docc(args);
+			if (st)
+				return st;
 		}
-		else
-			*p = 0;
+		return 0;
 	}
 	
-	if (mflag && !cflag)
-		st = mkmod(output, argv);
-	else
-		st = ccld(output, argv, cflag);
-	
-	if (st)
-		return st;
-	
-	return 0;
+	return docc(argv);
 }
