@@ -27,9 +27,7 @@
 
 DRV := bootfb.drv amd64-pc.drv
 
-AMD64_PC_O := 
-
-CLEAN := $(AMD64_PC_O)
+CLEAN = $(AMD64_PC_O)
 
 AMD64_PC_O :=	amd64-pc/main.o		\
 		amd64-pc/bios.o		\

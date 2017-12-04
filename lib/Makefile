@@ -129,6 +129,6 @@ arch-$(ARCH)/syscall/syscall.S: arch-$(ARCH)/syscall/makesys ../kern/syslist/sys
 clean:
 	(cd load && $(MAKE) clean)
 	rm -rf arch-$(ARCH)/crt0/autogen
-	rm -f arch-$(ARCH)/crt0/crt0.o arch-$(ARCH)/crt0/libc.a libc.a libc.o
+	rm -f arch-$(ARCH)/crt0/*.o arch-$(ARCH)/crt0/*.a libc.a libc.o
 	rm -f arch-$(ARCH)/syscall/syscall.S
 	rm -f $(LIB_O) $(CRT0D_O)

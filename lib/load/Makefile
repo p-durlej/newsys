@@ -48,4 +48,4 @@ load.elf: head.o $(OBJS)
 
 clean:
 	rm -f load load.elf exports.c head.o
-	rm -f $(LOAD_O)
+	rm -f $(LOAD_O) $(HEAD_O)
