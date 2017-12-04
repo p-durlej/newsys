@@ -26,8 +26,12 @@
 #
 
 SYSLOAD := sysload.bin
-LDS	:= mach-amd64-pc/sysload.lds
+LDS	:= mach-pc/sysload.lds
 
-MACHINE_O = mach-amd64-pc/start.o mach-amd64-pc/console.o mach-amd64-pc/disk.o \
-	    mach-amd64-pc/mem.o   mach-amd64-pc/hw.o	mach-amd64-pc/vga.o  \
-	    mach-amd64-pc/pxe.o
+MACHINE_O = mach-amd64-pc/start.o	\
+	    mach-pc/console.o		\
+	    mach-pc/disk.o		\
+	    mach-pc/mem.o		\
+	    mach-pc/hw.o		\
+	    mach-pc/vga.o		\
+	    mach-pc/pxe.o

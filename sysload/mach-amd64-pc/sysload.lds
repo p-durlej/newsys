@@ -1,1 +1,0 @@
-../mach-i386-pc/sysload.lds
