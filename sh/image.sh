@@ -37,8 +37,8 @@ regen_tree()
 	rm -Rf  tree.tmp
 	cp -Rpf tree tree.tmp
 	
-	[ -d arch/tree	  ] && cp -Rpf arch/tree/*	tree.tmp
-	[ -d machine/tree ] && cp -Rpf machine/tree/*	tree.tmp
+	[ -d arch-$ARCH/tree	] && cp -Rpf arch-$ARCH/tree/*		tree.tmp
+	[ -d machine-$MACH/tree	] && cp -Rpf machine-$MACH/tree/*	tree.tmp
 }
 
 do_strip()
@@ -48,10 +48,10 @@ do_strip()
 
 copy_sysinstall()
 {
-	cat machine/sysinstall.mkdir	>> tree.tmp/etc/sysinstall.mkdir
-	cat machine/sysinstall.copy	>> tree.tmp/etc/sysinstall.copy
-	cat arch-$ARCH/sysinstall.mkdir	>> tree.tmp/etc/sysinstall.mkdir
-	cat arch-$ARCH/sysinstall.copy	>> tree.tmp/etc/sysinstall.copy
+	cat machine-$MACH/sysinstall.mkdir	>> tree.tmp/etc/sysinstall.mkdir
+	cat machine-$MACH/sysinstall.copy	>> tree.tmp/etc/sysinstall.copy
+	cat arch-$ARCH/sysinstall.mkdir		>> tree.tmp/etc/sysinstall.mkdir
+	cat arch-$ARCH/sysinstall.copy		>> tree.tmp/etc/sysinstall.copy
 }
 
 copy_files()
@@ -190,7 +190,7 @@ make_disks()
 {
 	[ -d disks ] || mkdir disks
 	
-	sh machine/disks.sh
+	sh machine-$MACH/disks.sh
 }
 
 make_dirs()
