@@ -188,6 +188,7 @@
 /cmd/sdk.bin/modinfo
 /cmd/sdk.bin/modlist
 /cmd/sdk.bin/modload
+/cmd/sdk.bin/ucc
 /cross/cdcks
 /cross/cfont
 /cross/ckexe

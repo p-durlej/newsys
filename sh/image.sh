@@ -132,6 +132,7 @@ EOF
 700 /usr/bin/modlist
 700 /usr/bin/modload
 755 /usr/bin/tcc
+755 /usr/bin/ucc
 755 /usr/bin/umake
 644 /lib/icons/code.pnm
 644 /lib/icons64/code.pnm
