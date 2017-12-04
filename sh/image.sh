@@ -147,14 +147,14 @@ EOF
 
 copy_sdk()
 {
-	cp -LRpf	include-$ARCH/*		tree.tmp/usr/include/
-	cp -LRpf	include-$MACH/*		tree.tmp/usr/include/
-	cp -LRpf	include/*		tree.tmp/usr/include/
-	cp -pf		cmd/tcc.include/*	tree.tmp/usr/include/
-	cp -pf		lib/arch/crt0/libc.a	tree.tmp/usr/lib/
-	cp -pf		lib/arch/crt0/crt0.o	tree.tmp/usr/lib/
-	cp -pf		cmd/tcc.lib/libtcc1.a	tree.tmp/usr/lib/
-	cp -pf		cmd/tcc/tcc		tree.tmp/usr/bin/
+	cp -LRpf	include-$ARCH/*			tree.tmp/usr/include/
+	cp -LRpf	include-$MACH/*			tree.tmp/usr/include/
+	cp -LRpf	include/*			tree.tmp/usr/include/
+	cp -pf		cmd/tcc.include/*		tree.tmp/usr/include/
+	cp -pf		lib/arch-$ARCH/crt0/libc.a	tree.tmp/usr/lib/
+	cp -pf		lib/arch-$ARCH/crt0/crt0.o	tree.tmp/usr/lib/
+	cp -pf		cmd/tcc.lib/libtcc1.a		tree.tmp/usr/lib/
+	cp -pf		cmd/tcc/tcc			tree.tmp/usr/bin/
 	
 	for i in cmd/sdk.bin/*; do
 		if [ -x $i ]

@@ -37,4 +37,4 @@ STRING_O = string/strncat.o string/strncmp.o string/strncpy.o \
 
 MATH_O =
 
-ARCH_O = arch/io.o arch/setjmp.o
+ARCH_O = arch-amd64/io.o arch-amd64/setjmp.o

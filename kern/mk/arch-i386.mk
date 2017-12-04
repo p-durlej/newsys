@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ARCH_O := ../lib/arch/io.o		\
+ARCH_O := ../lib/arch-i386/io.o		\
 	  arch-i386/switch.o		\
 	  arch-i386/syscall.o		\
 	  arch-i386/intr_regs.o		\

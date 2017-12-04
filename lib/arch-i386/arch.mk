@@ -37,4 +37,4 @@ STRING_O = string/strncat.o string/strncmp.o string/strncpy.o \
 
 MATH_O =
 
-ARCH_O = arch/io.o arch/setjmp.o arch/stdarg.o
+ARCH_O = arch-i386/io.o arch-i386/setjmp.o arch-i386/stdarg.o

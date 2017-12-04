@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ARCH_O := ../lib/arch/io.o		\
+ARCH_O := ../lib/arch-amd64/io.o	\
 	  arch-amd64/switch.o		\
 	  arch-amd64/syscall.o		\
 	  arch-amd64/intr_regs.o	\

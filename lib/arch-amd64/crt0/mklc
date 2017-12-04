@@ -4,7 +4,7 @@ dir=autogen.tmp
 
 set -e
 
-cat ../../libc_syms ../../arch/libc_syms | while read sym
+cat ../../libc_syms ../../arch-$ARCH/libc_syms | while read sym
 do
 	basename=$dir/lc_$sym
 	while [ -e $basename.S ]; do

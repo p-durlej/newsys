@@ -12,7 +12,7 @@ cat << EOT
 
 EOT
 
-cat ../arch/libc_syms ../libc_syms "$@" | while read sym
+cat ../arch-$ARCH/libc_syms ../libc_syms "$@" | while read sym
 do
 	echo "extern void $sym;"
 done
@@ -27,7 +27,7 @@ const struct
 {
 EOT
 
-cat ../arch/libc_syms ../libc_syms | while read sym
+cat ../arch-$ARCH/libc_syms ../libc_syms | while read sym
 do
 	echo "	{ \"$sym\", &$sym },"
 done

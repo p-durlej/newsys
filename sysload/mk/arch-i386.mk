@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ARCH_O := ../lib/arch/io.o		\
+ARCH_O := ../lib/arch-i386/io.o		\
 	  ../lib/string/strlen.o	\
 	  ../lib/string/memmove.o	\
 	  ../lib/string-i386/memcpy.o	\

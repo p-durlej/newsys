@@ -34,5 +34,5 @@ fi
 . s/env.sh
 
 cp -Rp include/*		${TOPDIR}/../tools/lib/gcc/${ARCH}-os386-elf/4.3.2/include-fixed/
-cp -Rp lib/arch/crt0/*.o	${TOPDIR}/../tools/lib/gcc/${ARCH}-os386-elf/4.3.2/
-cp -Rp lib/arch/crt0/*.a	${TOPDIR}/../tools/lib/gcc/${ARCH}-os386-elf/4.3.2/
+cp -Rp lib/arch-$ARCH/crt0/*.o	${TOPDIR}/../tools/lib/gcc/${ARCH}-os386-elf/4.3.2/
+cp -Rp lib/arch-$ARCH/crt0/*.a	${TOPDIR}/../tools/lib/gcc/${ARCH}-os386-elf/4.3.2/

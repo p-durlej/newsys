@@ -27,11 +27,14 @@
 
 include config.mk
 
-all: arch/crt0/crt0.o arch/crt0/crtbegin.o arch/crt0/crtend.o \
-     arch/crt0/libc.a libc.a libc.o
+all: arch-$(ARCH)/crt0/crt0.o		\
+     arch-$(ARCH)/crt0/crtbegin.o	\
+     arch-$(ARCH)/crt0/crtend.o		\
+     arch-$(ARCH)/crt0/libc.a		\
+     libc.a libc.o
 	(cd load; $(MAKE) all)
 
-SYSCALL_O = arch/syscall/syscall.o
+SYSCALL_O = arch-$(ARCH)/syscall/syscall.o
 
 UNISTD_O = unistd/chmod.o unistd/chown.o				\
            unistd/creat.o unistd/dup.o unistd/exec.o			\
@@ -101,7 +104,7 @@ CRT0D_O = crt0d/getopt.o
 
 CFLAGS += -Wall -Werror -D_LIB_INTERNALS
 
-include arch/arch.mk
+include arch-$(ARCH)/arch.mk
 
 libc.a: $(LIB_O)
 	rm -f libc.a
@@ -110,22 +113,22 @@ libc.a: $(LIB_O)
 libc.o: $(LIB_O)
 	$(LD) -r $(LIB_O) $(LIBGCC) -o libc.o
 
-arch/crt0/autogen: libc_syms arch/crt0/mklc
-	rm -rf arch/crt0/autogen.tmp
-	rm -rf arch/crt0/autogen
-	mkdir  arch/crt0/autogen.tmp
-	(cd arch/crt0 && sh mklc)
-	mv arch/crt0/autogen.tmp arch/crt0/autogen
+arch-$(ARCH)/crt0/autogen: libc_syms arch-$(ARCH)/crt0/mklc
+	rm -rf arch-$(ARCH)/crt0/autogen.tmp
+	rm -rf arch-$(ARCH)/crt0/autogen
+	mkdir  arch-$(ARCH)/crt0/autogen.tmp
+	(cd arch-$(ARCH)/crt0 && sh mklc)
+	mv arch-$(ARCH)/crt0/autogen.tmp arch-$(ARCH)/crt0/autogen
 
-arch/crt0/libc.a: arch/crt0/autogen $(CRT0D_O)
-	$(AR) cr arch/crt0/libc.a arch/crt0/autogen/lc_*.o $(CRT0D_O)
+arch-$(ARCH)/crt0/libc.a: arch-$(ARCH)/crt0/autogen $(CRT0D_O)
+	$(AR) cr arch-$(ARCH)/crt0/libc.a arch-$(ARCH)/crt0/autogen/lc_*.o $(CRT0D_O)
 
-arch/syscall/syscall.S: arch/syscall/makesys ../kern/syslist/syslist
-	(cd arch/syscall && sh makesys)
+arch-$(ARCH)/syscall/syscall.S: arch-$(ARCH)/syscall/makesys ../kern/syslist/syslist
+	(cd arch-$(ARCH)/syscall && sh makesys)
 
 clean:
 	(cd load && $(MAKE) clean)
-	rm -rf arch/crt0/autogen
-	rm -f arch/crt0/crt0.o arch/crt0/libc.a libc.a libc.o
-	rm -f arch/syscall/syscall.S
+	rm -rf arch-$(ARCH)/crt0/autogen
+	rm -f arch-$(ARCH)/crt0/crt0.o arch-$(ARCH)/crt0/libc.a libc.a libc.o
+	rm -f arch-$(ARCH)/syscall/syscall.S
 	rm -f $(LIB_O) $(CRT0D_O)
