@@ -25,45 +25,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-include	config.mk
-
-export TOPDIR TOOLDIR CC LD AR STRIP LIBGCC MODGEN MACH ARCH MAKEFLAGS LD_LIBRARY_PATH
-
-ifdef LD_LIBRARY_PATH
-	LD_LIBRARY_PATH := $(TOOLDIR)/lib:$(LD_LIBRARY_PATH)
-else
-	LD_LIBRARY_PATH := $(TOOLDIR)/lib
+ifndef TOPDIR
+	TOPDIR := $(shell pwd)
 endif
 
-all:
-	cd cross	&& $(MAKE) all
-	cd fonts	&& $(MAKE) all
-	cd boot-pc	&& $(MAKE) all
-	cd sysload	&& $(MAKE) all
-	cd kern		&& $(MAKE) all
-	cd drv-$(ARCH)	&& $(MAKE) all
-	cd drv-pc	&& $(MAKE) all
-	cd drv		&& $(MAKE) all
-	cd lib		&& $(MAKE) all
-	cd cmd		&& $(MAKE) all
-	s/makedisk
+export TOPDIR
 
-base:
-	cd cross	&& $(MAKE) all
-	cd fonts	&& $(MAKE) all
-	cd lib		&& $(MAKE) all
-	cd cmd		&& $(MAKE) all
-	s/makebase
-
-clean:
-	cd cross	&& $(MAKE) clean
-	cd fonts	&& $(MAKE) clean
-	cd boot-pc	&& $(MAKE) clean
-	cd sysload	&& $(MAKE) clean
-	cd kern		&& $(MAKE) clean
-	cd drv-$(ARCH)	&& $(MAKE) clean
-	cd drv-pc	&& $(MAKE) clean
-	cd drv		&& $(MAKE) clean
-	cd lib		&& $(MAKE) clean
-	cd cmd		&& $(MAKE) clean
-	rm -Rf tree.tmp boot.sys boot.img aux.img aux2.img hdflat.img disks base.tar
+all base clean:
+	$(MAKE) -I $(TOPDIR)/mk -f mk/main.mk $@

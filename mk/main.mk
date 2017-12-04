@@ -11,7 +11,7 @@
 # 2. Redistributions in binary form must reproduce the above copyright
 # notice, this list of conditions and the following disclaimer in the
 # documentation and/or other materials provided with the distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 # IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -25,25 +25,45 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ARCH		?= i386
-MACH		:= $(ARCH)-pc
+include	config.mk
 
-TOOLDIR		= $(TOPDIR)/../tools
-GCCVER		= 4.3.2# 4.4.3
-OBJCOPY		= $(TOOLDIR)/bin/$(ARCH)-os386-elf-objcopy
-CC		= $(TOOLDIR)/bin/$(ARCH)-os386-elf-gcc
-CPP		= $(TOOLDIR)/bin/$(ARCH)-os386-elf-cpp
-CXX		= /bin/false
-LD		= $(TOOLDIR)/bin/$(ARCH)-os386-elf-ld
-AR		= $(TOOLDIR)/bin/$(ARCH)-os386-elf-ar
-STRIP		= $(TOOLDIR)/bin/$(ARCH)-os386-elf-strip
-MODGEN		= $(TOPDIR)/cross/mgen/mgen
-MAKE		= gmake
-CPPFLAGS	= -I$(TOPDIR)/include -I$(TOPDIR)/include-$(ARCH) -I$(TOPDIR)/include-$(MACH) -fno-builtin
-ASFLAGS		=
-CFLAGS		=
-CXXFLAGS	=
-LDFLAGS		= -B$(TOPDIR)/lib/arch-$(ARCH)/crt0 -L$(TOPDIR)/lib/dummy
+export TOOLDIR CC LD AR STRIP LIBGCC MODGEN MACH ARCH MAKEFLAGS LD_LIBRARY_PATH
 
-include arch-$(ARCH).mk
-include const.mk
+ifdef LD_LIBRARY_PATH
+	LD_LIBRARY_PATH := $(TOOLDIR)/lib:$(LD_LIBRARY_PATH)
+else
+	LD_LIBRARY_PATH := $(TOOLDIR)/lib
+endif
+
+all:
+	cd cross	&& $(MAKE) all
+	cd fonts	&& $(MAKE) all
+	cd boot-pc	&& $(MAKE) all
+	cd sysload	&& $(MAKE) all
+	cd kern		&& $(MAKE) all
+	cd drv-$(ARCH)	&& $(MAKE) all
+	cd drv-pc	&& $(MAKE) all
+	cd drv		&& $(MAKE) all
+	cd lib		&& $(MAKE) all
+	cd cmd		&& $(MAKE) all
+	s/makedisk
+
+base:
+	cd cross	&& $(MAKE) all
+	cd fonts	&& $(MAKE) all
+	cd lib		&& $(MAKE) all
+	cd cmd		&& $(MAKE) all
+	s/makebase
+
+clean:
+	cd cross	&& $(MAKE) clean
+	cd fonts	&& $(MAKE) clean
+	cd boot-pc	&& $(MAKE) clean
+	cd sysload	&& $(MAKE) clean
+	cd kern		&& $(MAKE) clean
+	cd drv-$(ARCH)	&& $(MAKE) clean
+	cd drv-pc	&& $(MAKE) clean
+	cd drv		&& $(MAKE) clean
+	cd lib		&& $(MAKE) clean
+	cd cmd		&& $(MAKE) clean
+	rm -Rf tree.tmp boot.sys boot.img aux.img aux2.img hdflat.img disks base.tar
