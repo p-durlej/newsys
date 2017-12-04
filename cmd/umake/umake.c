@@ -82,11 +82,16 @@ static char *mkinput(const char *target)
 				strcat(buf, " ");
 			}
 			
+			p = strchr(buf, 0);
+			
 			strcat(buf, target);
 			*strrchr(buf, '.') = 0;
 			
 			strcat(buf, r->output);
 			*strrchr(buf, '.') = 0;
+			
+			if (access(p, 0))
+				*p = 0;
 			
 			return buf;
 		}
@@ -106,8 +111,13 @@ static char *mkinput(const char *target)
 			strcat(buf, " ");
 		}
 		
+		p = strchr(buf, 0);
+		
 		strcat(buf, target);
 		strcat(buf, r->output);
+		
+		if (access(p, 0))
+			*p = 0;
 		
 		return buf;
 	}
@@ -296,11 +306,13 @@ int makebyname(const char *name)
 	const char *p;
 	size_t blen;
 	size_t xlen;
+	int found = 0;
 	char *src;
 	
 	for (r = rules; r; r = r->next)
 		if (*r->output != '.' && !strcmp(r->output, name))
 		{
+			found = 1;
 			if (make(r, NULL, NULL))
 				return -1;
 			if (r->cmds)
@@ -332,6 +344,12 @@ int makebyname(const char *name)
 			memcpy(src + blen, r->output, xlen);
 			src[blen + xlen] = 0;
 			
+			if (access(src, 0))
+			{
+				free(src);
+				continue;
+			}
+			
 			if (make(r, src, name))
 				return -1;
 			if (r->cmds)
@@ -353,6 +371,12 @@ int makebyname(const char *name)
 		if (asprintf(&src, "%s%s", name, r->output) < 0)
 			err(1, NULL);
 		
+		if (access(src, 0))
+		{
+			free(src);
+			continue;
+		}
+		
 		if (make(r, src, name))
 			return -1;
 		if (r->cmds)
@@ -360,6 +384,9 @@ int makebyname(const char *name)
 	}
 	
 	if (!access(name, 0))
+		return 0;
+	
+	if (found)
 		return 0;
 	
 	warnx("%s: No rule to make target", name);
