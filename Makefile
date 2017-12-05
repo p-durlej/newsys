@@ -31,5 +31,5 @@ endif
 
 export TOPDIR
 
-all base clean:
+all clean:
 	$(MAKE) -I $(TOPDIR)/mk -f mk/main.mk $@

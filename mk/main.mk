@@ -48,13 +48,6 @@ all:
 	cd cmd		&& $(MAKE) all
 	s/makedisk
 
-base:
-	cd cross	&& $(MAKE) all
-	cd fonts	&& $(MAKE) all
-	cd lib		&& $(MAKE) all
-	cd cmd		&& $(MAKE) all
-	s/makebase
-
 clean:
 	cd cross	&& $(MAKE) clean
 	cd fonts	&& $(MAKE) clean
