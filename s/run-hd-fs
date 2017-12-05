@@ -26,12 +26,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-cd $(dirname $0)/..
-qemu	-m 64 -sdl -vga vmware		\
-	-hda ../disks/disk.img -boot c	\
-	-hdb disks/hdflat.img		\
-	-net none			\
-	-soundhw sb16			\
-	-serial stdio			\
-	-fda ../disks/tmp.img		\
+qemu	-m 64 -sdl -vga vmware						\
+	-drive if=floppy,index=0,format=raw,file=../disks/tmp1.img	\
+	-drive if=floppy,index=1,format=raw,file=../disks/tmp2.img	\
+	-drive if=ide,index=0,format=raw,file=../disks/disk.img		\
+	-boot c								\
+	-net none							\
+	-soundhw sb16							\
+	-serial stdio							\
 	-full-screen
