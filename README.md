@@ -35,11 +35,9 @@ Building the entire toolchain and the two platforms can be time consuming, it ta
 
 If you just made a change in the source code and want to recompile, you should firstly source some environment variables into the current shell by running . s/env.sh
 
-If the $HOME/os386/src tree does not include the required symlinks, run make symlinks or s/mkrelse.
-
 Then just run the gmake command.
 
-Of course the toolchain is required. Again, amd64 is built by default. If you want to build i386 instead, set ARCH=i386 in the environment and run make symlinks or s/mkrelse.
+Of course the toolchain is required. Again, amd64 is built by default. If you want to build i386 instead, set ARCH=i386 in the environment.
 
 ## Program development
 
