@@ -101,10 +101,10 @@ void evt_wait(void)
 				pref_wbeep_reload();
 			if (form_cfg_loaded)
 				form_reload_config();
-			if (on_update)
-				on_update();
 			form_th_loaded = 0;
 			wc_loaded = 0;
+			if (on_update)
+				on_update();
 			break;
 		case WIN_E_RESIZE:
 			form_ws_resized();
