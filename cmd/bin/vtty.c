@@ -30,6 +30,7 @@
 #include <wingui_metrics.h>
 #include <wingui_cgadget.h>
 #include <wingui_msgbox.h>
+#include <wingui_color.h>
 #include <wingui_form.h>
 #include <wingui_menu.h>
 #include <wingui_dlg.h>
@@ -163,6 +164,7 @@ static char **	parse_args(int argc, char **argv);
 static void	colors_click(struct menu_item *mi);
 static void	font_click(struct menu_item *mi);
 static void	about_click(struct menu_item *mi);
+static void	load_colors();
 
 static void update_pty_size(void)
 {
@@ -829,6 +831,21 @@ static void nullio(void)
 	_ctty("/dev/null");
 }
 
+static void load_colors(void)
+{
+	wc_get_rgba(WC_TTY_CURSOR, &color_table[CURSOR]);
+	wc_get_rgba(WC_TTY_BG, &color_table[BG_DEFAULT]);
+	wc_get_rgba(WC_TTY_FG, &color_table[FG_DEFAULT]);
+	
+	c_load("vtty-color", &color_table, sizeof color_table);
+}
+
+static void on_update(void)
+{
+	load_colors();
+	gadget_redraw(screen);
+}
+
 int main(int argc, char **argv)
 {
 	struct timer *tmr;
@@ -868,9 +885,9 @@ int main(int argc, char **argv)
 			config.nr_col = wsr.w / cw - 2;
 		c_loaded = 0;
 	}
-	c_load("vtty-color", &color_table, sizeof color_table);
-	argv = parse_args(argc, argv);
+	load_colors();
 	
+	argv = parse_args(argc, argv);
 	evt_signal(SIGCHLD, sig_chld);
 	
 	for (i = 0; i < OPEN_MAX; i++)
@@ -915,6 +932,8 @@ int main(int argc, char **argv)
 	resize_tty(config.nr_col, config.nr_lin);
 	if (!bigH)
 		form_show(main_form);
+	
+	win_on_update(on_update);
 	
 	if (open(_PATH_D_PTMX, O_RDWR | O_NDELAY))
 	{

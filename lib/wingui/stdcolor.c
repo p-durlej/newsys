@@ -109,6 +109,9 @@ static struct
 	{ "button_sh2",			WC_BUTTON_SH2		},
 	{ "button_hi1",			WC_BUTTON_HI1		},
 	{ "button_hi2",			WC_BUTTON_HI2		},
+	{ "tty_cursor",			WC_TTY_CURSOR		},
+	{ "tty_bg",			WC_TTY_BG		},
+	{ "tty_fg",			WC_TTY_FG		},
 };
 
 static const struct win_rgba wc_default_tab[] =
@@ -188,6 +191,10 @@ static const struct win_rgba wc_default_tab[] =
 	[WC_BUTTON_HI2]		 = { 224, 224, 224, 255 },
 	[WC_BUTTON_SH1]		 = {  64,  64,  64, 255 },
 	[WC_BUTTON_SH2]		 = { 128, 128, 128, 255 },
+	
+	[WC_TTY_CURSOR]		 = { 255, 255, 255, 255 },
+	[WC_TTY_BG]		 = {   0,   0,   0, 255 },
+	[WC_TTY_FG]		 = { 192, 192, 192, 255 },
 };
 
 static const struct win_rgba wc_lowcolor_tab[] =
@@ -251,6 +258,9 @@ static const struct win_rgba wc_lowcolor_tab[] =
 	[WC_BUTTON_HI2]			= { 128, 128, 128, 255 },
 	[WC_BUTTON_SH1]			= {   0,   0,   0, 255 },
 	[WC_BUTTON_SH2]			= { 128, 128, 128, 255 },
+	[WC_TTY_CURSOR]			= { 255, 255, 255, 255 },
+	[WC_TTY_BG]			= {   0,   0,   0, 255 },
+	[WC_TTY_FG]			= { 192, 192, 192, 255 },
 };
 
 static void wc_default(struct win_rgba *rgba)

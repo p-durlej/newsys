@@ -80,3 +80,7 @@ button_sh1=0xff408040
 button_sh2=0xffffffff
 button_bg=0xffffffff
 button_fg=0xff000000
+
+tty_cursor=0xffffffff
+tty_bg=0xff000000
+tty_fg=0xffc0c0c0

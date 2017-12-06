@@ -29,7 +29,7 @@
 
 #include <wingui.h>
 
-#define WC_COUNT		62
+#define WC_COUNT		65
 
 #define WC_DESKTOP		0
 #define WC_WIN_BG		1
@@ -90,6 +90,9 @@
 #define WC_BUTTON_SH2		59
 #define WC_BUTTON_HI1		60
 #define WC_BUTTON_HI2		61
+#define WC_TTY_CURSOR		62
+#define WC_TTY_BG		63
+#define WC_TTY_FG		64
 
 void	  wc_get_rgba(int id, struct win_rgba *buf);
 win_color wc_get(int id);

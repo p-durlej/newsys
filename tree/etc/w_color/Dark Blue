@@ -79,3 +79,7 @@ button_hi1=0xff0050a0
 button_hi2=0xff004080
 button_sh1=0xff003060
 button_sh2=0xff003870
+
+tty_cursor=0xffffffff
+tty_bg=0xff000000
+tty_fg=0xffc0c0c0
