@@ -27,6 +27,7 @@
 #
 
 . sh/image.sh
+. sh/zinit.sh
 
 regen_tree
 make_dirs
@@ -35,3 +36,4 @@ copy_files
 copy_sys
 copy_sdk
 make_disks
+make_zinit

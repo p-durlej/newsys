@@ -4,7 +4,7 @@
 #
 
 LOBJ	  = ../../zlib/zlib.a
-CMD	  = zpipe
+CMD	  = zpipe zinit
 
 include cmd.mk
 

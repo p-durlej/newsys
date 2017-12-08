@@ -190,6 +190,7 @@
 /cmd/sdk.bin/modload
 /cmd/sdk.bin/ucc
 /cmd/zlib/zpipe
+/cmd/zlib/zinit
 /cross/cdcks
 /cross/cfont
 /cross/ckexe
@@ -226,6 +227,7 @@
 /zlib/zlib.a
 /machine
 /tree.tmp/
+/zinit.tmp/
 /release/
 /release-*-amd64.tar.gz
 /release-*-i386.tar.gz
