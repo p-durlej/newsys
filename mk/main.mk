@@ -61,4 +61,4 @@ clean:
 	cd zlib		&& $(MAKE) clean
 	cd lib		&& $(MAKE) clean
 	cd cmd		&& $(MAKE) clean
-	rm -Rf tree.tmp boot.sys boot.img aux.img aux2.img hdflat.img disks base.tar
+	rm -Rf tree.tmp zinit.tmp boot.sys boot.img aux.img aux2.img hdflat.img disks base.tar
