@@ -183,7 +183,7 @@ int main(int argc, char **argv)
 
     /* do compression if no arguments */
     if (argc == 1) {
-        ret = def(stdin, stdout, Z_DEFAULT_COMPRESSION);
+        ret = def(stdin, stdout, Z_BEST_COMPRESSION);
         if (ret != Z_OK)
             zerr(ret);
         return ret;
