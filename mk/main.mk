@@ -44,6 +44,7 @@ all:
 	cd drv-$(ARCH)	&& $(MAKE) all
 	cd drv-pc	&& $(MAKE) all
 	cd drv		&& $(MAKE) all
+	cd zlib		&& $(MAKE) all
 	cd lib		&& $(MAKE) all
 	cd cmd		&& $(MAKE) all
 	s/makedisk
@@ -57,6 +58,7 @@ clean:
 	cd drv-$(ARCH)	&& $(MAKE) clean
 	cd drv-pc	&& $(MAKE) clean
 	cd drv		&& $(MAKE) clean
+	cd zlib		&& $(MAKE) clean
 	cd lib		&& $(MAKE) clean
 	cd cmd		&& $(MAKE) clean
 	rm -Rf tree.tmp boot.sys boot.img aux.img aux2.img hdflat.img disks base.tar
