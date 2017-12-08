@@ -37,9 +37,11 @@ gmake -s
 
 rm -rf	 release
 mkdir -p release/release/pxe/tftpboot/m
+mkdir -p release/release/floppy
 mkdir -p release/release/cdrom
 mkdir -p release/release/usb
 
+cp -p	disks/zinit.img		release/release/floppy/floppy.img
 cp -p	disks/cdrom.iso		release/release/cdrom/cdrom.iso
 cp -p	disks/altcd.iso		release/release/cdrom/altcd.iso
 cp -p	disks/hdflat.img	release/release/usb/usb.img
