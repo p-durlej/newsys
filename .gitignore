@@ -204,6 +204,7 @@
 /cross/sysver
 /cross/wc2c
 /cross/tcc/ctcc
+/cross/zpipe
 /disks/
 /drv-arch
 /fonts/mono

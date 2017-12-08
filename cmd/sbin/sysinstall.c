@@ -1267,7 +1267,7 @@ void init_rd(void)
 	int st;
 	int d;
 	
-	if (_mod_load("/lib/drv/rd.drv", NULL, 0) < 0)
+	if (_mod_load("/lib/drv/rd.drv", NULL, 0) < 0 && errno != EEXIST)
 	{
 		perror("/lib/drv/rd.drv");
 		for (;;)

@@ -25,13 +25,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-BIN := mkbfs fnc modinfo fnconv enlarge ckexe cdcks cfont wc2c psysload sysver
+BIN := mkbfs fnc modinfo fnconv enlarge ckexe cdcks cfont wc2c psysload sysver zpipe
 
 CC := cc
 
 all: $(BIN)
 	cd mgen && $(MAKE)
 	cd tcc  && $(MAKE)
+
+zpipe: zpipe.c
+	$(CC) -o zpipe zpipe.c -lz
 
 clean:
 	cd mgen && $(MAKE) clean
