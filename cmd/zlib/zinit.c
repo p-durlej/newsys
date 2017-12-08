@@ -104,7 +104,8 @@ int main(int argc, char **argv)
 		fail("cannot load " RD_DRV);
 	
 	zread(IMAGE, count);
-	_cprintf("zinit: image size: %li bytes\n", (long)image_size);
+	if (_boot_flags() & BOOT_VERBOSE)
+		_cprintf("zinit: image size: %li bytes\n", (long)image_size);
 	
 	if (image_size & 511)
 		fail("image size not multiple of 512");
