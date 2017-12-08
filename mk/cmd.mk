@@ -31,8 +31,8 @@ LIB_DEP := $(CRT0) $(CRTBEG) $(CRTEND) $(LIBC)
 
 all: $(CMD)
 
-%: %.c $(LIB_DEP)
-	$(CC) -Wall -Werror -O3 $< -o $@ $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
+%: %.c $(LIB_DEP) $(LOBJ)
+	$(CC) -Wall -Werror -O3 $< $(LOBJ) -o $@ $(CPPFLAGS) $(CFLAGS) $(LDFLAGS)
 
 clean:
 	rm -f $(CMD)
