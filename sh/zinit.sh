@@ -7,6 +7,7 @@
 make_zinit()
 {
 	rm -rf zinit.tmp
+	mkdir -p zinit.tmp/etc
 	mkdir -p zinit.tmp/sbin
 	mkdir -p zinit.tmp/lib/drv
 	mkdir -p zinit.tmp/lib/sys
@@ -15,6 +16,7 @@ make_zinit()
 	cp -pf lib/load/load	zinit.tmp/lib/sys/user.bin
 	cp -pf cmd/zlib/zinit	zinit.tmp/sbin/init
 	cp -pf drv/rd.drv	zinit.tmp/lib/drv
+	cp -pf tree/etc/bootmsg	zinit.tmp/etc/bootmsg
 	
 	${STRIP} zinit.tmp/sbin/*
 	
