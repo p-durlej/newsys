@@ -58,7 +58,7 @@ copy_files()
 {
 	for i in cmd/sh/* cmd/bin/* cmd/acex-bin/* cmd/tests/*		\
 		 cmd/filemgr/filemgr cmd/filemgr/pref.filemgr		\
-		 cmd/filemgr/filemgr.slave cmd/zlib/*
+		 cmd/filemgr/filemgr.slave cmd/zlib/zpipe
 	do
 		if [ -x $i ]
 		then
