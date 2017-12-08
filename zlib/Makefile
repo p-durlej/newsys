@@ -21,10 +21,11 @@ ZLIB_O = adler32.o	\
 	 uncompr.o	\
 	 zutil.o
 
-all: zlib.o
+all: zlib.a
 
-zlib.o: $(ZLIB_O)
-	$(LD) -r -o zlib.o $(ZLIB_O)
+zlib.a: $(ZLIB_O)
+	-rm -f zlib.a
+	$(AR) -q zlib.a $(ZLIB_O)
 
 clean:
-	-rm -f zlib.o $(ZLIB_O)
+	-rm -f zlib.a $(ZLIB_O)

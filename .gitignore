@@ -189,6 +189,7 @@
 /cmd/sdk.bin/modlist
 /cmd/sdk.bin/modload
 /cmd/sdk.bin/ucc
+/cmd/zlib/zpipe
 /cross/cdcks
 /cross/cfont
 /cross/ckexe
@@ -222,6 +223,7 @@
 /lib/load/arch
 /lib/load/exports.c
 /lib/load/load
+/zlib/zlib.a
 /machine
 /tree.tmp/
 /release/

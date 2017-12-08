@@ -3,7 +3,7 @@
 # All rights reserved.
 #
 
-LOBJ	  = ../../zlib/zlib.o
+LOBJ	  = ../../zlib/zlib.a
 CMD	  = zpipe
 
 include cmd.mk
