@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# Copyright (c) 2017, Piotr Durlej
+# All rights reserved.
+#
+
+qemu	-m 64 -sdl -vga vmware						\
+	-drive if=floppy,index=0,format=raw,file=disks/zinit.img	\
+	-drive if=floppy,index=1,format=raw,file=../disks/tmp2.img	\
+	-drive if=ide,index=0,format=raw,file=../disks/disk.img		\
+	-boot a								\
+	-net none							\
+	-soundhw sb16							\
+	-serial stdio							\
+	# -full-screen
