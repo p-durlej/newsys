@@ -30,11 +30,11 @@
 #define STR(s)		STR2(s)
 #define STR2(s)		#s
 
-#define COPYRIGHT	"Nameless OS Final (v" VERSTR  ")\n"	\
+#define COPYRIGHT	"Vanadium OS (v" VERSTR  ")\n"	\
 			"Copyright (C) Piotr Durlej\n"		\
 			"All rights reserved\n"			\
 			"http://www.durlej.net/newsys"
 
-#define SYS_PRODUCT	"Nameless OS Final (v" VERSTR  ")"
+#define SYS_PRODUCT	"Vanadium OS (v" VERSTR  ")"
 #define SYS_AUTHOR	"by Piotr Durlej"
 #define SYS_CONTACT	"http://www.durlej.net/newsys"
