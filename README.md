@@ -1,6 +1,6 @@
 # Nameless OS Final
 
-This is the complete source code of Nameless OS Final (v1.3).
+This is the complete source code of Nameless OS Final (v1.4).
 
 The system is released under a BSD 2-clause license.
 
