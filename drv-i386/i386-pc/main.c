@@ -24,11 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sysload/kparam.h>
+#include <sysload/flags.h>
+
 #include <kern/machine/bioscall.h>
 #include <kern/module.h>
 #include <kern/config.h>
 #include <kern/power.h>
 #include <kern/errno.h>
+#include <kern/start.h>
 
 void bios_init(void);
 void con_init(void);
@@ -58,8 +62,12 @@ int mod_onload(unsigned md, const char *pathname, const void *data, unsigned dat
 	
 	intr_init();
 	clock_init();
-	// if (gc_init())
-		con_init();
+	
+	if (kparam.boot_flags & (BOOT_VERBOSE | BOOT_TEXT))
+	{
+		if (gc_init())
+			con_init();
+	}
 	pwr_install(&pwops);
 	return 0;
 }
