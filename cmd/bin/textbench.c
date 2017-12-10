@@ -33,6 +33,7 @@
 #include <time.h>
 #include <err.h>
 
+#define FONT	WIN_FONT_MONO_N
 #define COLS	80
 #define LINES	25
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv)
 	bg = wc_get(WC_BG);
 	fg = wc_get(WC_FG);
 	
-	win_chr_size(WIN_FONT_MONO, &cw, &ch, 'X');
+	win_chr_size(FONT, &cw, &ch, 'X');
 	w = cw *  COLS;
 	h = ch * (LINES + 1);
 	
@@ -75,7 +76,7 @@ int main(int argc, char **argv)
 	for (pt = 0, fps = 0, cnt = 0; ;)
 	{
 		win_idle();
-		win_set_font(f->wd, WIN_FONT_MONO);
+		win_set_font(f->wd, FONT);
 		win_clip(f->wd,
 			 f->workspace_rect.x, f->workspace_rect.y, w, h,
 			 f->workspace_rect.x, f->workspace_rect.y);
