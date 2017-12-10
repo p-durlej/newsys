@@ -121,6 +121,7 @@
 644 /etc/w_color/Productivity
 644 /etc/w_color/Low Color Default
 644 /etc/w_color/Psyche
+644 /etc/w_color/Vanadium
 
 600 /lib/fonts/mono
 600 /lib/fonts/system
@@ -136,6 +137,7 @@
 644 /lib/bg/bg800x600.pgm
 644 /lib/bg/bg1024x768.pgm
 644 /lib/bg/paper.pnm
+644 /lib/bg/vdark.pnm
 644 /lib/icons/nles.pnm
 644 /lib/icons/wink.pnm
 644 /lib/osk_layout
@@ -237,6 +239,10 @@
 
 644 /lib/w_themes/Productivity/splash.pnm
 644 /lib/w_themes/Productivity/info
+
+644 /lib/w_themes/Vanadium/icons/dir.pnm
+644 /lib/w_themes/Vanadium/icons64/dir.pnm
+644 /lib/w_themes/Vanadium/info
 
 644 /lib/prefs/.dirinfo
 644 /lib/prefs/Display
