@@ -136,9 +136,7 @@ static int vesa_find_and_set(int xres, int yres, int bpp)
 
 struct kfb *vga_init(void)
 {
-#ifdef __ARCH_AMD64__
 	uint16_t *p, *e;
-#endif
 	
 	if (!(boot_params.boot_flags & BOOT_TEXT))
 	{
@@ -150,13 +148,13 @@ struct kfb *vga_init(void)
 #ifdef __ARCH_AMD64__
 		if (!vesa_find_and_set(1024, 768, 32))
 			goto fini;
+#endif
 		
 		if (!vesa_find_and_set(640, 480, 32))
 			goto fini;
 		
 		if (!vesa_find_and_set(640, 480, 8))
 			goto fini;
-#endif
 	}
 	
 	bcp.eax	 = 0x0f00;
