@@ -24,9 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define DEFAULT_COLORS			"Psyche"
-#define DEFAULT_THEME			"Psyche"
-#define DEFAULT_BACKGROUND_PATHNAME	"/lib/bg/vanadium.pnm"
+#define DEFAULT_COLORS			"Vanadium"
+#define DEFAULT_THEME			"Vanadium"
+#define DEFAULT_BACKGROUND_PATHNAME	"/lib/bg/vdark.pnm"
 #define DEFAULT_BACKGROUND_TILE		0
 #define DEFAULT_FORM_DISPLAY_MOVING	1
 #define DEFAULT_LARGE_UI		0
