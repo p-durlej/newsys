@@ -121,6 +121,7 @@ static void load_pos(void);
 
 static void update_title(void)
 {
+	char title[sizeof dirname + sizeof cwd + 2];
 	char *p;
 	
 	if (desktop)
@@ -135,6 +136,13 @@ static void update_title(void)
 	if (listfd >= 0)
 	{
 		form_set_title(main_form, "Search Results");
+		return;
+	}
+	
+	if (config->show_path && *dirname)
+	{
+		sprintf(title, "%s [%s]", dirname, cwd);
+		form_set_title(main_form, title);
 		return;
 	}
 	
