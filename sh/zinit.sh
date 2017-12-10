@@ -11,12 +11,14 @@ make_zinit()
 	mkdir -p zinit.tmp/sbin
 	mkdir -p zinit.tmp/lib/drv
 	mkdir -p zinit.tmp/lib/sys
+	mkdir -p zinit.tmp/lib/splash
 	
 	cp -pf kern/os386	zinit.tmp/lib/sys/kern.bin
 	cp -pf lib/load/load	zinit.tmp/lib/sys/user.bin
 	cp -pf cmd/zlib/zinit	zinit.tmp/sbin/init
 	cp -pf drv/rd.drv	zinit.tmp/lib/drv
 	cp -pf tree/etc/bootmsg	zinit.tmp/etc/bootmsg
+	cp -pf tree/lib/splash/splash.pnm zinit.tmp/lib/splash/default.pnm
 	
 	${STRIP} zinit.tmp/sbin/*
 	
