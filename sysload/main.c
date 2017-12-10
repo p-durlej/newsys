@@ -864,13 +864,13 @@ static void show_splash(struct kparam *kp)
 	}
 	
 	w = atoi(p);
-	while (p < end && *p >= '0' && *p < '9')
+	while (p < end && *p >= '0' && *p <= '9')
 		p++;
 	while (p < end && *p == ' ')
 		p++;
 	
 	h = atoi(p);
-	while (p < end && *p >= '0' && *p < '9')
+	while (p < end && *p >= '0' && *p <= '9')
 		p++;
 	if (*p++ != '\n')
 		return;
