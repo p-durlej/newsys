@@ -36,6 +36,7 @@ else
 endif
 
 all:
+	cd include-tmp	&& $(MAKE) all
 	cd cross	&& $(MAKE) all
 	cd fonts	&& $(MAKE) all
 	cd boot-pc	&& $(MAKE) all
@@ -50,6 +51,7 @@ all:
 	s/makedisk
 
 clean:
+	cd include-tmp	&& $(MAKE) clean
 	cd cross	&& $(MAKE) clean
 	cd fonts	&& $(MAKE) clean
 	cd boot-pc	&& $(MAKE) clean

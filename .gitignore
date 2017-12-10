@@ -217,6 +217,7 @@
 /include/kern/arch
 /include/kern/machine
 /include/machine
+/include-tmp/gitver.h
 /kern/arch
 /kern/os386
 /kern/syslist/syslist.old

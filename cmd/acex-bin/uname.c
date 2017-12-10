@@ -25,6 +25,7 @@
  */
 
 #include <sys/utsname.h>
+#include <gitver.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -37,12 +38,13 @@ static int nodename;
 static int release;
 static int version;
 static int machine;
+static int gitver;
 
 static void procopt(int argc, char **argv)
 {
 	int opt;
 	
-	while (opt = getopt(argc, argv, "asnrvm"), opt > 0)
+	while (opt = getopt(argc, argv, "asnrvmg"), opt > 0)
 		switch (opt)
 		{
 		case 'a':
@@ -66,6 +68,9 @@ static void procopt(int argc, char **argv)
 			break;
 		case 'm':
 			machine = 1;
+			break;
+		case 'g':
+			gitver = 1;
 			break;
 		default:
 			exit(255);
@@ -106,6 +111,11 @@ int main(int argc, char **argv)
 	if (machine)
 	{
 		printf("%s%s", s, u.machine);
+		s = " ";
+	}
+	if (gitver)
+	{
+		printf("%s%s", s, GITVER);
 		s = " ";
 	}
 	putc('\n', stdout);
