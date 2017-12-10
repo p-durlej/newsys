@@ -10,5 +10,5 @@
 /sbin/fxstat		/sbin/siostat
 /sbin/fdfmt		/sbin/fdformat
 /sbin/daemon		/bin/bg
-/lib/bg/vanadium.pnm	/lib/splash/default.pnm
+/lib/bg/vdark.pnm	/lib/splash/default.pnm
 /bin/aout		/bin/a.out
