@@ -847,7 +847,7 @@ void backdrop_redraw(void)
 	if (backdrop)
 		bmp_draw(backdrop_wd, backdrop, 0, 0);
 	
-	win_text(backdrop_wd, fg, 0, wsr.h - h, COPYRIGHT);
+	win_text(backdrop_wd, fg, 2, wsr.h - h - 2, COPYRIGHT);
 	win_end_paint();
 }
 
