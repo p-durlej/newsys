@@ -48,7 +48,6 @@
 #define MACHINE_FORM	"/lib/forms/machine.frm"
 #define FILE_FORM	"/lib/forms/file.frm"
 #define ABOUT_FORM	"/lib/forms/about.frm"
-#define ACEK_PNM	"/lib/acek.pnm"
 
 #define RESULT_OK	1
 #define RESULT_CANCEL	2

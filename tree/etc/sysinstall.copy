@@ -132,7 +132,6 @@
 600 /lib/sys/sysload
 600 /lib/sys/kern.bin
 600 /lib/sys/user.bin
-644 /lib/acek.pnm
 644 /lib/bg/bg640x480.pgm
 644 /lib/bg/bg800x600.pgm
 644 /lib/bg/bg1024x768.pgm
