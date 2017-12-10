@@ -26,7 +26,7 @@
 
 #define DEFAULT_COLORS			"Psyche"
 #define DEFAULT_THEME			"Psyche"
-#define DEFAULT_BACKGROUND_PATHNAME	"/lib/bg/artp.pnm"
+#define DEFAULT_BACKGROUND_PATHNAME	"/lib/bg/vanadium.pnm"
 #define DEFAULT_BACKGROUND_TILE		0
 #define DEFAULT_FORM_DISPLAY_MOVING	1
 #define DEFAULT_LARGE_UI		0
