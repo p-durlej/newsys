@@ -804,14 +804,15 @@ static void load_rd(void)
 
 static void load_splash(void)
 {
-	const char *pathname = "/lib/splash/splash.pnm";
+	const char *pathname1 = "/lib/splash/splash.pnm";
+	const char *pathname2 = "/lib/splash/default.pnm";
 	struct file f;
 	void *buf;
 	
 	if (boot_params.boot_flags)
-		pathname = "/lib/splash/splash_mnt.pnm";
+		pathname1 = "/lib/splash/splash_mnt.pnm";
 	
-	if (fs_lookup(&f, &fs, pathname))
+	if (fs_lookup(&f, &fs, pathname1) && fs_lookup(&f, &fs, pathname2))
 		return;
 	if (!f.size)
 		return;

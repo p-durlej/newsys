@@ -376,6 +376,43 @@ void delgrp_click()
 	load_info();
 }
 
+static int set_splash(void)
+{
+	char pathname[PATH_MAX];
+	char theme[NAME_MAX + 1];
+	char buf[256];
+	char *p;
+	FILE *f;
+	
+	if (unlink("/lib/splash/splash.pnm") && errno != ENOENT)
+		return -1;
+	
+	if (c_load("/user/w_theme", theme, sizeof theme))
+		return -1;
+	sprintf(pathname, "/lib/w_themes/%s/info", theme);
+	
+	f = fopen(pathname, "r");
+	if (f == NULL)
+		return 0;
+	
+	while (fgets(buf, sizeof buf, f))
+	{
+		p = strchr(buf, '\n');
+		if (p)
+			*p = 0;
+		
+		if (*buf == 'S')
+			if (link(buf + 1, "/lib/splash/splash.pnm"))
+				goto fail;
+	}
+	
+	fclose(f);
+	return 0;
+fail:
+	fclose(f);
+	return -1;
+}
+
 static void copy_settings(int silent)
 {
 	static char *names[] = { "form", "metrics", "ptr_conf", "w_colors", "w_theme", "vtty-color" };
@@ -430,6 +467,8 @@ static void copy_settings(int silent)
 		close(dfd);
 	}
 	
+	if (set_splash())
+		fail = 1;
 	win_update();
 	
 	if (fail)
