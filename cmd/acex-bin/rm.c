@@ -34,9 +34,10 @@
 #include <stdio.h>
 #include <err.h>
 
-static int force = 0;
-static int recur = 0;
-static int xcode = 0;
+static int fflag;
+static int iflag;
+static int recur;
+static int xcode;
 
 static void procopt(int argc, char **argv);
 static void do_rmdir(const char *name);
@@ -51,10 +52,10 @@ static void procopt(int argc, char **argv)
 		switch (opt)
 		{
 		case 'f':
-			force = 1;
+			fflag = 1;
 			break;
 		case 'i':
-			force = 0;
+			iflag = 1;
 			break;
 		case 'r':
 		case 'R':
@@ -107,12 +108,30 @@ static void do_rmdir(const char *name)
 
 static void do_rm(const char *name)
 {
+	int confirm = iflag;
 	struct stat st;
 	
-	if (!access(name, 0) && !force)
+	if (stat(name, &st))
+	{
+		if (errno == ENOENT && fflag)
+			return;
+		if (!xcode)
+			xcode = errno;
+		warn("%s: stat", name);
+		return;
+	}
+	
+	if (!stat(name, &st))
+		if ((st.st_mode & 0222) == 0)
+			confirm = 1;
+	
+	if (!fflag && confirm)
 	{
 		char buf[MAX_CANON];
 		int cnt;
+		
+		if ((st.st_mode & 0222) && !iflag)
+			return;
 		
 		do
 		{
@@ -126,16 +145,6 @@ static void do_rm(const char *name)
 		
 		if (*buf != 'y')
 			return;
-	}
-	
-	if (stat(name, &st))
-	{
-		if (errno == ENOENT && force)
-			return;
-		if (!xcode)
-			xcode = errno;
-		warn("%s: stat", name);
-		return;
 	}
 	
 	if (S_ISDIR(st.st_mode))
@@ -180,7 +189,7 @@ int main(int argc, char **argv)
 		usage();
 	procopt(argc, argv);
 	
-	if (optind >= argc && !force)
+	if (optind >= argc && !fflag)
 		errx(255, "too few arguments");
 	
 	for (i = optind; i < argc; i++)

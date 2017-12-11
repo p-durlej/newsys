@@ -39,8 +39,9 @@
 #include <paths.h>
 #include <err.h>
 
-static int confirm = 1;
-static int xcode   = 0;
+static int fflag;
+static int iflag;
+static int xcode;
 
 static char *basename(const char *name);
 static void  procopt(int argc, char **argv);
@@ -76,10 +77,10 @@ static void procopt(int argc, char **argv)
 		switch (opt)
 		{
 		case 'f':
-			confirm = 0;
+			fflag = 1;
 			break;
 		case 'i':
-			confirm = 1;
+			iflag = 1;
 			break;
 		default:
 			exit(255);
@@ -95,7 +96,14 @@ static void setxcode(int st)
 
 static int overwrite(const char *name)
 {
-	if (confirm)
+	int confirm = iflag;
+	struct stat st;
+	
+	if (!stat(name, &st))
+		if ((st.st_mode & 0222) == 0)
+			confirm = 1;
+	
+	if (!fflag && confirm)
 	{
 		char buf[MAX_CANON];
 		int cnt;
@@ -105,8 +113,19 @@ static int overwrite(const char *name)
 			fprintf(stderr, "Overwrite %s? ", scwd(name));
 			
 			cnt = read(STDIN_FILENO, buf, MAX_CANON);
-			if (cnt < 1)
-				exit(255);
+			if (!cnt)
+			{
+				if (!xcode)
+					xcode = 255;
+				return -1;
+			}
+			if (cnt < 0)
+			{
+				if (!xcode)
+					xcode = errno;
+				perror("cp: stdin");
+				return -1;
+			}
 		}
 		while (cnt != 2);
 		
@@ -116,7 +135,8 @@ static int overwrite(const char *name)
 	
 	if (remove(name))
 	{
-		setxcode(errno);
+		if (!xcode)
+			xcode = errno;
 		warn("%s: remove", scwd(name));
 		return -1;
 	}
@@ -125,10 +145,23 @@ static int overwrite(const char *name)
 
 static void do_xmv(const char *src, const char *dst)
 {
+	const char *nargv[8];
+	const char **pp = nargv;
 	pid_t pid;
 	int st;
 	
-	pid = _newtaskl(_PATH_B_CP, _PATH_B_CP, confirm ? "-irp" : "-frp", "--", src, dst, NULL);
+	*pp++ = _PATH_B_CP;
+	if (iflag)
+		*pp++ = "-i";
+	if (fflag)
+		*pp++ = "-f";
+	*pp++ = "-rp";
+	*pp++ = "--";
+	*pp++ = src;
+	*pp++ = dst;
+	*pp++ = NULL;
+	
+	pid = _newtaskv(_PATH_B_CP, (void *)nargv);
 	if (pid < 0)
 		err(errno, _PATH_B_CP);
 	

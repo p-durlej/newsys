@@ -37,10 +37,11 @@
 
 static int xcode;
 
-static int confirm  = 1;
-static int recur    = 0;
-static int preserve = 0;
-static int verbose  = 0;
+static int iflag;
+static int fflag;
+static int recur;
+static int preserve;
+static int verbose;
 
 static int do_chown = 1;
 
@@ -112,7 +113,14 @@ static void copyattr(const char *src, const char *dst) /* XXX */
 
 static int overwrite(const char *name)
 {
-	if (confirm)
+	int confirm = iflag;
+	struct stat st;
+	
+	if (!stat(name, &st))
+		if ((st.st_mode & 0222) == 0)
+			confirm = 1;
+	
+	if (!fflag && confirm)
 	{
 		char buf[MAX_CANON];
 		int cnt;
@@ -354,10 +362,10 @@ static void procopt(int argc, char **argv)
 		switch (opt)
 		{
 		case 'f':
-			confirm = 0;
+			fflag = 1;
 			break;
 		case 'i':
-			confirm = 1;
+			iflag = 1;
 			break;
 		case 'r':
 		case 'R':
