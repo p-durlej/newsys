@@ -578,7 +578,7 @@ static void autologin_click(struct menu_item *mi)
 
 static void about_click(struct menu_item *mi)
 {
-	dlg_about7(main_form, NULL, "User Account Manager v1.2", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "users.pnm");
+	dlg_about7(main_form, NULL, "User Account Manager v1.4", SYS_PRODUCT, SYS_AUTHOR, SYS_CONTACT, "users.pnm");
 }
 
 static void usr_draw_item(struct gadget *g, int i, int wd, int x, int y, int w, int h)

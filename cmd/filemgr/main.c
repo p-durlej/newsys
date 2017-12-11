@@ -927,7 +927,7 @@ static void progitem_click(struct menu_item *m)
 
 void about(struct menu_item *m)
 {
-	const char *name = desktop ? "Desktop v1.3" : "File Manager v1.3";
+	const char *name = desktop ? "Desktop v1.4" : "File Manager v1.4";
 	const char *icon = desktop ? "desktop.pnm"  : "filemgr.pnm";
 	
 	if (desktop && !full_screen)
