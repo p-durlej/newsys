@@ -231,5 +231,5 @@
 /tree.tmp/
 /zinit.tmp/
 /release/
-/release-*-amd64.tar.gz
-/release-*-i386.tar.gz
+/vanadium-*-amd64.tar.gz
+/vanadium-*-i386.tar.gz
