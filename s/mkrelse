@@ -51,6 +51,6 @@ cp -p	doc/pxe.example		release/release/pxe/dhcpd.conf.example
 
 sysver=$(cross/sysver)
 
-(cd release && tar cf ../release-$sysver-$ARCH.tar release)
-rm -f release-$sysver-$ARCH.tar.gz
-gzip release-$sysver-$ARCH.tar
+(cd release && tar cf ../vanadium-$sysver-$ARCH.tar release)
+rm -f vanadium-$sysver-$ARCH.tar.gz
+gzip vanadium-$sysver-$ARCH.tar
