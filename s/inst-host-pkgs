@@ -1,3 +1,13 @@
 #!/bin/sh
 
-pkg_add bzip2 cdrtools gmake gmp mpfr wget
+case "$(uname -s)" in
+OpenBSD)
+	pkg_add bzip2 cdrtools gmake gmp mpfr wget
+	;;
+Linux) # assume Ubuntu
+	apt install make gcc libmpfr-dev libgmp-dev qemu-kvm libz-dev wget
+	;;
+*)
+	echo "$0: Unsupported host OS" >&2
+	;;
+esac
