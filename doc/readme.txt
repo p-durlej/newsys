@@ -1,1 +1,1 @@
-This is a bootable NamelessOS installation CD.
+This is a bootable VanadiumOS installation CD.

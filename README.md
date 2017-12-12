@@ -1,10 +1,8 @@
-# Nameless OS Final
+# Vanadium OS
 
-This is the complete source code of Nameless OS Final (v1.4).
+This is the complete source code of Vanadium OS (v1.4).
 
 The system is released under a BSD 2-clause license.
-
-![Nameless OS v1.3 desktop with apps](http://www.durlej.net/newsys/2016-v12.png)
 
 ## Running
 
@@ -13,13 +11,17 @@ You can install the operating system if you want, but you don't have to. There i
 
 ## Building
 
-The current version of the operating system was tested to build successfully on both OpenBSD 6.0 and Ubuntu 16.04 LTS.
+The current version of the operating system was tested to build successfully on Ubuntu 17.10.
 
-Before the system can be compiled from source, you should make sure that you have gmake in your $PATH. If you intend to run the operating system using the scripts in the "s" directory, provide a qemu command in your search path. Symbolic links to appropriate programs will suffice.
+Before the system can be compiled from source, you should make sure that you have gmake, cc and mkisofs in your $PATH. If you intend to run the operating system using the scripts in the "s" directory, provide a qemu command in your search path. Symbolic links to appropriate programs will suffice.
 
-Also, to compile the GCC toolchain, you must have the mpfr and gmp libraries. If the host OS makes a distinction, these should be the development versions.
+Also, zlib is is needed. If the host OS makes a distinction, it should be the development version.
+
+Additionally, to compile the GCC toolchain, you must have the mpfr and gmp libraries. Again, these should be the development versions.
 
 The source code should be placed at $HOME/os386/src. Other locations may work, but were not tested recently.
+
+On Ubuntu 17.10, you may install the required packages by running s/inst-host-pkgs as root.
 
 ### Building everything
 
@@ -33,11 +35,11 @@ Building the entire toolchain and the two platforms can be time consuming, it ta
 
 ### Rebuilding after making changes
 
-If you just made a change in the source code and want to recompile, you should firstly source some environment variables into the current shell by running . s/env.sh
+If you just made a change in the source code and want to recompile, just run the gmake command in $HOME/os386/src.
 
-Then just run the gmake command.
+It is no longer required to firstly source s/env.sh.
 
-Of course the toolchain is required. Again, amd64 is built by default. If you want to build i386 instead, set ARCH=i386 in the environment.
+Of course the toolchain is required. Again, amd64 is built by default. If you want to build i386 instead, set ARCH=i386 in the environment or run gmake ARCH=i386.
 
 ## Program development
 
@@ -51,13 +53,13 @@ Standard library functions such as printf, act much like their standard counterp
 
 Some standard functions are reduced in functionality, some do not exist at all. There is a race condition in open, iirc. Vfprintf and the other printf functions do not support floating point conversions, and \<math.h\> is missing from this version.
 
-Some functions are Nameless OS-specific, these can be figured out by reading the source code.
+Some functions are Vanadium OS-specific, these can be figured out by reading the source code.
 
 The GUI API is completely made by up me, there isn't any similar API documented anywhere. Again, the source code is the documentation.
 
 ### Compiling programs
 
-Programs for Nameless OS are built using the standard GNU tools.
+Programs for Vanadium OS are built using the standard GNU tools.
 
 The executable prefix is either amd64-os386-elf- or i386-os386-elf- depending on the platform. So, if you want to compile a single-file program, you can run amd64-os386-elf-gcc -o hello hello.c
 
