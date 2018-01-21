@@ -86,6 +86,7 @@
 /cmd/bin/pref.theme
 /cmd/bin/pref.time
 /cmd/bin/ps
+/cmd/bin/stty
 /cmd/bin/tar
 /cmd/bin/taskbar
 /cmd/bin/textbench
