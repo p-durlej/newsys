@@ -654,7 +654,7 @@ static void pty_signal(struct pty *pp, int nr)
 
 static void pty_erase_ch(struct pty *pp, char ch)
 {
-	if ((unsigned char)ch < 0x20)
+	if ((unsigned char)ch < 0x20 || ch == 127)
 	{
 		pty_echo(pp, '\b');
 		pty_echo(pp, '\b');
@@ -691,8 +691,7 @@ static void pty_canon_input(struct pty *pp, char ch)
 		pp->canon_eot = 1;
 		if (pp->tio.c_lflag & ECHO)
 		{
-			pty_echo(pp, '^');
-			pty_echo(pp, 'D');
+			pty_cecho(pp, ch);
 			pty_echo(pp, '\n');
 		}
 		return;
@@ -707,8 +706,7 @@ static void pty_canon_input(struct pty *pp, char ch)
 		}
 		if (pp->tio.c_lflag & ECHO)
 		{
-			pty_echo(pp, '^');
-			pty_echo(pp, 'C');
+			pty_cecho(pp, ch);
 			pty_echo(pp, '\n');
 		}
 		return;
