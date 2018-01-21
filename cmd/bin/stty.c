@@ -8,6 +8,18 @@
 #include <ctype.h>
 #include <err.h>
 
+static struct opt
+{
+	const char *	name;
+	int		flag;
+} opt[] =
+{
+	{ "isig",	ISIG	},
+	{ "icanon",	ICANON	},
+	{ "echo",	ECHO	},
+	{ "echonl",	ECHONL	},
+};
+
 static struct cc
 {
 	const char *	name;
@@ -53,18 +65,37 @@ static void show(void)
 				printf("%c\n", c);
 		}
 	}
+	
+	for (i = 0; i < sizeof opt / sizeof *opt; i++)
+	{
+		if (!(tio.c_lflag & opt[i].flag))
+			putchar('-');
+		
+		puts(opt[i].name);
+	}
 }
 
-static void setcc(const char *name, const char *value)
+static int setcc(const char *name, const char *value, int set)
 {
 	int c;
 	int i;
+	
+	for (i = 0; i < sizeof opt / sizeof *opt; i++)
+		if (!strcmp(opt[i].name, name))
+		{
+			c = opt[i].flag;
+			if (set)
+				tio.c_lflag |= c;
+			else
+				tio.c_lflag &= ~c;
+			return 1;
+		}
 	
 	if (!value)
 	{
 		warnx("%s: missing value", name);
 		xit = 1;
-		return;
+		return 1;
 	}
 	
 	if (*value == '^' && value[1])
@@ -78,15 +109,18 @@ static void setcc(const char *name, const char *value)
 		if (!strcmp(cc[i].name, name))
 		{
 			tio.c_cc[cc[i].i] = c;
-			return;
+			return 2;
 		}
 	
 	warnx("%s: invalid option", name);
 	xit = 1;
+	return 2;
 }
 
 int main(int argc, char **argv)
 {
+	int cnt;
+	
 	if (tcgetattr(0, &tio))
 		err(1, "stdin");
 	
@@ -103,14 +137,14 @@ int main(int argc, char **argv)
 	{
 		if (*argv[0] != '-')
 		{
-			setcc(argv[0], argv[1]);
+			cnt = setcc(argv[0], argv[1], 1);
 			
-			argv += 2;
-			argc -= 2;
+			argv += cnt;
+			argc -= cnt;
 		}
 		else
 		{
-			setcc(argv[0] + 1, "");
+			setcc(argv[0] + 1, "", 0);
 			
 			argv++;
 			argc--;
