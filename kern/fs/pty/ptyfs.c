@@ -611,6 +611,22 @@ static void pty_echo(struct pty *pp, char ch)
 	}
 }
 
+static void pty_cecho(struct pty *pp, char ch)
+{
+	if (ch >= 0 && ch < 0x20)
+	{
+		pty_echo(pp, '^');
+		pty_echo(pp, ch + 0x40);
+	}
+	else if (ch == 127)
+	{
+		pty_echo(pp, '^');
+		pty_echo(pp, '?');
+	}
+	else
+		pty_echo(pp, ch);
+}
+
 static void pty_signal(struct pty *pp, int nr)
 {
 	struct fs_desc *f;
@@ -706,16 +722,7 @@ static void pty_canon_input(struct pty *pp, char ch)
 			pty_echo(pp, '>');
 			pty_echo(pp, ' ');
 			for (i = 0; i < pp->canon_count; i++)
-			{
-				ch = pp->canon_buf[i];
-				if (ch >= 0 && ch <= 0x20)
-				{
-					pty_echo(pp, '^');
-					pty_echo(pp, ch + 0x40);
-				}
-				else
-					pty_echo(pp, ch);
-			}
+				pty_cecho(pp, pp->canon_buf[i]);
 		}
 		return;
 	}
@@ -777,15 +784,7 @@ static void pty_canon_input(struct pty *pp, char ch)
 	{
 		pp->canon_buf[pp->canon_count++] = ch;
 		if (pp->tio.c_lflag & ECHO)
-		{
-			if ((unsigned char)ch >= 0x20)
-				pty_echo(pp, ch);
-			else
-			{
-				pty_echo(pp, '^');
-				pty_echo(pp, '@' + (ch & 0x1f));
-			}
-		}
+			pty_cecho(pp, ch);
 	}
 }
 
