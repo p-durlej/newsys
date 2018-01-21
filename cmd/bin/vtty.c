@@ -367,6 +367,8 @@ static void key_down(struct gadget *g, unsigned ch, unsigned shift)
 	
 	if (ch == '\\' && (shift & WIN_SHIFT_CTRL))
 		c = 28;
+	if (ch == WIN_KEY_DEL)
+		ch = c = 127;
 	if (ch < 256)
 		write(PTM_FD, &c, 1);
 }
