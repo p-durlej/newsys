@@ -22,6 +22,7 @@ static struct cc
 	{ "eof",	VEOF,		'D'  & 31 },
 	{ "werase",	VWERASE,	'W'  & 31 },
 	{ "status",	VSTATUS,	'T'  & 31 },
+	{ "reprint",	VREPRINT,	'R'  & 31 },
 };
 
 static struct termios tio;
@@ -36,7 +37,7 @@ static void show(void)
 	{
 		c = tio.c_cc[cc[i].i] & 255;
 		
-		printf("%-6s ", cc[i].name);
+		printf("%-8s ", cc[i].name);
 		switch (c)
 		{
 		case 255:

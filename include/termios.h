@@ -39,8 +39,9 @@
 #define VEOF		4
 #define VWERASE		5
 #define VSTATUS		6
+#define VREPRINT	7
 
-#define NCCS		7
+#define NCCS		8
 
 #define TCSANOW		0
 #define TCSADRAIN	1

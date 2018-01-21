@@ -231,13 +231,14 @@ static int pty_getfso(struct fso *f)
 		p->tio.c_cflag = 0;
 		p->tio.c_lflag = ICANON | ISIG | ECHO | ECHONL;
 		
-		p->tio.c_cc[VINTR]   = 'C'  & 0x1f;
-		p->tio.c_cc[VQUIT]   = '\\' & 0x1f;
-		p->tio.c_cc[VERASE]  = '\b';
-		p->tio.c_cc[VKILL]   = 'U'  & 0x1f;
-		p->tio.c_cc[VEOF]    = 'D'  & 0x1f;
-		p->tio.c_cc[VWERASE] = 'W'  & 0x1f;
-		p->tio.c_cc[VSTATUS] = 'T'  & 0x1f;
+		p->tio.c_cc[VINTR]    = 'C'  & 0x1f;
+		p->tio.c_cc[VQUIT]    = '\\' & 0x1f;
+		p->tio.c_cc[VERASE]   = '\b';
+		p->tio.c_cc[VKILL]    = 'U'  & 0x1f;
+		p->tio.c_cc[VEOF]     = 'D'  & 0x1f;
+		p->tio.c_cc[VWERASE]  = 'W'  & 0x1f;
+		p->tio.c_cc[VSTATUS]  = 'T'  & 0x1f;
+		p->tio.c_cc[VREPRINT] = 'R'  & 0x1f;
 		
 		p->ptm_fso = f;
 		p->locked  = 1;
@@ -712,7 +713,7 @@ static void pty_canon_input(struct pty *pp, char ch)
 		return;
 	}
 	
-	if (ch == 'L' - 0x40)
+	if (ch == pp->tio.c_cc[VREPRINT])
 	{
 		if (pp->tio.c_lflag & ECHO)
 		{
