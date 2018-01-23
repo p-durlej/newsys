@@ -66,6 +66,4 @@ int	fault(void);
 void	fault_fini(void);
 void	fault_abort(void);
 
-int	ipcpy(struct task *dt, void *da, struct task *st, void *sa, unsigned size);
-
 #endif
