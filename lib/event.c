@@ -38,6 +38,7 @@ win_update_cb *	on_update;
 win_resize_cb *	on_resize;
 win_unlock_cb *	on_unlock;
 win_lock_cb *	on_lock;
+win_save_cb *	on_save;
 
 static event_cb *on_fnotif;
 
@@ -73,6 +74,11 @@ void win_on_unlock(win_unlock_cb *proc)
 void win_on_lock(win_lock_cb *proc)
 {
 	on_lock = proc;
+}
+
+void win_on_save(win_save_cb *proc)
+{
+	on_save = proc;
 }
 
 void evt_wait(void)
@@ -118,6 +124,10 @@ void evt_wait(void)
 		case WIN_E_SEC_LOCK:
 			if (on_lock)
 				on_lock();
+			break;
+		case WIN_E_SAVE:
+			if (on_save)
+				on_save();
 			break;
 		default:
 			;

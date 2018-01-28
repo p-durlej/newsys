@@ -181,6 +181,7 @@ struct win_desktop
 	int			dragdrop;
 	int			dpi_class;
 	int			font_map[FONT_MAX];
+	int			unsaved_cnt;
 };
 
 struct win_task
@@ -188,6 +189,7 @@ struct win_task
 	struct win_desktop *	inh_desktop;
 	struct win_desktop *	desktop;
 	int			painting;
+	int			unsaved;
 };
 
 extern struct win_display *win_syscon; /* XXX to be removed */

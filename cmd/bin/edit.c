@@ -133,6 +133,7 @@ static void main_form_resize(struct form *form, int w, int h)
 static void main_edbox_edit(struct gadget *g)
 {
 	text_modified = 1;
+	win_unsaved(1);
 	update_sbars();
 }
 
@@ -259,6 +260,7 @@ static int load_file(const char *pathname)
 	update_sbars();
 	
 	text_modified = 0;
+	win_unsaved(0);
 	close(fd);
 	free(buf);
 	return 0;
@@ -327,6 +329,7 @@ static int save_file(void)
 	}
 	
 	text_modified = 0;
+	win_unsaved(0);
 	return 0;
 }
 
@@ -350,6 +353,7 @@ static void new_click(struct menu_item *mi)
 	edbox_set_text(main_edbox, "");
 	update_sbars();
 	text_modified = 0;
+	win_unsaved(0);
 	*pathname = 0;
 }
 
@@ -570,11 +574,12 @@ static void create_form(void)
 	form_show(main_form);
 }
 
-static void sig_term(int nr)
+static void on_save(void)
 {
 	if (ask_for_save())
 		return;
-	raise(nr);
+	
+	win_unsaved(0);
 }
 
 int main(int argc, char **argv)
@@ -582,7 +587,7 @@ int main(int argc, char **argv)
 	if (win_attach())
 		err(255, NULL);
 	
-	win_signal(SIGTERM, sig_term);
+	win_on_save(on_save);
 	load_config();
 	create_form();
 	

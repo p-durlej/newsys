@@ -68,6 +68,8 @@ void win_clean(void)
 	if (!d)
 		return;
 	
+	d->unsaved_cnt -= curr->win_task.unsaved;
+	
 	if (curr == d->taskbar)
 	{
 		win_broadcast_resize(d);

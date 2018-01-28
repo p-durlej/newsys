@@ -138,6 +138,9 @@ extern int sys_win_gdrop();
 extern int sys_win_set_dpi_class();
 extern int sys_win_get_dpi_class();
 extern int sys_win_set_font_map();
+extern int sys_win_get_unsaved();
+extern int sys_win_unsaved();
+extern int sys_win_save_all();
 extern int sys__systat();
 extern int sys__taskinfo();
 extern int sys__taskmax();
@@ -154,7 +157,7 @@ struct syscall
 {
 	void *	proc;
 	int	uidz;
-} syscall_tab[148] = 
+} syscall_tab[151] = 
 {
 	[0]	= { sys__sysmesg,		1 },
 	[1]	= { sys__iopl,			1 },
@@ -293,15 +296,18 @@ struct syscall
 	[134]	= { sys_win_set_dpi_class,	1 },
 	[135]	= { sys_win_get_dpi_class,	0 },
 	[136]	= { sys_win_set_font_map,	1 },
-	[137]	= { sys__systat,		0 },
-	[138]	= { sys__taskinfo,		0 },
-	[139]	= { sys__taskmax,		0 },
-	[140]	= { sys__modinfo,		1 },
-	[141]	= { sys__modmax,		1 },
-	[142]	= { sys__boot_flags,		1 },
-	[143]	= { sys_evt_count,		0 },
-	[144]	= { sys__evt_wait,		0 },
-	[145]	= { sys_evt_signal,		0 },
-	[146]	= { sys__bdev_stat,		1 },
-	[147]	= { sys__bdev_max,		1 },
+	[137]	= { sys_win_get_unsaved,	0 },
+	[138]	= { sys_win_unsaved,		0 },
+	[139]	= { sys_win_save_all,		0 },
+	[140]	= { sys__systat,		0 },
+	[141]	= { sys__taskinfo,		0 },
+	[142]	= { sys__taskmax,		0 },
+	[143]	= { sys__modinfo,		1 },
+	[144]	= { sys__modmax,		1 },
+	[145]	= { sys__boot_flags,		1 },
+	[146]	= { sys_evt_count,		0 },
+	[147]	= { sys__evt_wait,		0 },
+	[148]	= { sys_evt_signal,		0 },
+	[149]	= { sys__bdev_stat,		1 },
+	[150]	= { sys__bdev_max,		1 },
 };

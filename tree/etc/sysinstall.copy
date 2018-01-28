@@ -311,6 +311,7 @@
 644 /lib/forms/perm_info.frm
 644 /lib/forms/avail.frm
 600 /lib/forms/shutdown.frm
+644 /lib/forms/unsaved.frm
 644 /lib/forms/calc.frm
 600 /lib/forms/login.frm
 644 /lib/forms/select.frm

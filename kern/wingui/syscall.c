@@ -1351,8 +1351,6 @@ int sys_win_get_dpi_class(void)
 	return d->dpi_class;
 }
 
-#include <kern/printk.h>
-
 int sys_win_set_font_map(const int *map, size_t len)
 {
 	struct win_desktop *d = curr->win_task.desktop;
@@ -1381,4 +1379,49 @@ int sys_win_set_font_map(const int *map, size_t len)
 inval:
 	uerr(EINVAL);
 	return -1;
+}
+
+int sys_win_get_unsaved(void)
+{
+	struct win_desktop *d = curr->win_task.desktop;
+	
+	if (!d)
+	{
+		uerr(ENODESKTOP);
+		return -1;
+	}
+	
+	return d->unsaved_cnt;
+}
+
+int sys_win_unsaved(int flag)
+{
+	struct win_desktop *d = curr->win_task.desktop;
+	
+	if (!d)
+	{
+		uerr(ENODESKTOP);
+		return -1;
+	}
+	
+	flag = !!flag;
+	
+	d->unsaved_cnt -= curr->win_task.unsaved;
+	d->unsaved_cnt += flag;
+	
+	curr->win_task.unsaved = flag;
+	return 0;
+}
+
+int sys_win_save_all(void)
+{
+	int err;
+	
+	err = win_save_all();
+	if (err)
+	{
+		uerr(err);
+		return -1;
+	}
+	return 0;
 }

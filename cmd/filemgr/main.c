@@ -947,8 +947,51 @@ static void prepare_logout(void)
 	usleep2(1000000, 0);
 }
 
+static int save_all(void)
+{
+	struct win_rect wsr;
+	struct gadget *l;
+	struct gadget *b;
+	struct form *f;
+	char msg[256];
+	int cnt;
+	
+	cnt = win_get_unsaved();
+	if (!cnt)
+		return 1;
+	
+	win_ws_getrect(&wsr);
+	
+	f = form_load("/lib/forms/unsaved.frm");
+	l = gadget_find(f, "label");
+	
+	form_move(f, wsr.x + wsr.w - f->win_rect.w, wsr.y + wsr.h - f->win_rect.h);
+	
+	form_set_dialog(main_form, f);
+	form_show(f);
+	
+	win_save_all();
+	
+	while (cnt = win_get_unsaved(), cnt && form_get_result(f) != 1)
+	{
+		sprintf(msg, "There is unsaved data in %i application(s).", cnt);
+		label_set_text(l, msg);
+		
+		usleep2(250000, 0);
+	}
+	
+	form_set_dialog(main_form, NULL);
+	form_close(f);
+	
+	if (form_get_result(f) == 1)
+		return 0;
+	return 1;
+}
+
 static void restart_sess(void)
 {
+	if (!save_all())
+		return;
 	prepare_logout();
 	autosave_pos();
 	exit(253);
@@ -969,6 +1012,8 @@ void logout_click(struct menu_item *m)
 	
 	if (result == MSGBOX_YES)
 	{
+		if (!save_all())
+			return;
 		prepare_logout();
 		exit(0);
 	}
@@ -1005,6 +1050,11 @@ void shutdown_click(struct menu_item *m)
 	if (form_wait(f) == 1)
 	{
 		form_hide(f);
+		if (!save_all())
+		{
+			form_close(f);
+			return;
+		}
 		prepare_logout();
 		
 		if (chkbox_get_state(c1)) execl(SHUTDOWN, SHUTDOWN, "-p", NULL);

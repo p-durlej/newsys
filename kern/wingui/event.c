@@ -479,3 +479,24 @@ void win_clock(void)
 			win_event(d, &e);
 		}
 }
+
+int win_save_all(void)
+{
+	struct win_desktop *d = curr->win_task.desktop;
+	struct event e;
+	time_t t;
+	
+	if (!d)
+		return ENODESKTOP;
+	
+	t = clock_time();
+	if (d->last_update == t)
+		return EAGAIN;
+	d->last_update = t;
+	
+	memset(&e, 0, sizeof e);
+	e.win.type = WIN_E_SAVE;
+	e.type	   = E_WINGUI;
+	win_bcast(d, &e);
+	return 0;
+}

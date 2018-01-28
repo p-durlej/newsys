@@ -636,3 +636,7 @@ sizebox_set_fg
 gadget_set_want_tab
 _modinfo
 _modmax
+win_get_unsaved
+win_unsaved
+win_save_all
+win_on_save

@@ -143,17 +143,20 @@
 134	root	win_set_dpi_class
 135	user	win_get_dpi_class
 136	root	win_set_font_map
+137	user	win_get_unsaved
+138	user	win_unsaved
+139	user	win_save_all
 
-137	user	_systat
-138	user	_taskinfo
-139	user	_taskmax
-140	root	_modinfo
-141	root	_modmax
-142	root	_boot_flags
+140	user	_systat
+141	user	_taskinfo
+142	user	_taskmax
+143	root	_modinfo
+144	root	_modmax
+145	root	_boot_flags
 
-143	user	evt_count
-144	user	_evt_wait
-145	user	evt_signal
+146	user	evt_count
+147	user	_evt_wait
+148	user	evt_signal
 
-146	root	_bdev_stat
-147	root	_bdev_max
+149	root	_bdev_stat
+150	root	_bdev_max

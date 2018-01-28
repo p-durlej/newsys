@@ -57,6 +57,8 @@
 #define WIN_E_DROP		20
 #define WIN_E_DRAG		21
 
+#define WIN_E_SAVE		22
+
 #define WIN_KEY_UP		((unsigned) -1)
 #define WIN_KEY_DOWN		((unsigned) -2)
 #define WIN_KEY_LEFT		((unsigned) -3)
@@ -269,6 +271,10 @@ int win_get_dpi_class(void);
 
 int win_set_font_map(const int *map, size_t len);
 
+int win_get_unsaved(void);
+int win_unsaved(int flag);
+int win_save_all(void);
+
 /* library routines */
 
 typedef void win_setmode_cb(void);
@@ -276,6 +282,7 @@ typedef void win_update_cb(void);
 typedef void win_resize_cb(void);
 typedef void win_unlock_cb(void);
 typedef void win_lock_cb(void);
+typedef void win_save_cb(void);
 
 void win_frame7(int wd, win_color c, int x, int y, int w, int h, int th);
 
@@ -287,6 +294,7 @@ void win_on_update(win_update_cb *proc);
 void win_on_resize(win_update_cb *proc);
 void win_on_unlock(win_unlock_cb *proc);
 void win_on_lock(win_lock_cb *proc);
+void win_on_save(win_save_cb *proc);
 int win_event_count(void);
 int win_wait(void);
 int win_idle(void);
