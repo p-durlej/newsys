@@ -34,12 +34,6 @@ mkdir  "$TMPDIR"
 
 (cd "$TMPDIR" && bunzip2 < "$DISTDIR/binutils-$BINVER.tar.bz2" | tar xf -)
 (cd "$TMPDIR" && bunzip2 < "$DISTDIR/gcc-core-$GCCVER.tar.bz2" | tar xf -)
-# (cd "$TMPDIR" && bunzip2 < "$DISTDIR/mpfr-$MPFRVER.tar.bz2"    | tar xf -)
-# (cd "$TMPDIR" && bunzip2 < "$DISTDIR/gmp-$GMPVER.tar.bz2"      | tar xf -)
 
-(cd $TMPDIR/binutils-* && patch -sp1 < "$PATCHDIR/binutils-os386.diff")
-(cd $TMPDIR/binutils-* && patch -sp1 < "$PATCHDIR/readelf-os386.diff")
 (cd $TMPDIR/binutils-* && patch -sp1 < "$PATCHDIR/baseaddr.diff")
 (cd $TMPDIR/binutils-* && patch -sp1 < "$PATCHDIR/baseaddr-amd64.diff")
-(cd $TMPDIR/gcc-*      && patch -sp1 < "$PATCHDIR/gcc-os386.diff")
-(cd $TMPDIR/gcc-*      && patch -sp1 < "$PATCHDIR/redef.diff")
