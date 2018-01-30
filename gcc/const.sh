@@ -40,7 +40,7 @@ BINVER=2.19.1a
 
 BUILD=i386-linux-elf
 
-JOBS=2
+JOBS=4
 
 if which gmake > /dev/null 2>&1; then
 	MAKE=gmake
