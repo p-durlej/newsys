@@ -244,6 +244,7 @@ int win_ptrmove(struct win_desktop *d, int x, int y)
 	e.win.ptr_y = y - d->window[e.win.wd].rect.y;
 	e.win.abs_x = x;
 	e.win.abs_y = y;
+	e.win.ptr_shift = d->key_shift;
 	return win_event(d, &e);
 }
 
@@ -298,6 +299,7 @@ int win_ptrdown(struct win_desktop *d, int button)
 	e.win.ptr_y = y - d->window[e.win.wd].rect.y;
 	e.win.abs_x = x;
 	e.win.abs_y = y;
+	e.win.ptr_shift = d->key_shift;
 	if (button >= 0 && button < WIN_BTN_MAX)
 		e.win.ptr_button = d->buttons[button];
 	else
@@ -343,6 +345,7 @@ int win_ptrup(struct win_desktop *d, int button)
 			e.win.abs_x	= x;
 			e.win.abs_y	= y;
 			e.win.dd_serial	= d->dd_serial;
+			e.win.ptr_shift	= d->key_shift;
 			
 			win_event(d, &e);
 		}
@@ -357,6 +360,7 @@ int win_ptrup(struct win_desktop *d, int button)
 			e.win.abs_x	= x;
 			e.win.abs_y	= y;
 			e.win.dd_serial	= d->dd_serial;
+			e.win.ptr_shift	= d->key_shift;
 			
 			win_event(d, &e);
 		}
@@ -372,6 +376,7 @@ int win_ptrup(struct win_desktop *d, int button)
 	e.win.ptr_y	= y - d->window[e.win.wd].rect.y;
 	e.win.abs_x	= x;
 	e.win.abs_y	= y;
+	e.win.ptr_shift	= d->key_shift;
 	if (button >= 0 && button < WIN_BTN_MAX)
 		e.win.ptr_button = d->buttons[button];
 	else

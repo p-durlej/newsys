@@ -1654,20 +1654,24 @@ static void form_drop(struct event *e)
 	struct gadget *g;
 	char buf[WIN_DD_BUF];
 	int serial;
+	int x, y;
 	
 	form_xygadget(f, &g, e->win.ptr_x, e->win.ptr_y);
 	
 	if (g == NULL)
 		return;
 	
+	x = e->win.ptr_x - g->rect.x;
+	y = e->win.ptr_y - g->rect.y;
+	
 	memset(buf, 0, sizeof buf);
 	if (win_gdrop(buf, sizeof buf, &serial))
 		return;
 	
 	if (g->drop != NULL)
-		g->drop(g, buf, sizeof buf);
+		g->drop(g, buf, sizeof buf, x, y, e->win.ptr_shift);
 	if (g->udrop != NULL)
-		g->udrop(g, buf, sizeof buf);
+		g->udrop(g, buf, sizeof buf, x, y, e->win.ptr_shift);
 }
 
 static void form_drag(struct form *f)

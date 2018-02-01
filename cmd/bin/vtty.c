@@ -323,7 +323,7 @@ static void redraw(struct gadget *g, int wd)
 		redraw_line(i, 0);
 }
 
-static void drop(struct gadget *g, const void *data, size_t len)
+static void drop(struct gadget *g, const void *data, size_t len, int x, int y, unsigned shift)
 {
 	char buf[len + 1];
 	char *sp, *dp, *ep;

@@ -64,7 +64,7 @@ typedef void form_move_cb(struct form *form, int x, int y);
 typedef int  form_close_cb(struct form *form);
 typedef void form_raise_cb(struct form *form);
 
-typedef void gadget_drop_cb(struct gadget *g, const void *data, size_t len);
+typedef void gadget_drop_cb(struct gadget *g, const void *data, size_t len, int x, int y, unsigned shift);
 typedef void gadget_drag_cb(struct gadget *g);
 
 typedef void button_click_cb(struct gadget *g, int x, int y);
@@ -315,8 +315,8 @@ struct gadget
 	void (*key_down)(struct gadget *g, unsigned ch, unsigned shift);
 	void (*key_up)(struct gadget *g, unsigned ch, unsigned shift);
 	
-	void (*drop)(struct gadget *g, const void *data, size_t len);
-	void (*udrop)(struct gadget *g, const void *data, size_t len);
+	void (*drop)(struct gadget *g, const void *data, size_t len, int x, int y, unsigned shift);
+	void (*udrop)(struct gadget *g, const void *data, size_t len, int x, int y, unsigned shift);
 	
 	void (*drag)(struct gadget *g);
 	void (*udrag)(struct gadget *g);

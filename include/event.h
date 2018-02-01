@@ -62,6 +62,7 @@ struct event
 					int ptr_x, ptr_y;
 					int ptr_button;
 					int dd_serial;
+					unsigned ptr_shift;
 				};
 				
 				struct

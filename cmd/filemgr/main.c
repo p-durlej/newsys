@@ -1460,7 +1460,7 @@ static void cli_click(struct menu_item *m)
 		msgbox_perror(main_form, "File Manager", "chdir failed", errno);
 }
 
-static void on_drop(struct gadget *g, const void *data, size_t len)
+static void on_drop(struct gadget *g, const void *data, size_t len, int x, int y, unsigned shift)
 {
 	char csrc[PATH_MAX];
 	char cdst[PATH_MAX];
