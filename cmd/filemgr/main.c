@@ -1460,14 +1460,24 @@ static void cli_click(struct menu_item *m)
 		msgbox_perror(main_form, "File Manager", "chdir failed", errno);
 }
 
+static void dd_mi_proc(struct menu_item *m)
+{
+	static const char *const modes[] = { "copy", "move" };
+	
+	*(char **)m->p_data = modes;
+}
+
 static void on_drop(struct gadget *g, const void *data, size_t len, int x, int y, unsigned shift)
 {
 	char csrc[PATH_MAX];
 	char cdst[PATH_MAX];
 	char d[PATH_MAX];
+	const char *mode = NULL;
 	const char *s = data;
 	const char *p;
 	const char *fmt;
+	struct menu_item *mi;
+	struct menu *m;
 	pid_t pid;
 	int dlen;
 	int i;
@@ -1500,7 +1510,38 @@ static void on_drop(struct gadget *g, const void *data, size_t len, int x, int y
 	if (!strcmp(csrc, cdst))
 		return;
 	
-	pid = _newtaskl(SLAVE, SLAVE, "drag", s, d, (void *)NULL);
+	switch (shift)
+	{
+	case WIN_SHIFT_SHIFT:
+		mode = "move";
+		break;
+	case WIN_SHIFT_CTRL:
+		mode = "copy";
+		break;
+	case WIN_SHIFT_ALT:
+		m = menu_creat();
+		
+		mi = menu_newitem(m, "Copy", dd_mi_proc);
+		mi->p_data = &mode;
+		mi->l_data = 0;
+		
+		mi = menu_newitem(m, "Move", dd_mi_proc);
+		mi->p_data = &mode;
+		mi->l_data = 1;
+		
+		menu_newitem(m, "-",	  NULL);
+		menu_newitem(m, "Cancel", NULL);
+		
+		menu_popup(m, main_form->win_rect.x + g->rect.x + x, main_form->win_rect.y + g->rect.y + y);
+		break;
+	default:
+		mode = "drag";
+	}
+	
+	if (mode == NULL)
+		return;
+	
+	pid = _newtaskl(SLAVE, SLAVE, mode, s, d, (void *)NULL);
 	if (pid < 1)
 	{
 		msgbox(main_form, "File Manager", "Could not run slave.");
