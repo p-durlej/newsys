@@ -83,7 +83,7 @@ int kmalloc(void *buf, unsigned size, const char *name)
 	mh->npages = npages;
 	memcpy(mh->name, name, len);
 	mh->name[len] = 0;
-
+	
 	list_app(&kmalloc_list, mh);
 	
 	*(void **)buf = mh + 1;
@@ -117,7 +117,7 @@ void free(void *ptr)
 	printk("free(%p);", ptr);
 	printk("free: mh->name = \"%s\"\n", mh->name);
 #endif
-
+	
 	list_rm(&kmalloc_list, mh);
 	
 	page   = (intptr_t)mh / PAGE_SIZE;

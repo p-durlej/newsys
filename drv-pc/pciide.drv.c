@@ -585,7 +585,7 @@ static int hd_mknames(char *name)
 			p[nsize - 4] = ',';
 			p[nsize - 3] = '0' + n;
 			p[nsize - 2] = i ? 'a' + i - 1 : 0;
-			p[nsize	- 1] = 0;
+			p[nsize - 1] = 0;
 			bdp++->name = p;
 			p += nsize;
 		}

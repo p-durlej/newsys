@@ -335,12 +335,10 @@ static void irq()
 	unsigned char status;
 	
 	while ((status = inb(io_base + 4)) & 1)
-	{
 		if (status & 32)
 			aux_irq(inb(io_base));
 		else
 			kbd_irq(inb(io_base));
-	}
 }
 
 static int wait_in(unsigned char byte, unsigned max_delay)

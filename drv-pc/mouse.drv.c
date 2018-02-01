@@ -132,7 +132,7 @@ static void irqv(int nr, int count)
 	}
 }
 
-static void init_sio()
+static void init_sio(void)
 {
 	outb(iobase + 3, 0x82); /* lcr - set dlab */
 	outb(iobase    , 0x60); /* divisor latch - 1200 bps */

@@ -134,7 +134,6 @@ int main(int argc, char **argv)
 	argc--;
 	
 	while (argc > 0)
-	{
 		if (*argv[0] != '-')
 		{
 			cnt = setcc(argv[0], argv[1], 1);
@@ -149,7 +148,6 @@ int main(int argc, char **argv)
 			argv++;
 			argc--;
 		}
-	}
 	
 	if (!xit && tcsetattr(0, TCSANOW, &tio))
 		err(1, "stdin");

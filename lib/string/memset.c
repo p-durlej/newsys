@@ -36,6 +36,6 @@ void *memset(void *s, int c, size_t n)
 	e = p + n;
 	while (p < e)
 		*p++ = c;
-
+	
 	return s;
 }

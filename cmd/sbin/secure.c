@@ -112,11 +112,31 @@ struct passwd *get_owner(void)
 void change_passwd(void)
 {
 	struct passwd *pw;
+	char *args[16];
+	char **ap;
 	
 	pw = get_owner();
 	if (pw)
-		chld_pid = _newtaskl(_PATH_B_VTTY, _PATH_B_VTTY, "-Mr", "-c", "50", "-l", "16", "-w", "-T", "Password",
-				     _PATH_B_CPWD, pw->pw_name, NULL);
+	{
+		ap = args;
+		
+		*ap++ = _PATH_B_VTTY;
+		*ap++ = "-Mr";
+		
+		*ap++ = "-c50";
+		*ap++ = "-l16";
+		
+		*ap++ = "-w";
+		*ap++ = "-TPassword";
+		
+		*ap++ = _PATH_B_CPWD;
+		if (pw->pw_uid)
+			*ap++ = "-o";
+		*ap++ = pw->pw_name;
+		*ap++ = NULL;
+		
+		chld_pid = _newtaskv(_PATH_B_VTTY, args);
+	}
 	endpwent();
 }
 

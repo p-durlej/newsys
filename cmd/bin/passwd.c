@@ -92,23 +92,38 @@ int main(int argc, char **argv)
 	char pass1[PASSWD_MAX + 1];
 	char pass2[PASSWD_MAX + 1];
 	struct passwd *pw;
+	int oflag = 0;
 	int i;
+	int c;
 	
 	check_tty();
+	
+	while (c = getopt(argc, argv, "o"), c > 0)
+		switch (c)
+		{
+		case 'o':
+			oflag = 1;
+			break;
+		default:
+			return 1;
+		}
+	
+	argc -= optind;
+	argv += optind;
 	
 	for (i = 1; i <= NSIG; i++)
 		signal(i, SIG_IGN);
 	signal(SIGHUP, sig_int_hup);
 	signal(SIGINT, sig_int_hup);
 	
-	if (argc > 2)
+	if (argc > 1)
 		errx(255, "wrong numer of arguments");
 	
-	if (getuid() && argc > 1)
+	if (getuid() && argc > 0)
 		errx(255, "wrong numer of arguments");
 	
-	if (argc == 2)
-		pw = getpwnam(argv[1]);
+	if (argc == 1)
+		pw = getpwnam(argv[0]);
 	else
 		pw = getpwuid(getuid());
 	
@@ -118,7 +133,7 @@ int main(int argc, char **argv)
 	disable_echo();
 	
 	printf("Changing local password for %s\n", pw->pw_name);
-	if (getuid())
+	if (getuid() || oflag)
 	{
 		get_str("Old password: ", pass1, sizeof pass1);
 		if (_chkpass(pw->pw_name, pass1))
