@@ -88,6 +88,7 @@ int		full_screen;
 int		desktop;
 int		list_mode;
 int		show_menu = 1;
+int		have_menu;
 int		do_refresh;
 int		logout;
 int		do_save_pos;
@@ -1254,7 +1255,7 @@ void edit_click(struct menu_item *m)
 
 int main_form_key_down(struct form *f, unsigned ch, unsigned shift)
 {
-	if (ch == '\b')
+	if (ch == '\b' && have_menu)
 	{
 		updir_click(NULL);
 		return 0;
@@ -1695,7 +1696,10 @@ static void create_main_form(void)
 		main_form = form_creat(FORM_BACKDROP | FORM_NO_BACKGROUND, 0, ws.x, ws.y, ws.w, ws.h, "Desktop");
 		
 		if (show_menu)
+		{
 			form_set_menu(main_form, m);
+			have_menu = 1;
+		}
 		form_on_close(main_form, main_form_close);
 		form_on_resize(main_form, main_form_resize);
 		
@@ -1713,7 +1717,10 @@ static void create_main_form(void)
 	{
 		main_form = form_creat(FORM_APPFLAGS | FORM_NO_BACKGROUND, 0, -1, -1, config->form_w, config->form_h, cwd);
 		if (show_menu)
+		{
 			form_set_menu(main_form, m);
+			have_menu = 1;
+		}
 		form_on_key_down(main_form, main_form_key_down);
 		form_on_close(main_form, main_form_close);
 		form_on_resize(main_form, main_form_resize);
