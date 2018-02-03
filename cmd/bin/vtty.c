@@ -168,6 +168,8 @@ static void	about_click(struct menu_item *mi);
 static void	load_colors();
 static void	upstat(void);
 
+static char *	canhist[100];
+static int	canhistpos = -1;
 static char	canbuf[MAX_CANON + 1];
 static int	canpos;
 static int	canlen;
@@ -397,12 +399,65 @@ static int iscc(unsigned ch)
 	return 0;
 }
 
+static void canrecall(void)
+{
+	char *s = NULL;
+	int l;
+	
+	if (canhistpos >= 0 && canhist[canhistpos] != NULL)
+		s = canhist[canhistpos];
+	
+	if (s == NULL)
+	{
+		canpos = canlen = 0;
+		return;
+	}
+	
+	l = strlen(s);
+	
+	memcpy(canbuf, s, l);
+	canpos = canlen = l;
+}
+
+static void cansave(void)
+{
+	char *s;
+	
+	if (!canlen)
+		return;
+	
+	s = malloc(canlen + 1);
+	if (s == NULL)
+		return;
+	
+	memcpy(s, canbuf, canlen);
+	s[canlen] = 0;
+	
+	free(canhist[sizeof canhist / sizeof *canhist - 1]);
+	memmove(canhist + 1, canhist, sizeof canhist - sizeof *canhist);
+	canhist[0] = s;
+}
+
 static void caninput(unsigned ch)
 {
 	int u = 0;
 	
 	switch (ch)
 	{
+	case WIN_KEY_UP:
+		if (canhist[canhistpos + 1] == NULL)
+			break;
+		canhistpos++;
+		canrecall();
+		u = 1;
+		break;
+	case WIN_KEY_DOWN:
+		if (canhistpos < 0)
+			break;
+		canhistpos--;
+		canrecall();
+		u = 1;
+		break;
 	case WIN_KEY_LEFT:
 		if (!canpos)
 			break;
@@ -445,10 +500,14 @@ static void caninput(unsigned ch)
 		{
 			char c = ch;
 			
+			if (ch == '\n')
+				cansave();
+			
 			write(PTM_FD, canbuf, canlen);
 			write(PTM_FD, &c, 1);
 			
 			canpos = canlen = 0;
+			canhistpos = -1;
 			u = 1;
 			break;
 		}
