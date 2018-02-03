@@ -40,6 +40,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/poll.h>
+#include <termios.h>
 #include <newtask.h>
 #include <stdlib.h>
 #include <string.h>
@@ -165,6 +166,12 @@ static void	colors_click(struct menu_item *mi);
 static void	font_click(struct menu_item *mi);
 static void	about_click(struct menu_item *mi);
 static void	load_colors();
+static void	upstat(void);
+
+static char	canbuf[MAX_CANON + 1];
+static int	canpos;
+static int	canlen;
+static int	canmode;
 
 static void update_pty_size(void)
 {
@@ -250,14 +257,42 @@ static void resize_tty(int ncol, int nlin)
 	update_pty_size();
 }
 
-static void redraw_chr(int x, int y, int set_clip)
+static void do_draw_chr(int x, int y, unsigned c, int bgi, int fgi, int cursor)
 {
-	struct cell *cl;
 	win_color cfg;
 	win_color bg;
 	win_color fg;
-	int tl;
 	int wd;
+	int tl;
+	
+	tl = wm_get(WM_THIN_LINE);
+	wd = screen->form->wd;
+	
+	if (c < 32)
+	{
+		int tmp;
+		
+		tmp = bgi;
+		bgi = fgi;
+		fgi = tmp;
+		c  += '@';
+	}
+	
+	win_rgb2color(&cfg, color_table[CURSOR].r, color_table[CURSOR].g, color_table[CURSOR].b);
+	win_rgb2color(&fg, color_table[fgi].r, color_table[fgi].g, color_table[fgi].b);
+	win_rgb2color(&bg, color_table[bgi].r, color_table[bgi].g, color_table[bgi].b);
+	
+	win_bchr(wd, bg, fg, font_w * x, font_h * y, c);
+	if (cursor)
+		win_rect(wd, cfg, font_w * x, font_h * y + font_h - 2 * tl, font_w, 2 * tl);
+}
+
+static void redraw_chr(int x, int y, int set_clip)
+{
+	int wd = screen->form->wd;
+	struct cell *cl;
+	int cur = 0;
+	int cx;
 	
 	if (x < 0 || x >= nr_col)
 		return;
@@ -265,19 +300,6 @@ static void redraw_chr(int x, int y, int set_clip)
 		return;
 	
 	cl = &screen_buf[x + y * nr_col];
-	wd = screen->form->wd;
-	
-	win_rgb2color(&cfg, color_table[CURSOR].r,
-			    color_table[CURSOR].g,
-			    color_table[CURSOR].b);
-	win_rgb2color(&fg, color_table[cl->fg].r,
-			   color_table[cl->fg].g,
-			   color_table[cl->fg].b);
-	win_rgb2color(&bg, color_table[cl->bg].r,
-			   color_table[cl->bg].g,
-			   color_table[cl->bg].b);
-	
-	tl = wm_get(WM_THIN_LINE);
 	
 	if (set_clip)
 	{
@@ -286,9 +308,17 @@ static void redraw_chr(int x, int y, int set_clip)
 		win_paint();
 	}
 	
-	win_bchr(wd, bg, fg, font_w * x, font_h * y, cl->ch);
-	if (cur_state && cur_x == x && cur_y == y)
-		win_rect(wd, cfg, font_w * cur_x, font_h * cur_y + font_h - 2 * tl, font_w, 2 * tl);
+	cx = cur_x;
+	if (canmode)
+		cx += canpos;
+	
+	if (cur_state && cx == x && cur_y == y)
+		cur = 1;
+	
+	if (canmode && cur_y == y && x >= cur_x && x < cur_x + canlen)
+		do_draw_chr(x, y, canbuf[x - cur_x], BG_DEFAULT, FG_DEFAULT, cur);
+	else
+		do_draw_chr(x, y, cl->ch, cl->bg, cl->fg, cur);
 	
 	if (set_clip)
 		win_end_paint();
@@ -298,7 +328,7 @@ static void redraw_line(int line_nr, int set_clip)
 {
 	int wd;
 	int i;
-
+	
 	if (set_clip)
 	{
 		wd = screen->form->wd;
@@ -306,10 +336,10 @@ static void redraw_line(int line_nr, int set_clip)
 		win_set_font(wd, config.ftd);
 		win_paint();
 	}
-
+	
 	for (i = 0; i < nr_col; i++)
 		redraw_chr(i, line_nr, 0);
-
+	
 	if (set_clip)
 		win_end_paint();
 }
@@ -352,6 +382,93 @@ static void term_msgbox(void)
 					"or press ESC to close this window.");
 }
 
+static int iscc(unsigned ch)
+{
+	struct termios tio;
+	int i;
+	
+	if (!tcgetattr(PTM_FD, &tio))
+		for (i = 0; i < NCCS; i++)
+			if (tio.c_cc[i] == ch)
+				return 1;
+	
+	if (ch == '\n')
+		return 1;
+	return 0;
+}
+
+static void caninput(unsigned ch)
+{
+	int u = 0;
+	
+	switch (ch)
+	{
+	case WIN_KEY_LEFT:
+		if (!canpos)
+			break;
+		canpos--;
+		u = 1;
+		break;
+	case WIN_KEY_RIGHT:
+		if (canpos >= canlen)
+			break;
+		canpos++;
+		u = 1;
+		break;
+	case WIN_KEY_HOME:
+		canpos = 0;
+		u = 1;
+		break;
+	case WIN_KEY_END:
+		canpos = canlen;
+		u = 1;
+		break;
+	case WIN_KEY_DEL:
+		if (canpos >= canlen)
+			break;
+		
+		memmove(canbuf + canpos, canbuf + canpos + 1, canlen - canpos);
+		canlen--;
+		u = 1;
+		break;
+	case '\b':
+		if (!canpos)
+			break;
+		
+		memmove(canbuf + canpos - 1, canbuf + canpos, canlen - canpos);
+		canpos--;
+		canlen--;
+		u = 1;
+		break;
+	default:
+		if (iscc(ch))
+		{
+			char c = ch;
+			
+			write(PTM_FD, canbuf, canlen);
+			write(PTM_FD, &c, 1);
+			
+			canpos = canlen = 0;
+			u = 1;
+			break;
+		}
+		
+		if (canlen >= MAX_CANON)
+			break;
+		if (ch >= 256)
+			break;
+		memmove(canbuf + canpos + 1, canbuf + canpos, canlen - canpos);
+		canbuf[canpos] = ch;
+		canpos++;
+		canlen++;
+		u = 1;
+		break;
+	}
+	
+	if (u)
+		line_changed[cur_y] = 1;
+}
+
 static void key_down(struct gadget *g, unsigned ch, unsigned shift)
 {
 	char c = ch;
@@ -362,6 +479,14 @@ static void key_down(struct gadget *g, unsigned ch, unsigned shift)
 			on_close(main_form);
 		if (isprint(ch))
 			term_msgbox();
+		return;
+	}
+	
+	upstat();
+	
+	if (canmode)
+	{
+		caninput(ch);
 		return;
 	}
 	
@@ -604,9 +729,15 @@ static int unlockpt(int fd)
 
 static void cur_cb(void *data)
 {
+	int x;
+	
+	x = cur_x;
+	if (canmode)
+		x += canpos;
+	
 	cur_state = !cur_state;
-	if (cur_x < nr_col && cur_y < nr_lin)
-		redraw_chr(cur_x, cur_y, 1);
+	if (x < nr_col && cur_y < nr_lin)
+		redraw_chr(x, cur_y, 1);
 }
 
 static void sig_chld(int nr)
@@ -848,6 +979,22 @@ static void on_update(void)
 	gadget_redraw(screen);
 }
 
+static void upstat(void)
+{
+	struct termios tio;
+	
+	if (tcgetattr(PTM_FD, &tio))
+	{
+		canmode = 0;
+		return;
+	}
+	
+	if ((tio.c_lflag & (ICANON | ECHO)) == (ICANON | ECHO))
+		canmode = 1;
+	else
+		canmode = 0;
+}
+
 int main(int argc, char **argv)
 {
 	struct timer *tmr;
@@ -997,5 +1144,6 @@ int main(int argc, char **argv)
 				print(buf, cnt);
 		win_idle();
 		update();
+		upstat();
 	}
 }
