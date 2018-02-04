@@ -442,6 +442,7 @@ static void cansave(void)
 static void caninput(unsigned ch)
 {
 	int u = 0;
+	int i;
 	
 	switch (ch)
 	{
@@ -488,6 +489,21 @@ static void caninput(unsigned ch)
 		u = 1;
 		break;
 	default:
+		if (ch == tio.c_cc[VWERASE])
+		{
+			for (i = canpos - 1; i > 0 && !isspace(canbuf[i]); i--)
+				;
+			
+			if (i < 0)
+				break;
+			
+			memmove(canbuf + i, canbuf + canpos, canlen - canpos);
+			canlen -= canpos - i;
+			canpos  = i;
+			u = 1;
+			break;
+		}
+		
 		if (ch == tio.c_cc[VERASE])
 		{
 			if (!canpos)
