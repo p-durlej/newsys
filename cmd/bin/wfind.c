@@ -62,7 +62,7 @@ static char *		prg_count_fmt;
 static char *		prg_cwd_fmt;
 
 static const char *	fname;
-static regexp *		fname_rx;
+static int		fname_spat;
 
 static const char *	content;
 static regexp *		content_rx;
@@ -141,11 +141,46 @@ static int mkxtemp(char *buf, size_t sz, mode_t mode)
 	return d;
 }
 
+static int fnmatch1(const char *pat, const char *name)
+{
+	const char *pp = pat, *np = name;
+	
+	while (*pp)
+		switch (*pp)
+		{
+		case '*':
+			while (*pp == '*' || *pp == '?')
+				pp++;
+			
+			if (!*pp)
+				return 1;
+			
+			for (; *np; np++)
+				if (fnmatch1(pp, np))
+					return 1;
+			return 0;
+		case '?':
+			if (!*np)
+				return 0;
+			np++;
+			pp++;
+			break;
+		default:
+			if (*np != *pp)
+				return 0;
+			np++;
+			pp++;
+		}
+	
+	if (*np)
+		return 0;
+	return 1;
+}
+
 static int nmatch(const char *name)
 {
-	if (fname_rx != NULL)
-		return regexec(fname_rx, name);
-	
+	if (fname_spat)
+		return fnmatch1(fname, name);
 	return !strcmp(fname, name);
 }
 
@@ -355,71 +390,13 @@ static int prg_close(struct form *f)
 	return 0;
 }
 
-static char *fn2rx(const char *fnp)
-{
-#define REGCS	".|()|^$"
-	size_t len = strlen(fnp);
-	size_t bsz;
-	const char *sp;
-	char *rx, *dp;
-	
-	bsz = len * 2 + 3; /* XXX overflow */
-	
-	rx = malloc(bsz);
-	if (rx == NULL)
-		return NULL;
-	
-	dp = rx;
-	*dp++ = '^';
-	for (sp = fnp; *sp; sp++)
-	{
-		if (strchr(REGCS, *sp))
-		{
-			*dp++ = '\\';
-			*dp++ = *sp;
-			continue;
-		}
-		switch (*sp)
-		{
-		case '*':
-			*dp++ = '.';
-			*dp++ = '*';
-			break;
-		case '?':
-			*dp++ = '.';
-			break;
-		default:
-			*dp++ = *sp;
-		}
-	}
-	*dp++ = '$';
-	*dp = 0;
-	
-	return rx;
-#undef REGCS
-}
-
 static void find_click(struct gadget *btn, int x, int y)
 {
 	char tmp[PATH_MAX];
-	char *fnrxs;
 	int d;
 	
-	fname = name_input->text;
-	if (chkbox_get_state(name_sp_chk))
-	{
-		fnrxs = fn2rx(fname);
-		if (fnrxs == NULL)
-			goto bad_fnp;
-		
-		fname_rx = regcomp(fnrxs);
-		if (fname_rx == NULL)
-		{
-			free(fnrxs);
-			goto bad_fnp;
-		}
-		free(fnrxs);
-	}
+	fname_spat = chkbox_get_state(name_sp_chk);
+	fname	   = name_input->text;
 	
 	content = content_input->text;
 	if (chkbox_get_state(content_rx_chk))
@@ -492,14 +469,10 @@ static void find_click(struct gadget *btn, int x, int y)
 		msgbox_perror(main_form, "Find files", "Cannot run " _PATH_B_FILEMGR, errno);
 	
 	goto clean;
-bad_fnp:
-	msgbox(main_form, "Find files", "Malformed shell pattern");
 clean:
 	free(content_rx);
-	free(fname_rx);
 	
 	content_rx = NULL;
-	fname_rx = NULL;
 	content = NULL;
 	fname = NULL;
 }
