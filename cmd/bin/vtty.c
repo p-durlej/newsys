@@ -320,7 +320,7 @@ static void redraw_chr(int x, int y, int set_clip)
 		cur = 1;
 	
 	if (canmode && cur_y == y && x >= cur_x && x < cur_x + canlen)
-		do_draw_chr(x, y, canbuf[x - cur_x], BG_DEFAULT, FG_DEFAULT, cur);
+		do_draw_chr(x, y, canbuf[x - cur_x], cur_bg, cur_fg, cur);
 	else
 		do_draw_chr(x, y, cl->ch, cl->bg, cl->fg, cur);
 	
