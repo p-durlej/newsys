@@ -584,6 +584,8 @@ static void caninput(unsigned ch, unsigned shift)
 			break;
 		}
 		
+		if (canlen + cur_x >= nr_col)
+			break;
 		if (canlen >= MAX_CANON)
 			break;
 		if (ch >= 256)
