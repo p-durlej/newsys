@@ -741,8 +741,7 @@ static void pty_canon_input(struct pty *pp, char ch)
 		}
 		if (pp->tio.c_lflag & ECHO)
 		{
-			pty_echo(pp, '^');
-			pty_echo(pp, '\\');
+			pty_cecho(pp, ch);
 			pty_echo(pp, '\n');
 		}
 		return;
