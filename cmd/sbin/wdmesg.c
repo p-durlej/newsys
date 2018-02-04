@@ -45,13 +45,13 @@
 #define WIDTH	600
 #define HEIGHT	400
 
-struct gadget *vsbar;
-struct gadget *edbox;
-struct form *form;
-struct menu *menu_edit;
-struct menu *menu_font;
-struct menu *menu_opt;
-struct menu *menu;
+struct gadget *	vsbar;
+struct gadget *	edbox;
+struct form *	form;
+struct menu *	menu_edit;
+struct menu *	menu_font;
+struct menu *	menu_opt;
+struct menu *	menu;
 static int	font;
 
 static int	zflag;
