@@ -37,6 +37,7 @@ struct pref_filemgr
 	int show_path;
 	int win_desk;
 	int double_click;
+	int dir_win;
 };
 
 struct pref_filemgr *pref_filemgr_get(void);

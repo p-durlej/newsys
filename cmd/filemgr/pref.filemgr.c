@@ -43,6 +43,7 @@ static struct gadget *chk2;
 static struct gadget *chk3;
 static struct gadget *chk4;
 static struct gadget *chk5;
+static struct gadget *chk6;
 static struct form *f;
 
 struct pref_filemgr *config;
@@ -66,6 +67,7 @@ static void ok_click()
 	config->large_icons   = chkbox_get_state(chk3);
 	config->win_desk      = chkbox_get_state(chk4);
 	config->double_click  = chkbox_get_state(chk5);
+	config->dir_win	      = chkbox_get_state(chk6);
 	
 	if (pref_filemgr_save())
 	{
@@ -92,6 +94,7 @@ int main(int argc, char **argv)
 	chk3 = gadget_find(f, "large");
 	chk4 = gadget_find(f, "windesk");
 	chk5 = gadget_find(f, "doubleclick");
+	chk6 = gadget_find(f, "dirwin");
 	
 	form_on_close(f, on_close);
 	
@@ -100,6 +103,7 @@ int main(int argc, char **argv)
 	chkbox_set_state(chk3, config->large_icons);
 	chkbox_set_state(chk4, config->win_desk);
 	chkbox_set_state(chk5, config->double_click);
+	chkbox_set_state(chk6, config->dir_win);
 	
 	while (form_wait(f) != 2)
 		ok_click();

@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-form(-1,-1,240,101,	"File Manager Prefs");
+form(-1,-1,240,117,	"File Manager Prefs");
 flag(FORM_FXS_APPFLAGS);
 
 chkbox("pathname",2,4,		"Show full pathname in the title bar");
@@ -33,6 +33,7 @@ chkbox("dots",2,20,		"Show hidden files");
 chkbox("windesk",2,36,		"Use Session Manager instead of Desktop");
 chkbox("large",2,52,		"Use large icons");
 chkbox("doubleclick",2,68,	"Double click to open");
+chkbox("dirwin",2,84,		"Open directories in separate windows");
 
-button(NULL,2,83,60,16,	"OK",1);
-button(NULL,64,83,60,16,"Cancel",2);
+button(NULL,2,99,60,16,	"OK",1);
+button(NULL,64,99,60,16,"Cancel",2);

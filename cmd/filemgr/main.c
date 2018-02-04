@@ -377,7 +377,7 @@ void main_icbox_request(struct gadget *g, int index, int button)
 		return;
 	}
 	
-	if (!desktop && S_ISDIR(st.st_mode) && listfd < 0)
+	if (!desktop && S_ISDIR(st.st_mode) && listfd < 0 && !config->dir_win)
 		enter_dir(name);
 	else
 		launch(name, 1);
