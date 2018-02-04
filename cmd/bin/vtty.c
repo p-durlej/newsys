@@ -427,6 +427,9 @@ static void cansave(void)
 	if (!canlen)
 		return;
 	
+	if (canhist[0] && !memcmp(canhist[0], canbuf, canlen) && !canhist[0][canlen])
+		return;
+	
 	s = malloc(canlen + 1);
 	if (s == NULL)
 		return;
