@@ -32,6 +32,7 @@
 #define ECHO		4
 #define ECHONL		8
 #define ECHOCTL		16
+#define LCANON		32
 
 #define VINTR		0
 #define VQUIT		1

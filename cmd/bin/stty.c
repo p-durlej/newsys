@@ -19,6 +19,7 @@ static struct opt
 	{ "echo",	ECHO	},
 	{ "echonl",	ECHONL	},
 	{ "echoctl",	ECHOCTL	},
+	{ "lcanon",	LCANON	},
 };
 
 static struct cc
