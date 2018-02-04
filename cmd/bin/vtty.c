@@ -447,6 +447,9 @@ static void caninput(unsigned ch, unsigned shift)
 	int u = 0;
 	int i;
 	
+	if (ch == '\\' && (shift & WIN_SHIFT_CTRL))
+		ch = 28;
+	
 	switch (ch)
 	{
 	case WIN_KEY_PGUP:
