@@ -446,6 +446,18 @@ static void caninput(unsigned ch)
 	
 	switch (ch)
 	{
+	case WIN_KEY_PGUP:
+		for (i = 0; canhist[i] && i < sizeof canhist / sizeof *canhist; i++)
+			;
+		canhistpos = i - 1;
+		canrecall();
+		u = 1;
+		break;
+	case WIN_KEY_PGDN:
+		canhistpos = 0;
+		canrecall();
+		u = 1;
+		break;
 	case WIN_KEY_UP:
 		if (canhist[canhistpos + 1] == NULL)
 			break;
