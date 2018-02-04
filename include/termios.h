@@ -31,6 +31,7 @@
 #define ICANON		2
 #define ECHO		4
 #define ECHONL		8
+#define ECHOCTL		16
 
 #define VINTR		0
 #define VQUIT		1

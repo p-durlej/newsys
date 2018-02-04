@@ -531,6 +531,8 @@ static void caninput(unsigned ch, unsigned shift)
 		canlen--;
 		u = 1;
 		break;
+	case '\a':
+		break;
 	default:
 		if (ch == tio.c_cc[VWERASE])
 		{
@@ -1116,7 +1118,7 @@ static void upstat(void)
 		return;
 	}
 	
-	if ((tio.c_lflag & (ICANON | ECHO)) == (ICANON | ECHO))
+	if ((tio.c_lflag & (ICANON | ECHO | ECHOCTL)) == (ICANON | ECHO))
 		canmode = 1;
 	else
 		canmode = 0;
@@ -1231,6 +1233,10 @@ int main(int argc, char **argv)
 		return errno;
 	
 	update_pty_size();
+	
+	tcgetattr(PTM_FD, &tio);
+	tio.c_lflag &= ~ECHOCTL;
+	tcsetattr(PTM_FD, TCSANOW, &tio);
 	
 	shell = getenv("SHELL");
 	if (shell == NULL)

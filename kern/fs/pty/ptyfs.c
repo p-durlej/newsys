@@ -229,7 +229,7 @@ static int pty_getfso(struct fso *f)
 		p->tio.c_iflag = 0;
 		p->tio.c_oflag = 0;
 		p->tio.c_cflag = 0;
-		p->tio.c_lflag = ICANON | ISIG | ECHO | ECHONL;
+		p->tio.c_lflag = ICANON | ISIG | ECHO | ECHONL | ECHOCTL;
 		
 		p->tio.c_cc[VINTR]    = 'C'  & 0x1f;
 		p->tio.c_cc[VQUIT]    = '\\' & 0x1f;
@@ -614,18 +614,24 @@ static void pty_echo(struct pty *pp, char ch)
 
 static void pty_cecho(struct pty *pp, char ch)
 {
-	if (ch >= 0 && ch < 0x20)
+	if (pp->tio.c_lflag & ECHOCTL)
 	{
-		pty_echo(pp, '^');
-		pty_echo(pp, ch + 0x40);
+		if (ch >= 0 && ch < 0x20)
+		{
+			pty_echo(pp, '^');
+			pty_echo(pp, ch + 0x40);
+			return;
+		}
+		
+		if (ch == 127)
+		{
+			pty_echo(pp, '^');
+			pty_echo(pp, '?');
+			return;
+		}
 	}
-	else if (ch == 127)
-	{
-		pty_echo(pp, '^');
-		pty_echo(pp, '?');
-	}
-	else
-		pty_echo(pp, ch);
+	
+	pty_echo(pp, ch);
 }
 
 static void pty_signal(struct pty *pp, int nr)
@@ -655,7 +661,7 @@ static void pty_signal(struct pty *pp, int nr)
 
 static void pty_erase_ch(struct pty *pp, char ch)
 {
-	if ((unsigned char)ch < 0x20 || ch == 127)
+	if (((unsigned char)ch < 0x20 || ch == 127) && (pp->tio.c_lflag & ECHOCTL))
 	{
 		pty_echo(pp, '\b');
 		pty_echo(pp, '\b');
