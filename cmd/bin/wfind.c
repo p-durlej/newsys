@@ -465,6 +465,12 @@ static void find_click(struct gadget *btn, int x, int y)
 	if (lseek(d, 0L, SEEK_CUR) < 0)
 		err(1, "%i: lseek", d);
 	
+	if (!count)
+	{
+		msgbox(main_form, "Find files", "No matching files");
+		goto clean;
+	}
+	
 	if (_newtaskl(_PATH_B_FILEMGR, _PATH_B_FILEMGR, "-l", tmp, (void *)NULL) < 0)
 		msgbox_perror(main_form, "Find files", "Cannot run " _PATH_B_FILEMGR, errno);
 	
