@@ -52,6 +52,7 @@ struct menu *menu_edit;
 struct menu *menu_font;
 struct menu *menu_opt;
 struct menu *menu;
+static int	font;
 
 static int	zflag;
 
@@ -113,6 +114,9 @@ static void on_edit(struct gadget *g)
 static void m_setfont(struct menu_item *m)
 {
 	edbox_set_font(edbox, m->l_data);
+	font = m->l_data;
+	
+	c_save("wdmesg_font", &font, sizeof font);
 }
 
 static void m_about(struct menu_item *m)
@@ -162,6 +166,9 @@ int main(int argc, char **argv)
 	if (win_attach())
 		err(255, NULL);
 	
+	if (c_load("wdmesg_font", &font, sizeof font))
+		font = WIN_FONT_MONO;
+	
 	sbw = wm_get(WM_SCROLLBAR);
 	
 	menu_edit = menu_creat();
@@ -187,7 +194,7 @@ int main(int argc, char **argv)
 	form  = form_creat(FORM_APPFLAGS|FORM_NO_BACKGROUND, 0, -1, -1, WIDTH, HEIGHT, "Diagnostic Messages");
 	edbox = edbox_creat(form, 0, 0, WIDTH - sbw, HEIGHT);
 	vsbar = vsbar_creat(form, WIDTH - sbw, 0, sbw, HEIGHT);
-	edbox_set_font(edbox, WIN_FONT_MONO);
+	edbox_set_font(edbox, font);
 	edbox_on_vscroll(edbox, on_scroll);
 	edbox_on_edit(edbox, on_edit);
 	vsbar_on_move(vsbar, on_scroll);
@@ -201,7 +208,6 @@ int main(int argc, char **argv)
 	tmr = tmr_creat(&utv, &utv, update, NULL, 1);
 	if (!c_load("wdmesg", &fst, sizeof fst))
 		form_set_state(form, &fst);
-	
 	if (zflag)
 	{
 		form_get_state(form, &fst);
