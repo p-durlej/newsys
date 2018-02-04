@@ -439,7 +439,7 @@ static void cansave(void)
 	canhist[0] = s;
 }
 
-static void caninput(unsigned ch)
+static void caninput(unsigned ch, unsigned shift)
 {
 	int u = 0;
 	int i;
@@ -475,12 +475,40 @@ static void caninput(unsigned ch)
 	case WIN_KEY_LEFT:
 		if (!canpos)
 			break;
+		
+		if (shift & WIN_SHIFT_CTRL)
+		{
+			canpos--;
+			while (canpos > 0 && isspace(canbuf[canpos]))
+				canpos--;
+			while (canpos > 0 && !isspace(canbuf[canpos]))
+				canpos--;
+			if (canpos < 0 || isspace(canbuf[canpos]))
+				canpos++;
+			u = 1;
+			break;
+		}
+		
 		canpos--;
 		u = 1;
 		break;
 	case WIN_KEY_RIGHT:
 		if (canpos >= canlen)
 			break;
+		
+		if (shift & WIN_SHIFT_CTRL)
+		{
+			canpos++;
+			while (canpos < canlen && isspace(canbuf[canpos]))
+				canpos++;
+			while (canpos < canlen && !isspace(canbuf[canpos]))
+				canpos++;
+			if (canpos < canlen)
+				canpos++;
+			u = 1;
+			break;
+		}
+		
 		canpos++;
 		u = 1;
 		break;
@@ -584,7 +612,7 @@ static void key_down(struct gadget *g, unsigned ch, unsigned shift)
 	
 	if (canmode)
 	{
-		caninput(ch);
+		caninput(ch, shift);
 		return;
 	}
 	
