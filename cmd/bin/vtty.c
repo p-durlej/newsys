@@ -104,6 +104,8 @@ static int cur_y;
 static int nr_col;
 static int nr_lin;
 
+static struct termios tio;
+
 static struct
 {
 	struct form_state fst;
@@ -386,7 +388,6 @@ static void term_msgbox(void)
 
 static int iscc(unsigned ch)
 {
-	struct termios tio;
 	int i;
 	
 	if (!tcgetattr(PTM_FD, &tio))
@@ -486,16 +487,26 @@ static void caninput(unsigned ch)
 		canlen--;
 		u = 1;
 		break;
-	case '\b':
-		if (!canpos)
-			break;
-		
-		memmove(canbuf + canpos - 1, canbuf + canpos, canlen - canpos);
-		canpos--;
-		canlen--;
-		u = 1;
-		break;
 	default:
+		if (ch == tio.c_cc[VERASE])
+		{
+			if (!canpos)
+				break;
+			
+			memmove(canbuf + canpos - 1, canbuf + canpos, canlen - canpos);
+			canpos--;
+			canlen--;
+			u = 1;
+			break;
+		}
+		
+		if (ch == tio.c_cc[VKILL])
+		{
+			canpos = canlen = 0;
+			u = 1;
+			break;
+		}
+		
 		if (iscc(ch))
 		{
 			char c = ch;
@@ -1040,8 +1051,6 @@ static void on_update(void)
 
 static void upstat(void)
 {
-	struct termios tio;
-	
 	if (tcgetattr(PTM_FD, &tio))
 	{
 		canmode = 0;
