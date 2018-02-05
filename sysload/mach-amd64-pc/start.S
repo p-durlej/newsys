@@ -113,7 +113,24 @@ pxe_boot:
 cdrom_boot:
 disk_boot:
 	ljmpw	$0, $start
-	
+
+nolong:
+	mov	$0x0003, %ax
+	int	$0x10
+	mov	$nolong_msg, %si
+0:	lodsb
+	test	%al, %al
+	jz	0f
+	mov	$0x0007, %bx
+	mov	$0x0e, %ah
+	int	$0x10
+	jmp	0b
+0:	hlt
+	jmp	0b
+nolong_msg:
+	.ascii	"\r\nThis version of the operating system requires a 64-bit CPU\r\n\n"
+	.asciz	"System halted.\r\n"
+
 start:	cli
 	cld
 	
@@ -131,6 +148,20 @@ start:	cli
 	shll	$10,%eax
 	movl	%eax,conv_mem_size
 	movl	%eax,conv_mem_hbrk
+	
+	/* require 64-bit CPU */
+	
+	movl	24, %ebx
+	movl	$nolong, 24 /* assume zero CS */
+	movl	$0x80000000, %eax
+	cpuid
+	cmp	$0x80000001, %eax
+	jb	nolong
+	movl	$0x80000001, %eax
+	cpuid
+	test	$1 << 29, %edx
+	jz	nolong
+	movl	%ebx, 24
 	
 	/* XXX disable NMI */
 	cli
