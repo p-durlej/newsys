@@ -1465,7 +1465,7 @@ static void dd_mi_proc(struct menu_item *m)
 {
 	static const char *const modes[] = { "copy", "move" };
 	
-	*(char **)m->p_data = modes;
+	*(const char **)m->p_data = modes[m->l_data];
 }
 
 static void on_drop(struct gadget *g, const void *data, size_t len, int x, int y, unsigned shift)
