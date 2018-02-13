@@ -28,6 +28,7 @@
 #include <gitver.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include <stdio.h>
 #include <errno.h>
@@ -77,10 +78,28 @@ static void procopt(int argc, char **argv)
 		}
 }
 
+static void usage(void)
+{
+	printf("\nUsage: uname [-1adilqCD] [FILE...]\n"
+		"Print system information.\n\n"
+		"  -a equivalent to -snrvm flags\n"
+		"  -s print the operating system name\n"
+		"  -n print the hostname\n"
+		"  -r print the operating system version\n"
+		"  -v print the operating system build date\n"
+		"  -m print the processor type\n"
+		"  -g print the source code version\n\n"
+		);
+	exit(0);
+}
+
 int main(int argc, char **argv)
 {
 	struct utsname u;
 	char *s = "";
+	
+	if (argc == 2 && !strcmp(argv[1], "--help"))
+		usage();
 	
 	if (uname(&u))
 		err(errno, "utsname");
