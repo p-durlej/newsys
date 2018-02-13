@@ -160,15 +160,18 @@ static void set_leds(unsigned shift)
 	kbd_out(lbits);
 }
 
-static void kbd_irq(unsigned char scan)
+static void kbd_irq()
 {
 	static unsigned prefix   = 0;
 	static unsigned shift    = 0;
 	static unsigned notoggle = 0;
 	
+	unsigned char scan;
 	unsigned toggle = 0;
 	unsigned ch;
 	int i;
+	
+	scan = inb(io_base);
 	
 	if (scan == 0xe0)
 	{
@@ -283,12 +286,16 @@ fini:
 	prefix = 0;
 }
 
-static void aux_irq(unsigned char data)
+static void aux_irq()
 {
 	static unsigned char packet[3];
 	static unsigned btn_state = 0;
 	static time_t recv_time = 0;
 	static int i = 0;
+	
+	unsigned char data;
+	
+	data = inb(io_base);
 	
 	if (recv_time + 2 < clock_time())
 		i = 0;
@@ -328,17 +335,6 @@ static void aux_irq(unsigned char data)
 	
 	btn_state = packet[0];
 	i = 0;
-}
-
-static void irq()
-{
-	unsigned char status;
-	
-	while ((status = inb(io_base + 4)) & 1)
-		if (status & 32)
-			aux_irq(inb(io_base));
-		else
-			kbd_irq(inb(io_base));
 }
 
 static int wait_in(unsigned char byte, unsigned max_delay)
@@ -395,9 +391,9 @@ int mod_onload(unsigned md, char *pathname, struct device *dev, unsigned dev_siz
 		return EINVAL;
 
 	reset();
-	irq_set(irq_nr, irq);
+	irq_set(irq_nr, kbd_irq);
 	irq_ena(irq_nr);
-	irq_set(aux_irq_nr, irq);
+	irq_set(aux_irq_nr, aux_irq);
 	irq_ena(aux_irq_nr);
 	set_leds(0);
 
